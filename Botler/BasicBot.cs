@@ -27,6 +27,7 @@ namespace Botler
         public const string PrenotazioneIntent = "Prenotazione";
         public const string CancellaPrenotazioneIntent = "Cancellazione";
         public const string TempoRimanentePrenotazioneIntent = "TempoRimanentePrenotazione";
+        public const string VerificaPrenotazioneIntent = "VerificaPrenotazione";
 
         public const string InformazioniIntent = "Informazioni";
         public const string PossibilitàIntent = "Possibilità";
@@ -42,6 +43,7 @@ namespace Botler
         private readonly IStatePropertyAccessor<PrenotazioneModel> _prenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _cancellaPrenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _visualizzaTempoStateAccessor;
+        private readonly IStatePropertyAccessor<PrenotazioneModel> _visualizzaPrenotazioneStateAccessor;
 
         private readonly IStatePropertyAccessor<DialogState> _dialogStateAccessor;
         private readonly UserState _userState;
@@ -64,6 +66,8 @@ namespace Botler
             _prenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _cancellaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _visualizzaTempoStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
+            _visualizzaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
+
 
             // Verify LUIS configuration.
             if (!_services.LuisServices.ContainsKey(LuisConfiguration))
@@ -75,7 +79,8 @@ namespace Botler
             Dialogs.Add(new Presentazione(_presentazioneStateAccessor, loggerFactory));
             Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory));
             Dialogs.Add(new CancellaPrenotazione(_cancellaPrenotazioneStateAccessor, loggerFactory));
-            Dialogs.Add(new VisualizzazioneTempo(_visualizzaTempoStateAccessor, loggerFactory));
+            Dialogs.Add(new VisualizzaTempo(_visualizzaTempoStateAccessor, loggerFactory));
+            Dialogs.Add(new VisualizzaPrenotazione(_visualizzaPrenotazioneStateAccessor, loggerFactory));
         }
 
         private DialogSet Dialogs { get; set; }
@@ -143,7 +148,11 @@ namespace Botler
                                     break;
 
                                 case TempoRimanentePrenotazioneIntent:
-                                    await dc.BeginDialogAsync(nameof(VisualizzazioneTempo));
+                                    await dc.BeginDialogAsync(nameof(VisualizzaTempo));
+                                    break;
+
+                                case VerificaPrenotazioneIntent:
+                                    await dc.BeginDialogAsync(nameof(VisualizzaPrenotazione));
                                     break;
 
                                 case NoneIntent:

@@ -66,18 +66,28 @@ namespace Botler.Dialogs.Dialoghi
             var context = stepContext.Context;
             var prenotazioneState = await UserProfileAccessor.GetAsync(context);
 
-            if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
+            if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto) && !string.IsNullOrWhiteSpace(prenotazioneState.scadenza.ToString()))
             {
-                // richiesta del nome se mancante.
-                var opts = new PromptOptions
+                if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) < 0)
                 {
-                    Prompt = new Activity
+                    // richiesta del nome se mancante.
+                    var opts = new PromptOptions
                     {
-                        Type = ActivityTypes.Message,
-                        Text = "Vuoi eliminare la tua prenotazione??",
-                    },
-                };
-                return await stepContext.PromptAsync(ConsensoPrompt, opts);
+                        Prompt = new Activity
+                        {
+                            Type = ActivityTypes.Message,
+                            Text = "Sei sicuro di voler eliminare la tua prenotazione??",
+                        },
+                    };
+                    return await stepContext.PromptAsync(ConsensoPrompt, opts);
+                }
+                else
+                {
+                    prenotazioneState.nomeLotto = null;
+                    prenotazioneState.scadenza = DateTime.MinValue;
+                    await context.SendActivityAsync($"La tua prenotazione è scaduta!");
+                    return await stepContext.EndDialogAsync();
+                }
             }
             else
             {
@@ -95,6 +105,7 @@ namespace Botler.Dialogs.Dialoghi
             if (consenso.Equals("si") || consenso.Equals("certo") || consenso.Equals("ok"))
             {
                 prenotazioneState.nomeLotto = null;
+                prenotazioneState.scadenza = DateTime.MinValue;
                 await UserProfileAccessor.SetAsync(stepContext.Context, prenotazioneState);
                 await stepContext.Context.SendActivityAsync($"La tua prenotazione è stata rimossa con successo!");
             }
