@@ -1,0 +1,12 @@
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.0\BotConfiguration.bot
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.0\Botler.deps.json
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.0\Botler.runtimeconfig.json
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.0\Botler.runtimeconfig.dev.json
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.0\Botler.dll
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.0\Botler.pdb
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.csproj.CoreCompileInputs.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.AssemblyInfoInputs.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.AssemblyInfo.cs
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.dll
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.pdb
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.csprojAssemblyReference.cache
