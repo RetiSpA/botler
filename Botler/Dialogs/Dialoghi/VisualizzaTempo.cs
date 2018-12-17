@@ -10,14 +10,10 @@ namespace Botler.Dialogs.Dialoghi
 {
     public class VisualizzaTempo : ComponentDialog
     {
-        // User state for prenotazione dialog
-        private const string PrenotazioneStateProperty = "prenotazioneState";
-        private const string PrenotazioneValue = "prenotazioneName";
-
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
 
-        // Initializes a new instance of the <see cref="PrenotazioneDialogo"/> class.
+        // Inizializza una istanza della classe VisualizzaTempo.
         public VisualizzaTempo(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
             : base(nameof(VisualizzaTempo))
         {
@@ -46,13 +42,14 @@ namespace Botler.Dialogs.Dialoghi
                 }
                 else
                 {
-                    await UserProfileAccessor.SetAsync(stepContext.Context, new PrenotazioneModel());
+                    await UserProfileAccessor.SetAsync(stepContext.Context, new PrenotazioneModel(0, 0, 0, null, null, DateTime.MinValue, false, false));
                 }
             }
 
             return await stepContext.NextAsync();
         }
 
+        // Funzione che mostra la scadenza della prenotazione.
         private async Task<DialogTurnResult> DisplayScadenzaStateStepAsync(
                                                     WaterfallStepContext stepContext,
                                                     CancellationToken cancellationToken)
@@ -60,16 +57,18 @@ namespace Botler.Dialogs.Dialoghi
             var prenotazioneState = await UserProfileAccessor.GetAsync(stepContext.Context);
             var context = stepContext.Context;
 
+            // Se esiste una prenotazione attiva.
             if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.scadenza.ToString()))
             {
                 if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) < 0)
                 {
-                    var countdown = ((Int32)DateTime.Parse(prenotazioneState.scadenza.ToString()).Subtract(DateTime.Now).TotalSeconds).ToString();
+                    var countdown = ((int)DateTime.Parse(prenotazioneState.scadenza.ToString()).Subtract(DateTime.Now).TotalSeconds).ToString();
                     await context.SendActivityAsync($"La tua prenotazione scade in {countdown} secondi");
                     return await stepContext.EndDialogAsync();
                 }
             }
 
+            // Se esiste una prenotazione scaduta, avvisa e cancella i dati memorizzati.
             if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
             {
                 if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) > 0)
@@ -81,6 +80,7 @@ namespace Botler.Dialogs.Dialoghi
                 }
             }
 
+            // Se non esiste alcuna prenotazione attiva.
             if (prenotazioneState != null && string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
             {
                 await context.SendActivityAsync("Non esiste alcuna prenotazione attiva!");

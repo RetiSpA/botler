@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Botler.Dialogs.Utility
 {
-    public class Utility
+    public class Utility 
     {
         // Costanti per memorizzare informazioni
         public static int bot_id = 8; // Bot id sul db (per la demo!).

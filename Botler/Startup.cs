@@ -67,6 +67,8 @@ namespace Botler
             // Create the connected services from .bot file.
             services.AddSingleton(sp => new BotServices(botConfig));
 
+            services.AddMvc();
+
             // Retrieve current endpoint.
             var environment = _isProduction ? "production" : "development";
             var service = botConfig.Services.Where(s => s.Type == "endpoint" && s.Name == environment).FirstOrDefault();
@@ -137,6 +139,15 @@ namespace Botler
             app.UseDefaultFiles()
                 .UseStaticFiles()
                 .UseBotFramework();
+
+            /// WebApi routes
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action=Index}/{id?}");
+            });
+
         }
     }
 }

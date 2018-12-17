@@ -11,17 +11,13 @@ namespace Botler.Dialogs.Dialoghi
 {
     public class CancellaPrenotazione : ComponentDialog
     {
-        // User state for prenotazione dialog
-        private const string PrenotazioneStateProperty = "prenotazioneState";
-        private const string PrenotazioneValue = "prenotazioneName";
-
         // Prompts names
         private const string ConsensoPrompt = "consensoPrompt";
 
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
 
-        // Initializes a new instance of the <see cref="PrenotazioneDialogo"/> class.
+        // Inizializza una nuova istanza della classe CancellaPrenotazione.
         public CancellaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
             : base(nameof(CancellaPrenotazione))
         {
@@ -52,13 +48,14 @@ namespace Botler.Dialogs.Dialoghi
                 }
                 else
                 {
-                    await UserProfileAccessor.SetAsync(stepContext.Context, new PrenotazioneModel());
+                    await UserProfileAccessor.SetAsync(stepContext.Context, new PrenotazioneModel(0, 0, 0, null, null, DateTime.MinValue, false, false));
                 }
             }
 
             return await stepContext.NextAsync();
         }
 
+        // Prompt per cancellare la prenotazione
         private async Task<DialogTurnResult> PromptForCancellaPrenotazioneStepAsync(
                                                 WaterfallStepContext stepContext,
                                                 CancellationToken cancellationToken)
@@ -66,11 +63,11 @@ namespace Botler.Dialogs.Dialoghi
             var context = stepContext.Context;
             var prenotazioneState = await UserProfileAccessor.GetAsync(context);
 
+            // Se la prenotazione esiste, chiede il prompt di consenso per cancellarla.
             if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto) && !string.IsNullOrWhiteSpace(prenotazioneState.scadenza.ToString()))
             {
                 if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) < 0)
                 {
-                    // richiesta del nome se mancante.
                     var opts = new PromptOptions
                     {
                         Prompt = new Activity
@@ -81,6 +78,8 @@ namespace Botler.Dialogs.Dialoghi
                     };
                     return await stepContext.PromptAsync(ConsensoPrompt, opts);
                 }
+
+                // Se esiste la prenotazione ma è scaduta, avvisa e cancella i dati memorizzati.
                 else
                 {
                     prenotazioneState.nomeLotto = null;
@@ -89,6 +88,8 @@ namespace Botler.Dialogs.Dialoghi
                     return await stepContext.EndDialogAsync();
                 }
             }
+
+            // Se non esiste alcuna prenotazione.
             else
             {
                 await context.SendActivityAsync($"Non è presente alcuna prenotazione attiva!");
@@ -96,6 +97,7 @@ namespace Botler.Dialogs.Dialoghi
             }
         }
 
+        // Verifica del prompt e cancellazione se concordante altrimenti ritorna.
         private async Task<DialogTurnResult> CancelPrenotazioneStepAsync(
                                                     WaterfallStepContext stepContext,
                                                     CancellationToken cancellationToken)

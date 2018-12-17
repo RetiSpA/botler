@@ -22,7 +22,7 @@ namespace Botler
     /// </summary>
     public class BasicBot : IBot
     {
-        // Supported LUIS Intents
+        // Intenti LUIS supportati.
         public const string PresentazioneIntent = "Presentazione";
         public const string PrenotazioneIntent = "Prenotazione";
         public const string CancellaPrenotazioneIntent = "Cancellazione";
@@ -39,7 +39,7 @@ namespace Botler
         /// </summary>
         public static readonly string LuisConfiguration = "basic-bot-LUIS";
 
-        private readonly IStatePropertyAccessor<PresentazioneModel> _presentazioneStateAccessor;
+        private readonly IStatePropertyAccessor<UserModel> _presentazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _prenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _cancellaPrenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _visualizzaTempoStateAccessor;
@@ -62,14 +62,14 @@ namespace Botler
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
 
             _dialogStateAccessor = _conversationState.CreateProperty<DialogState>(nameof(DialogState));
-            _presentazioneStateAccessor = _userState.CreateProperty<PresentazioneModel>(nameof(PresentazioneModel));
+            _presentazioneStateAccessor = _userState.CreateProperty<UserModel>(nameof(UserModel));
             _prenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _cancellaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _visualizzaTempoStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _visualizzaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
 
 
-            // Verify LUIS configuration.
+            // Verifica la configurazione di LUIS.
             if (!_services.LuisServices.ContainsKey(LuisConfiguration))
             {
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `luis` with the id `{LuisConfiguration}`.");
@@ -264,22 +264,22 @@ namespace Botler
             if (luisResult.Entities != null && luisResult.Entities.HasValues)
             {
                 // Get latest GreetingState
-                var presentazioneState = await _presentazioneStateAccessor.GetAsync(turnContext, () => new PresentazioneModel());
+                var presentazioneState = await _presentazioneStateAccessor.GetAsync(turnContext, () => new UserModel(0,null));
                 var entities = luisResult.Entities;
 
                 // Supported LUIS Entities
-                string[] userNameEntities = { "nome", "nome_paternAny" };
+                string[] nomeEntities = { "nome", "nome_paternAny" };
 
                 // Update any entities
                 // Note: Consider a confirm dialog, instead of just updating.
-                foreach (var name in userNameEntities)
+                foreach (var nome in nomeEntities)
                 {
                     // Check if we found valid slot values in entities returned from LUIS.
-                    if (entities[name] != null)
+                    if (entities[nome] != null)
                     {
                         // Capitalize and set new user name.
-                        var newName = (string)entities[name][0];
-                        presentazioneState.Name = char.ToUpper(newName[0]) + newName.Substring(1);
+                        var newNome = (string)entities[nome][0];
+                        presentazioneState.nome = char.ToUpper(newNome[0]) + newNome.Substring(1);
                         break;
                     }
                 }
