@@ -54,40 +54,27 @@ namespace Botler.Dialogs.Dialoghi
                                                     WaterfallStepContext stepContext,
                                                     CancellationToken cancellationToken)
         {
-            var prenotazioneState = await UserProfileAccessor.GetAsync(stepContext.Context);
             var context = stepContext.Context;
-
-            // Mostra la prenotazione se attiva.
-            if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.scadenza.ToString()))
+            PrenotazioneModel prenotazione = await Utility.Utility.getPrenotazione(Utility.Utility.bot_id);
+            try
             {
-                if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) < 0)
+                // Mostra la prenotazione se attiva.
+                if (prenotazione != null)
                 {
-                    var countdown = ((int)DateTime.Parse(prenotazioneState.scadenza.ToString()).Subtract(DateTime.Now).TotalSeconds).ToString();
-                    await context.SendActivityAsync($"La tua prenotazione è la seguente:\n-\t Nome lotto: {prenotazioneState.nomeLotto}\n-\t Tempo rimanente: {countdown}");
+                    await context.SendActivityAsync($"Hai prenotato nel lotto: { prenotazione.nomeLotto}, il parcheggio: { prenotazione.id_posto}");
+                    return await stepContext.EndDialogAsync();
+                }
+                else
+                {
+                    await context.SendActivityAsync($"Nessuna prenotazione esistente!");
                     return await stepContext.EndDialogAsync();
                 }
             }
-
-            // Se esiste una prenotazione scaduta, avvisa e cancella i dati memorizzati.
-            if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
+            catch
             {
-                if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) > 0)
-                {
-                    prenotazioneState.nomeLotto = null;
-                    prenotazioneState.scadenza = DateTime.MinValue;
-                    await context.SendActivityAsync($"La tua prenotazione è scaduta");
-                    return await stepContext.EndDialogAsync();
-                }
-            }
-
-            // Se non esiste alcuna prenotazione.
-            if (prenotazioneState != null && string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
-            {
-                await context.SendActivityAsync("Non esiste alcuna prenotazione attiva!");
+                await context.SendActivityAsync($"Impossibile visualizzare la prenotazione");
                 return await stepContext.EndDialogAsync();
             }
-
-            return await stepContext.EndDialogAsync();
         }
     }
 }

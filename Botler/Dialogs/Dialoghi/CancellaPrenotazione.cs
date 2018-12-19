@@ -28,10 +28,8 @@ namespace Botler.Dialogs.Dialoghi
             {
                     InitializeStateStepAsync,
                     PromptForCancellaPrenotazioneStepAsync,
-                    CancelPrenotazioneStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
-            AddDialog(new TextPrompt(ConsensoPrompt));
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -61,62 +59,36 @@ namespace Botler.Dialogs.Dialoghi
                                                 CancellationToken cancellationToken)
         {
             var context = stepContext.Context;
-            var prenotazioneState = await UserProfileAccessor.GetAsync(context);
+            PrenotazioneModel prenotazione = await Utility.Utility.getPrenotazione(Utility.Utility.bot_id);
 
-            // Se la prenotazione esiste, chiede il prompt di consenso per cancellarla.
-            if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto) && !string.IsNullOrWhiteSpace(prenotazioneState.scadenza.ToString()))
+            try
             {
-                if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) < 0)
+                if (prenotazione != null)
                 {
-                    var opts = new PromptOptions
+                    var response = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
+                    if (response)
                     {
-                        Prompt = new Activity
-                        {
-                            Type = ActivityTypes.Message,
-                            Text = "Sei sicuro di voler eliminare la tua prenotazione??",
-                        },
-                    };
-                    return await stepContext.PromptAsync(ConsensoPrompt, opts);
+                        BasicBot.prenotazione = false;
+                        await context.SendActivityAsync($"Prenotazione cancellata!");
+                        return await stepContext.EndDialogAsync();
+                    }
+                    else
+                    {
+                        await context.SendActivityAsync($"Errore nel cancellare la prenotazione");
+                        return await stepContext.EndDialogAsync();
+                    }
                 }
-
-                // Se esiste la prenotazione ma è scaduta, avvisa e cancella i dati memorizzati.
                 else
                 {
-                    prenotazioneState.nomeLotto = null;
-                    prenotazioneState.scadenza = DateTime.MinValue;
-                    await context.SendActivityAsync($"La tua prenotazione è scaduta!");
+                    await context.SendActivityAsync($"Nessuna prenotazione esistente");
                     return await stepContext.EndDialogAsync();
                 }
             }
-
-            // Se non esiste alcuna prenotazione.
-            else
+            catch
             {
-                await context.SendActivityAsync($"Non è presente alcuna prenotazione attiva!");
+                await context.SendActivityAsync($"Impossibile cancellare la prenotazione");
                 return await stepContext.EndDialogAsync();
             }
-        }
-
-        // Verifica del prompt e cancellazione se concordante altrimenti ritorna.
-        private async Task<DialogTurnResult> CancelPrenotazioneStepAsync(
-                                                    WaterfallStepContext stepContext,
-                                                    CancellationToken cancellationToken)
-        {
-            var prenotazioneState = await UserProfileAccessor.GetAsync(stepContext.Context);
-            string consenso = (string)stepContext.Result;
-            if (consenso.Equals("si") || consenso.Equals("certo") || consenso.Equals("ok"))
-            {
-                prenotazioneState.nomeLotto = null;
-                prenotazioneState.scadenza = DateTime.MinValue;
-                await UserProfileAccessor.SetAsync(stepContext.Context, prenotazioneState);
-                await stepContext.Context.SendActivityAsync($"La tua prenotazione è stata rimossa con successo!");
-            }
-            else
-            {
-                await stepContext.Context.SendActivityAsync($"Se non sei sicuro non farmi perdere tempo!");
-            }
-
-            return await stepContext.EndDialogAsync();
         }
     }
 }

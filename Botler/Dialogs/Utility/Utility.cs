@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Botler.Dialogs.RisorseApi;
 using Newtonsoft.Json;
@@ -16,33 +20,33 @@ namespace Botler.Dialogs.Utility
         public static string password; // Variabile di salvataggio credenziale password.
 
         // METODO PER VERIFICARE IL LOGIN
-        // public static async Task<UserModel> checkLogin()
-        // {
-        // string RestUrl = "http://retismartparking.azurewebsites.net/api/loginUtente";
-        // var uri = new Uri(string.Format(RestUrl));
+        public static async Task<UserModel> checkLogin()
+        {
+            string RestUrl = "http://retismartparking.azurewebsites.net/api/loginUtente";
+            var uri = new Uri(string.Format(RestUrl));
 
-        // var json = JsonConvert.SerializeObject(utente);
-        // var json = "{\"email\":\"" + MessagesController.email + "\",\"password\":\"" + MessagesController.password + "\"}";
-        // var json = "{\"email\":\"andrea.guzzo@reti\",\"password\":\"Password01\"}";
-        // var content = new StringContent(json, Encoding.UTF8, "application/json");
+            // var json = JsonConvert.SerializeObject(utente);
+            var json = "{\"email\":\"" + BasicBot.email + "\",\"password\":\"" + BasicBot.password + "\"}";
+            // var json = "{\"email\":\"andrea.guzzo@reti\",\"password\":\"Password01\"}";
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        // HttpResponseMessage response = null;
-        // HttpClient client = new HttpClient();
+            HttpResponseMessage response = null;
+            HttpClient client = new HttpClient();
 
-        // response = await client.PostAsync(uri, content);
+            response = await client.PostAsync(uri, content);
 
-        // if (response.IsSuccessStatusCode)
-        // {
-        // Debug.WriteLine("++++ RESPONSE IS SUCCESS STATUS CODE");
-        // var responseContent = await response.Content.ReadAsStringAsync();
-        // return JsonConvert.DeserializeObject<UserModel>(responseContent);
-        // }
-        // else
-        // {
-        // Debug.WriteLine("++++ STATUS CODE FROM LOGIN REQUEST: " + response.StatusCode + "\r\nMessage:" + response.RequestMessage + "\r\n" + response.Content.ReadAsStringAsync().Result);
-        // return null;
-        // }
-        // }
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("++++ RESPONSE IS SUCCESS STATUS CODE");
+                var responseContent = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<UserModel>(responseContent);
+            }
+            else
+            {
+                Debug.WriteLine("++++ STATUS CODE FROM LOGIN REQUEST: " + response.StatusCode + "\r\nMessage:" + response.RequestMessage + "\r\n" + response.Content.ReadAsStringAsync().Result);
+                return null;
+            }
+        }
 
         // Chimata per verificare quale parcheggio è stato assegnato.
         public static string uriParcheggioAutoassegnato(int id_lotto, int id_utente)

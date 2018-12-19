@@ -4,19 +4,15 @@ using System.Threading.Tasks;
 using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
-
 
 namespace Botler.Dialogs.Dialoghi
 {
     public class Prenotazione : ComponentDialog
     {
-        // Prompts names
-        private const string NomeLottoPrompt = "nomeLottoPrompt";
-
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
+        private static int timeoutParcheggio = 7;
 
         // Inizializza una nuova istanza della classe Prenotazione.
         public Prenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
@@ -28,10 +24,8 @@ namespace Botler.Dialogs.Dialoghi
             {
                     InitializeStateStepAsync,
                     PromptForPrenotazioneStepAsync,
-                    SalvaPrenotazioneStateStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
-            AddDialog(new TextPrompt(NomeLottoPrompt));
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -60,76 +54,57 @@ namespace Botler.Dialogs.Dialoghi
                                                 CancellationToken cancellationToken)
         {
             var context = stepContext.Context;
-            var prenotazioneState = await UserProfileAccessor.GetAsync(context);
 
-
-            if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
+            try
             {
-                if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) < 0)
+                PosteggioModel posto = await Utility.Utility.setPosteggioAutoassegnato(Utility.Utility.lotto_id);
+                if (posto != null)
                 {
-                    await context.SendActivityAsync($"Possiedi già una prenotazione attiva!");
-                    return await stepContext.EndDialogAsync();
-                }
-            }
-
-            // Se esiste una prenotazione scaduta, avvisa e cancella i dati memorizzati.
-            if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
-            {
-                if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) > 0)
-                {
-                    prenotazioneState.nomeLotto = null;
-                    prenotazioneState.scadenza = DateTime.MinValue;
-                    await context.SendActivityAsync($"La tua prenotazione è scaduta!");
-                    return await stepContext.EndDialogAsync();
-                }
-            }
-
-            // Se non è presente una prenotazione, richiede l'inserimento del nome per effettuarla.
-            if (string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
-            {
-                var opts = new PromptOptions
-                {
-                    Prompt = new Activity
+                    PrenotazioneModel prenotazione = await Utility.Utility.prenotaPosteggio(Utility.Utility.lotto_id, posto.id_posteggio);
+                    if (prenotazione != null)
                     {
-                        Type = ActivityTypes.Message,
-                        Text = "Quale posteggio vuoi prenotare?",
-                    },
-                };
-                return await stepContext.PromptAsync(NomeLottoPrompt, opts);
+                        BasicBot.tempoPrenotazione = DateTime.Now;
+                        BasicBot.tempoPrenotazione = BasicBot.tempoPrenotazione.AddMinutes(timeoutParcheggio);
+                        BasicBot.prenotazione = true;
+                        await context.SendActivityAsync($"Prenotazione effettuata in: {prenotazione.nomeLotto }, parcheggio: {prenotazione.id_posto}");
+                        return await stepContext.EndDialogAsync();
+                    }
+                    else
+                    {
+                        PrenotazioneModel verificaPrenotazione = await Utility.Utility.getPrenotazione(Utility.Utility.bot_id);
+                        if (verificaPrenotazione != null)
+                        {
+                            await context.SendActivityAsync($"Tutti i posti sono occupati!");
+                            return await stepContext.EndDialogAsync();
+                        }
+                        else
+                        {
+                            await context.SendActivityAsync($"Possiedi già una prenotazione!");
+                            return await stepContext.EndDialogAsync();
+                        }
+                    }
+                }
+
+                return await stepContext.EndDialogAsync();
             }
-            else
+            catch
             {
-                return await stepContext.NextAsync();
+                await context.SendActivityAsync($"Impossibile cancellare la prenotazione!");
+                return await stepContext.EndDialogAsync();
             }
-        }
-
-        // Funzione per salvare la prenotazione dell'utente.
-        public async Task<DialogTurnResult> SalvaPrenotazioneStateStepAsync(
-                                                    WaterfallStepContext stepContext,
-                                                    CancellationToken cancellationToken)
-        {
-            // Salva la prenotazione inserita.
-            var prenotazioneState = await UserProfileAccessor.GetAsync(stepContext.Context);
-            var lowerCasePrenotazione = stepContext.Result as string;
-
-            if (string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto) && !string.IsNullOrWhiteSpace(lowerCasePrenotazione))
-            {
-                // Mette l'iniziale della prenotazione maiuscola e la setta.
-                prenotazioneState.nomeLotto = char.ToUpper(lowerCasePrenotazione[0]) + lowerCasePrenotazione.Substring(1);
-                await UserProfileAccessor.SetAsync(stepContext.Context, prenotazioneState);
-                prenotazioneState.scadenza = DateTime.Now.AddSeconds(20);
-            }
-
-            return await PrenotazioneUser(stepContext);
-        }
-
-        // Funzione per confermare l'avvenuta prenotazione precedente.
-        private async Task<DialogTurnResult> PrenotazioneUser(WaterfallStepContext stepContext)
-        {
-            var context = stepContext.Context;
-            var prenotazioneState = await UserProfileAccessor.GetAsync(context);
-            await context.SendActivityAsync($"La tua prenotazione è stata confermata!");
-            return await stepContext.EndDialogAsync();
         }
     }
 }
+
+// Se esiste una prenotazione scaduta, avvisa e cancella i dati memorizzati.
+//if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))
+//{
+//    if (DateTime.Compare(DateTime.Now, DateTime.Parse(prenotazioneState.scadenza.ToString())) > 0)
+//    {
+//        prenotazioneState.nomeLotto = null;
+//        prenotazioneState.scadenza = DateTime.MinValue;
+//        await context.SendActivityAsync($"La tua prenotazione è scaduta!");
+//        return await stepContext.EndDialogAsync();
+//    }
+//}
+//return await stepContext.EndDialogAsync();

@@ -33,13 +33,21 @@ namespace Botler
         public const string PossibilitàIntent = "Possibilità";
         public const string NoneIntent = "None";
 
+        public static bool autenticazione = false;
+        public static bool askCredential = false;
+        public static DateTime tempoPrenotazione;
+        public static Boolean prenotazione = false;
+        public static string email;
+        public static string password;
+        public static Boolean procedure = false;
+        public static int BotId = 8;
+
         /// <summary>
         /// Key in the bot config (.bot file) for the LUIS instance.
         /// In the .bot file, multiple instances of LUIS can be configured.
         /// </summary>
         public static readonly string LuisConfiguration = "basic-bot-LUIS";
 
-        private readonly IStatePropertyAccessor<UserModel> _presentazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _prenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _cancellaPrenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _visualizzaTempoStateAccessor;
@@ -62,12 +70,10 @@ namespace Botler
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
 
             _dialogStateAccessor = _conversationState.CreateProperty<DialogState>(nameof(DialogState));
-            _presentazioneStateAccessor = _userState.CreateProperty<UserModel>(nameof(UserModel));
             _prenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _cancellaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _visualizzaTempoStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _visualizzaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
-
 
             // Verifica la configurazione di LUIS.
             if (!_services.LuisServices.ContainsKey(LuisConfiguration))
@@ -76,7 +82,6 @@ namespace Botler
             }
 
             Dialogs = new DialogSet(_dialogStateAccessor);
-            Dialogs.Add(new Presentazione(_presentazioneStateAccessor, loggerFactory));
             Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory));
             Dialogs.Add(new CancellaPrenotazione(_cancellaPrenotazioneStateAccessor, loggerFactory));
             Dialogs.Add(new VisualizzaTempo(_visualizzaTempoStateAccessor, loggerFactory));
@@ -110,7 +115,7 @@ namespace Botler
                 var topIntent = topScoringIntent.Value.intent;
 
                 // update greeting state with any entities captured
-                await UpdatePresentazioneState(luisResults, dc.Context);
+                //await UpdatePresentazioneState(luisResults, dc.Context);
 
                 // Handle conversation interrupts first.
                 var interrupted = await IsTurnInterruptedAsync(dc, topIntent);
@@ -135,9 +140,6 @@ namespace Botler
                         case DialogTurnStatus.Empty:
                             switch (topIntent)
                             {
-                                case PresentazioneIntent:
-                                    await dc.BeginDialogAsync(nameof(Presentazione));
-                                    break;
 
                                 case PrenotazioneIntent:
                                     await dc.BeginDialogAsync(nameof(Prenotazione));
@@ -206,6 +208,16 @@ namespace Botler
         private async Task<bool> IsTurnInterruptedAsync(DialogContext dc, string topIntent)
         {
             // See if there are any conversation interrupts we need to handle.
+            if (topIntent.Equals(PresentazioneIntent))
+            {
+                await dc.Context.SendActivityAsync("Hey, Ciao!");
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.RepromptDialogAsync();
+                }
+
+                return true;        // Handled the interrupt.
+            }
 
             if (topIntent.Equals(InformazioniIntent))
             {
@@ -259,34 +271,35 @@ namespace Botler
         /// <param name="turnContext">A <see cref="ITurnContext"/> containing all the data needed
         /// for processing this conversation turn.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
-        private async Task UpdatePresentazioneState(RecognizerResult luisResult, ITurnContext turnContext)
-        {
-            if (luisResult.Entities != null && luisResult.Entities.HasValues)
-            {
-                // Get latest GreetingState
-                var presentazioneState = await _presentazioneStateAccessor.GetAsync(turnContext, () => new UserModel(0,null));
-                var entities = luisResult.Entities;
 
-                // Supported LUIS Entities
-                string[] nomeEntities = { "nome", "nome_paternAny" };
+        //private async Task UpdatePresentazioneState(RecognizerResult luisResult, ITurnContext turnContext)
+        //{
+        //    if (luisResult.Entities != null && luisResult.Entities.HasValues)
+        //    {
+        //        // Get latest GreetingState
+        //        var presentazioneState = await _presentazioneStateAccessor.GetAsync(turnContext, () => new UserModel(0,null));
+        //        var entities = luisResult.Entities;
 
-                // Update any entities
-                // Note: Consider a confirm dialog, instead of just updating.
-                foreach (var nome in nomeEntities)
-                {
-                    // Check if we found valid slot values in entities returned from LUIS.
-                    if (entities[nome] != null)
-                    {
-                        // Capitalize and set new user name.
-                        var newNome = (string)entities[nome][0];
-                        presentazioneState.nome = char.ToUpper(newNome[0]) + newNome.Substring(1);
-                        break;
-                    }
-                }
+        //        // Supported LUIS Entities
+        //        string[] nomeEntities = { "nome", "nome_paternAny" };
 
-                // Set the new values into state.
-                await _presentazioneStateAccessor.SetAsync(turnContext, presentazioneState);
-            }
-        }
+        //        // Update any entities
+        //        // Note: Consider a confirm dialog, instead of just updating.
+        //        foreach (var nome in nomeEntities)
+        //        {
+        //            // Check if we found valid slot values in entities returned from LUIS.
+        //            if (entities[nome] != null)
+        //            {
+        //                // Capitalize and set new user name.
+        //                var newNome = (string)entities[nome][0];
+        //                presentazioneState.nome = char.ToUpper(newNome[0]) + newNome.Substring(1);
+        //                break;
+        //            }
+        //        }
+
+        //        // Set the new values into state.
+        //        await _presentazioneStateAccessor.SetAsync(turnContext, presentazioneState);
+        //    }
+        //}
     }
 }

@@ -10,3 +10,7 @@ C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.Asse
 C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.dll
 C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.pdb
 C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.csprojAssemblyReference.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.RazorAssemblyInfo.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.RazorAssemblyInfo.cs
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\Botler.RazorTargetAssemblyInfo.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.0\UserSecretsAssemblyInfo.cs

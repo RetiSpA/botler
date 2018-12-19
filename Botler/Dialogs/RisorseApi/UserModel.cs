@@ -14,27 +14,27 @@ namespace Botler.Dialogs.RisorseApi
         {
             this.id_utente = id_utente;
             this.email = email;
-            //this.nome = setNameFromEmail(email);
+            this.nome = setNameFromEmail(email);
         }
 
-        //public static string setNameFromEmail(string email)
-        //{
-        //    if (!string.IsNullOrEmpty(email))
-        //    {
-        //        var index = email.LastIndexOf('@');
-        //        if (index > 0)
-        //        {
-        //            return email.Remove(index).Replace('.', ' ');
-        //        }
-        //        else
-        //        {
-        //            return "name surname";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return "name surname";
-        //    }
-        //}
+        public static string setNameFromEmail(string email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                var index = email.LastIndexOf('@');
+                if (index > 0)
+                {
+                    return email.Remove(index).Replace('.', ' ');
+                }
+                else
+                {
+                    return "name surname";
+                }
+            }
+            else
+            {
+                return "name surname";
+            }
+        }
     }
 }

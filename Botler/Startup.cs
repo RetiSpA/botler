@@ -12,6 +12,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Botler
 {
@@ -67,7 +68,7 @@ namespace Botler
             // Create the connected services from .bot file.
             services.AddSingleton(sp => new BotServices(botConfig));
 
-            services.AddMvc();
+            //services.AddMvc();
 
             // Retrieve current endpoint.
             var environment = _isProduction ? "production" : "development";
@@ -137,16 +138,16 @@ namespace Botler
             }
 
             app.UseDefaultFiles()
-                .UseStaticFiles()
-                .UseBotFramework();
+               .UseStaticFiles()
+               .UseBotFramework();
 
-            /// WebApi routes
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });
+            // WebApi routes
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller}/{action=Index}/{id?}");
+            //});
 
         }
     }
