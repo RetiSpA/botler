@@ -1,0 +1,20 @@
+Hosting environment: Development
+Content root path: C:\Users\formema1\source\repos\Botler\Botler
+Now listening on: http://127.0.0.1:7225
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 DEBUG http://localhost:3978/  0
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 74.7598ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 493
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 457
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 363.893ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 784.3361ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 619
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 1284.7026ms 200 

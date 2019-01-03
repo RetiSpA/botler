@@ -1,0 +1,37 @@
+﻿body {
+    background-color: whitesmoke;
+}
+
+div {
+    text-align: center;
+}
+
+h1 {
+    color: #eb212e;
+}
+
+h2 {
+    color: whitesmoke;
+}
+
+p {
+    color: whitesmoke;
+}
+
+iframe {
+    background-color: whitesmoke;
+}
+
+ul li {
+    text-align: center;
+    color: whitesmoke;
+}
+
+p#linkReti {
+    color: black;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}

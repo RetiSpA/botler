@@ -1,0 +1,16 @@
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.1\BotConfiguration.bot
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.1\Botler.deps.json
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.1\Botler.runtimeconfig.json
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.1\Botler.runtimeconfig.dev.json
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.1\Botler.dll
+C:\Users\formema1\source\repos\Botler\Botler\bin\Debug\netcoreapp2.1\Botler.pdb
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.csprojAssemblyReference.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.csproj.CoreCompileInputs.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.RazorAssemblyInfo.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.RazorAssemblyInfo.cs
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.AssemblyInfoInputs.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.AssemblyInfo.cs
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.RazorTargetAssemblyInfo.cache
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.dll
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\Botler.pdb
+C:\Users\formema1\source\repos\Botler\Botler\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
