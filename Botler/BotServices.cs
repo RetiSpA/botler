@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Bot.Builder.AI.Luis;
+using Microsoft.Bot.Builder.AI.QnA;
 using Microsoft.Bot.Configuration;
 
 namespace Botler
@@ -24,10 +25,46 @@ namespace Botler
         /// <param name="luisServices">A dictionary of named <see cref="LuisRecognizer"/> instances for usage within the bot.</param>
         public BotServices(BotConfiguration botConfiguration)
         {
+            //var qnaServices = new Dictionary<string, QnAMaker>();
             foreach (var service in botConfiguration.Services)
             {
                 switch (service.Type)
                 {
+                    //case ServiceTypes.QnA:
+                    //    {
+                    //        var qna = (QnAMakerService)service;
+                    //        if (qna == null)
+                    //        {
+                    //            throw new InvalidOperationException("The QnA service is not configured correctly in your '.bot' file.");
+                    //        }
+
+                    //        if (string.IsNullOrWhiteSpace(qna.KbId))
+                    //        {
+                    //            throw new InvalidOperationException("The QnA KnowledgeBaseId ('kbId') is required to run this sample. Please update your '.bot' file.");
+                    //        }
+
+                    //        if (string.IsNullOrWhiteSpace(qna.EndpointKey))
+                    //        {
+                    //            throw new InvalidOperationException("The QnA EndpointKey ('endpointKey') is required to run this sample. Please update your '.bot' file.");
+                    //        }
+
+                    //        if (string.IsNullOrWhiteSpace(qna.Hostname))
+                    //        {
+                    //            throw new InvalidOperationException("The QnA Host ('hostname') is required to run this sample. Please update your '.bot' file.");
+                    //        }
+
+                    //        var qnaEndpoint = new QnAMakerEndpoint()
+                    //        {
+                    //            KnowledgeBaseId = qna.KbId,
+                    //            EndpointKey = qna.EndpointKey,
+                    //            Host = qna.Hostname,
+                    //        };
+
+                    //        var qnaMaker = new QnAMaker (qnaEndpoint);
+                    //        qnaServices.Add(qna.Name, qnaMaker);
+                    //        break;
+                    //    }
+
                     case ServiceTypes.Luis:
                         {
                             var luis = (LuisService)service;
@@ -56,5 +93,7 @@ namespace Botler
         /// A <see cref="LuisRecognizer"/> client instance created based on configuration in the .bot file.
         /// </value>
         public Dictionary<string, LuisRecognizer> LuisServices { get; } = new Dictionary<string, LuisRecognizer>();
+
+        //public Dictionary<string, QnAMaker> QnAServices { get; } = new Dictionary<string, QnAMaker>();
     }
 }

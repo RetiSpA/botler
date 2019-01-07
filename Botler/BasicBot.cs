@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Microsoft.Bot.Builder.AI.QnA;
 using System.Threading.Tasks;
 using Botler.Dialogs.Dialoghi;
 using Botler.Dialogs.RisorseApi;
@@ -47,6 +48,7 @@ namespace Botler
         /// In the .bot file, multiple instances of LUIS can be configured.
         /// </summary>
         public static readonly string LuisConfiguration = "basic-bot-LUIS";
+        //public static readonly string QnAMakerKey = "botler-qna";
 
         private readonly IStatePropertyAccessor<PrenotazioneModel> _prenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _cancellaPrenotazioneStateAccessor;
@@ -81,6 +83,12 @@ namespace Botler
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `luis` with the id `{LuisConfiguration}`.");
             }
 
+            // Verifica la configurazione di QnA.
+            //if (!_services.QnAServices.ContainsKey(QnAMakerKey))
+            //{
+            //    throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAMakerKey}`.");
+            //}
+
             Dialogs = new DialogSet(_dialogStateAccessor);
             Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory));
             Dialogs.Add(new CancellaPrenotazione(_cancellaPrenotazioneStateAccessor, loggerFactory));
@@ -107,6 +115,20 @@ namespace Botler
             {
                 // Perform a call to LUIS to retrieve results for the current activity message.
                 var luisResults = await _services.LuisServices[LuisConfiguration].RecognizeAsync(dc.Context, cancellationToken).ConfigureAwait(false);
+
+                //var response = await _services.QnAServices[QnAMakerKey].GetAnswersAsync(turnContext);
+
+                //if (response != null && response.Length > 0)
+                //{
+                //    await turnContext.SendActivityAsync(response[0].Answer, cancellationToken: cancellationToken);
+                //}
+                //else
+                //{
+                //    var msg = @"No QnA Maker answers were found. This example uses a QnA Maker Knowledge Base that focuses on smart light bulbs. 
+                //        To see QnA Maker in action, ask the bot questions like 'Why won't it turn on?' or 'I need help'.";
+
+                //    await turnContext.SendActivityAsync(msg, cancellationToken: cancellationToken);
+                //}
 
                 // If any entities were updated, treat as interruption.
                 // For example, "no my name is tony" will manifest as an update of the name to be "tony".

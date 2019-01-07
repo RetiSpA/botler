@@ -12,8 +12,6 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 
 namespace Botler
 {
@@ -138,7 +136,11 @@ namespace Botler
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseDefaultFiles()
+            DefaultFilesOptions options = new DefaultFilesOptions();
+            options.DefaultFileNames.Clear();
+            options.DefaultFileNames.Add("index.html");
+
+            app.UseDefaultFiles(options)
                .UseStaticFiles()
                .UseBotFramework();
 
@@ -147,7 +149,7 @@ namespace Botler
             //{
             //    routes.MapRoute(
             //        name: "default",
-            //        template: "{controller}/{action=Index}/{id?}");
+            //        template: "wwwwroot/index.html");
             //});
 
         }

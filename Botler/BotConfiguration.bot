@@ -1,39 +1,35 @@
 {
     "name": "Botler",
     "description": "",
-   "services": [
-
-      {
-        "type": "endpoint",
-        "appId": "f356c644-0c07-4e73-aa29-d95c6e11a613",
-        "appPassword": "nznxlIVCS875^~vhGCO96*?",
-        "id":  "botLerV4",
-        "endpoint": "https://botlerv4.azurewebsites.net/api/messages",
-        "name": "production"
-      },
-
-      {
-        "type": "endpoint",
-        "appId": "",
-        "appPassword": "",
-        "endpoint": "http://localhost:3978/api/messages",
-        "id": "1",
-        "name": "development"
-      },
-
-      {
-        "type": "luis",
-        "appId": "a1e943db-93ef-469b-b9e1-6610bff5b4cc",
-        "authoringKey": "df7e822a65a5448a91c547fe0fc71738",
-        "id": "basic-bot-LUIS",
-        "name": "basic-bot-LUIS",
-        "region": "westus",
-        "version": "0.1"
-      }
-
-   ],
+    "services": [
+        {
+            "type": "endpoint",
+            "appId": "f356c644-0c07-4e73-aa29-d95c6e11a613",
+            "appPassword": "nznxlIVCS875^~vhGCO96*?",
+            "endpoint": "https://botlerv4.azurewebsites.net/api/messages",
+            "id": "botLerV4",
+            "name": "production"
+        },
+        {
+            "type": "endpoint",
+            "appId": "",
+            "appPassword": "",
+            "endpoint": "http://localhost:3978/api/messages",
+            "id": "1",
+            "name": "development"
+        },
+        {
+            "type": "luis",
+            "appId": "a1e943db-93ef-469b-b9e1-6610bff5b4cc",
+            "authoringKey": "df7e822a65a5448a91c547fe0fc71738",
+            "id": "basic-bot-LUIS",
+            "name": "basic-bot-LUIS",
+            "region": "westus",
+            "version": "0.1"
+        }   
+    ],
     "padlock": "",
     "version": "2.0",
-    "path": "C:\\Users\\formema1\\source\\repos\\Botler\\Botler\\BotConfiguration.bot",
-    "overrides": null
+    "overrides": null,
+    "path": "C:\\Users\\formema1\\source\\repos\\Botler\\Botler\\BotConfiguration.bot"
 }
