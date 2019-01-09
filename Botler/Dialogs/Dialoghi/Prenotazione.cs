@@ -63,7 +63,7 @@ namespace Botler.Dialogs.Dialoghi
                     if (prenotazione != null)
                     {
                         //BasicBot.tempoPrenotazione = DateTime.Now;
-                        BasicBot.tempoPrenotazione = DateTime.Now.AddSeconds(10);
+                        BasicBot.tempoPrenotazione = DateTime.Now.AddSeconds(30);
                         BasicBot.prenotazione = true;
                         var prenotazioneNomeLotto = prenotazione.nomeLotto;
                         var prenotazioneIdPosto = prenotazione.id_posto;

@@ -183,7 +183,14 @@ namespace Botler
                                 default:
                                     // Help or no intent identified, either way, let's provide some help.
                                     // to the user
-                                    await dc.Context.SendActivityAsync("Non capisco ciò che mi stai dicendo, mi spiace.");
+                                    string[] responses = { "Non capisco ciò che mi stai dicendo, mi spiace.",
+                                                           "Scusa? Non ti capisco mica...",
+                                                           "Ma che hai detto?!?",
+                                                           "Boh! Non ci ho capito nulla..", };
+                                    //rispsote possibili
+                                    Random rnd = new Random(); //crea new Random class
+                                    int i = rnd.Next(0, responses.Length);
+                                    await dc.Context.SendActivityAsync(responses[i]);
                                     break;
                             }
 
@@ -232,7 +239,14 @@ namespace Botler
             // See if there are any conversation interrupts we need to handle.
             if (topIntent.Equals(PresentazioneIntent))
             {
-                await dc.Context.SendActivityAsync("Hey, Ciao!");
+                string[] responses = { "Hey ciao!",
+                                       "Wella!",
+                                       "We! ",
+                                       "Ciao bello!", };
+                //rispsote possibili
+                Random rnd = new Random(); //crea new Random class
+                int i = rnd.Next(0, responses.Length);
+                await dc.Context.SendActivityAsync(responses[i]);
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -243,7 +257,13 @@ namespace Botler
 
             if (topIntent.Equals(InformazioniIntent))
             {
-                await dc.Context.SendActivityAsync("Sono Bot Reti! Sono qui per aiutarti a prenotare un parcheggio");
+                string[] responses = { "Sono Bot Reti! Sono qui per aiutarti a prenotare un parcheggio :)",
+                                       "Mi chiamo Botler! Gestisco una tua prenotazione, basta chiedere!",
+                                       "Sono Botler e il mio compito è guidarti nella prenotazione di un posteggio!", };
+                //rispsote possibili
+                Random rnd = new Random(); //crea new Random class
+                int i = rnd.Next(0, responses.Length);
+                await dc.Context.SendActivityAsync(responses[i]);
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();

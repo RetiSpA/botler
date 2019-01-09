@@ -61,21 +61,42 @@ namespace Botler.Dialogs.Dialoghi
             {
                 if (prenotazione != null)
                 {
-                    DateTime now = DateTime.Now;
-                    TimeSpan differenza;
-                    differenza = BasicBot.tempoPrenotazione.Subtract(now);
-                    int minuti = (int)(differenza.TotalMinutes);
-                    int secondi = (int)(differenza.TotalSeconds);
+                    if (DateTime.Compare(DateTime.Now, DateTime.Parse(BasicBot.tempoPrenotazione.ToString())) > 0)
+                    {
+                        var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
+                        if (resp)
+                        {
+                            string[] responses = { "La tua prenotazione è scaduta!",
+                                        "E' terminato il tempo disponibile per il tuo posteggio",
+                                        "La prenotazione è espirata", };
+                            //rispsote possibili
+                            Random rnd = new Random(); //crea new Random class
+                            int i = rnd.Next(0, responses.Length);
+                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+                            BasicBot.prenotazione = false;
 
-                    string[] responses = { "Il tuo parcheggio è ancora disponibile per" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi",
+                            return await stepContext.EndDialogAsync();
+                        }
+                    }
+                    else
+                    {
+                        DateTime now = DateTime.Now;
+                        TimeSpan differenza;
+                        differenza = BasicBot.tempoPrenotazione.Subtract(now);
+                        int minuti = (int)(differenza.TotalMinutes);
+                        int secondi = (int)(differenza.TotalSeconds);
+
+                        string[] responses = { "Il tuo parcheggio è ancora disponibile per" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi",
                             "La disponibilità del tuo parcheggio scade tra" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi",
                             "Hai ancora" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi per usufruire del posteggio prenotato", };
 
-                    Random rnd = new Random(); //crea new Random class
-                    int i = rnd.Next(0, responses.Length);
-                    await context.SendActivityAsync(responses[i]); //genera una risposta random
+                        Random rnd = new Random(); //crea new Random class
+                        int i = rnd.Next(0, responses.Length);
+                        await context.SendActivityAsync(responses[i]); //genera una risposta random
 
-                    //await context.SendActivityAsync($"Il tuo parcheggio sarà disponibile ancora per: {minuti} minuti e {secondi - (minuti * 60)} secondi");
+                        //await context.SendActivityAsync($"Il tuo parcheggio sarà disponibile ancora per: {minuti} minuti e {secondi - (minuti * 60)} secondi");
+                        return await stepContext.EndDialogAsync();
+                    }
                     return await stepContext.EndDialogAsync();
                 }
                 else

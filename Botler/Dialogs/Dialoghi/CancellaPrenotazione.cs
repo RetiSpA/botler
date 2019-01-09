@@ -80,22 +80,18 @@ namespace Botler.Dialogs.Dialoghi
                             BasicBot.prenotazione = false;
                             return await stepContext.EndDialogAsync();
                         }
-                        else
-                        {
-                            BasicBot.prenotazione = false;
-                            //rispsote possibili
-                            string[] responses = { "Prenotazione cancellata con successo!",
-                            "La prenotazione... Via! Andata! Caput!",
-                            "Hai cestinato la tua prenotazione!", };
-                            Random rnd = new Random(); //crea new Random class
-                            int i = rnd.Next(0, responses.Length);
-                            await context.SendActivityAsync(responses[i]); //genera una risposta random
-                            return await stepContext.EndDialogAsync();
-                        }
                     }
                     else
                     {
-                        await context.SendActivityAsync($"Errore nel cancellare la prenotazione");
+                        BasicBot.prenotazione = false;
+                        //rispsote possibili
+                        string[] responses = { "Prenotazione cancellata con successo!",
+                            "La prenotazione... Via! Andata! Caput!",
+                            "Hai cestinato la tua prenotazione!", };
+                        Random rnd = new Random(); //crea new Random class
+                        int i = rnd.Next(0, responses.Length);
+                        await context.SendActivityAsync(responses[i]); //genera una risposta random
+                        await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         return await stepContext.EndDialogAsync();
                     }
                 }
@@ -109,6 +105,8 @@ namespace Botler.Dialogs.Dialoghi
                     await context.SendActivityAsync(responses[i]); //genera una risposta random
                     return await stepContext.EndDialogAsync();
                 }
+
+                return await stepContext.EndDialogAsync();
             }
             catch
             {
