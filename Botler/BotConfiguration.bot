@@ -2,6 +2,15 @@
     "name": "Botler",
     "description": "",
     "services": [
+
+        {
+          "type": "endpoint",
+          "appId": "",
+          "appPassword": "",
+          "endpoint": "http://localhost:3978/api/messages",
+          "id": "1",
+          "name": "development"
+        },
         {
             "type": "endpoint",
             "appId": "f356c644-0c07-4e73-aa29-d95c6e11a613",
@@ -9,14 +18,6 @@
             "endpoint": "https://botlerv4.azurewebsites.net/api/messages",
             "id": "botLerV4",
             "name": "production"
-        },
-        {
-            "type": "endpoint",
-            "appId": "",
-            "appPassword": "",
-            "endpoint": "http://localhost:3978/api/messages",
-            "id": "1",
-            "name": "development"
         },
         {
             "type": "luis",

@@ -2,6 +2,15 @@
     "name": "Botler",
     "description": "",
     "services": [
+
+        {
+          "type": "endpoint",
+          "appId": "",
+          "appPassword": "",
+          "endpoint": "http://localhost:3978/api/messages",
+          "id": "1",
+          "name": "development"
+        },
         {
             "type": "endpoint",
             "appId": "f356c644-0c07-4e73-aa29-d95c6e11a613",
@@ -11,14 +20,6 @@
             "name": "production"
         },
         {
-            "type": "endpoint",
-            "appId": "",
-            "appPassword": "",
-            "endpoint": "http://localhost:3978/api/messages",
-            "id": "1",
-            "name": "development"
-        },
-        {
             "type": "luis",
             "appId": "a1e943db-93ef-469b-b9e1-6610bff5b4cc",
             "authoringKey": "df7e822a65a5448a91c547fe0fc71738",
@@ -26,15 +27,7 @@
             "name": "basic-bot-LUIS",
             "region": "westus",
             "version": "0.1"
-        },
-        //{
-        //    "type": "qna",
-        //    "endpointKey": "52052dda51674485b49009f864a44391",
-        //    "hostname": "https://botler-qna.azurewebsites.net",
-        //    "id": "botler-qna",
-        //    "kbId": "c9d88b48-0969-4b9f-8bad-097faa29f731",
-        //    "name": "botler-qna"
-        //}
+        }   
     ],
     "padlock": "",
     "version": "2.0",

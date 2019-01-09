@@ -67,12 +67,26 @@ namespace Botler.Dialogs.Dialoghi
                     int minuti = (int)(differenza.TotalMinutes);
                     int secondi = (int)(differenza.TotalSeconds);
 
-                    await context.SendActivityAsync($"Il tuo parcheggio sarà disponibile ancora per: {minuti} minuti e {secondi - (minuti * 60)} secondi");
+                    string[] responses = { "Il tuo parcheggio è ancora disponibile per" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi",
+                            "La disponibilità del tuo parcheggio scade tra" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi",
+                            "Hai ancora" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi per usufruire del posteggio prenotato", };
+
+                    Random rnd = new Random(); //crea new Random class
+                    int i = rnd.Next(0, responses.Length);
+                    await context.SendActivityAsync(responses[i]); //genera una risposta random
+
+                    //await context.SendActivityAsync($"Il tuo parcheggio sarà disponibile ancora per: {minuti} minuti e {secondi - (minuti * 60)} secondi");
                     return await stepContext.EndDialogAsync();
                 }
                 else
                 {
-                    await context.SendActivityAsync($"Nessuna prenotazione esistente!");
+                    string[] responses = { "Non esiste alcuna prenotazione attiva!",
+                        "Io non vedo nessuna prenotazione!",
+                        "Ma quale prenotazione intendi scusa..",};
+
+                    Random rnd = new Random();
+                    int i = rnd.Next(0, responses.Length);
+                    await context.SendActivityAsync(responses[i]); //genera una risposta random tra quelle presenti
                     return await stepContext.EndDialogAsync();
                 }
             }

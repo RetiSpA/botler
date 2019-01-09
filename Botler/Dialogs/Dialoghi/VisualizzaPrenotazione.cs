@@ -61,12 +61,29 @@ namespace Botler.Dialogs.Dialoghi
                 // Mostra la prenotazione se attiva.
                 if (prenotazione != null)
                 {
-                    await context.SendActivityAsync($"Hai prenotato nel lotto: { prenotazione.nomeLotto}, il parcheggio: { prenotazione.id_posto}");
+                    var prenotazioneNomeLotto = prenotazione.nomeLotto;
+                    var prenotazioneIdPosto = prenotazione.id_posto;
+
+                    string[] responses = { "La tua prenotazione? " + prenotazioneNomeLotto + ", " + prenotazioneIdPosto,
+                        "Hai prenotato il parcheggio " + prenotazioneNomeLotto + "numero" + prenotazioneIdPosto,
+                        prenotazioneNomeLotto + ", " + prenotazioneIdPosto + ", dovrebbe essere questa!",};
+
+                    Random rnd = new Random(); //crea new Random class
+                    int i = rnd.Next(0, responses.Length);
+                    await context.SendActivityAsync(responses[i]); //genera una risposta random tra quelle presenti
+
                     return await stepContext.EndDialogAsync();
                 }
                 else
+                // Nega l'esistenza di una prenotazione
                 {
-                    await context.SendActivityAsync($"Nessuna prenotazione esistente!");
+                    string[] responses = { "Non esiste alcuna prenotazione attiva!",
+                        "Io non vedo nessuna prenotazione!",
+                        "Ma quale prenotazione intendi scusa..",};
+
+                    Random rnd = new Random(); 
+                    int i = rnd.Next(0, responses.Length);
+                    await context.SendActivityAsync(responses[i]); //genera una risposta random tra quelle presenti
                     return await stepContext.EndDialogAsync();
                 }
             }

@@ -1,0 +1,24 @@
+Hosting environment: Development
+Content root path: C:\Users\formema1\source\repos\Botler\Botler
+Now listening on: http://127.0.0.1:11813
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 DEBUG http://localhost:3978/  0
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 189.7403ms 200 
+info: Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware[2]
+      Sending file. Request path: '/index.html'. Physical path: 'C:\Users\formema1\source\repos\Botler\Botler\wwwroot\index.html'
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/startPageStyle.css  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 367.4076ms 200 text/html
+info: Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware[6]
+      The file /startPageStyle.css was not modified
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 14.597ms 304 text/css
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/favicon.ico  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 9.1704ms 404 

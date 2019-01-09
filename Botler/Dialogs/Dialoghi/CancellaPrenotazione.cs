@@ -65,12 +65,33 @@ namespace Botler.Dialogs.Dialoghi
             {
                 if (prenotazione != null)
                 {
-                    var response = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
-                    if (response)
+                    if (DateTime.Compare(DateTime.Now, DateTime.Parse(BasicBot.tempoPrenotazione.ToString())) > 0)
                     {
-                        BasicBot.prenotazione = false;
-                        await context.SendActivityAsync($"Prenotazione cancellata!");
-                        return await stepContext.EndDialogAsync();
+                        var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
+                        if (resp)
+                        {
+                            string[] responses = { "La tua prenotazione è scaduta!",
+                                        "E' terminato il tempo disponibile per il tuo posteggio",
+                                        "La prenotazione è espirata", };
+                            //rispsote possibili
+                            Random rnd = new Random(); //crea new Random class
+                            int i = rnd.Next(0, responses.Length);
+                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+                            BasicBot.prenotazione = false;
+                            return await stepContext.EndDialogAsync();
+                        }
+                        else
+                        {
+                            BasicBot.prenotazione = false;
+                            //rispsote possibili
+                            string[] responses = { "Prenotazione cancellata con successo!",
+                            "La prenotazione... Via! Andata! Caput!",
+                            "Hai cestinato la tua prenotazione!", };
+                            Random rnd = new Random(); //crea new Random class
+                            int i = rnd.Next(0, responses.Length);
+                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+                            return await stepContext.EndDialogAsync();
+                        }
                     }
                     else
                     {
@@ -80,7 +101,12 @@ namespace Botler.Dialogs.Dialoghi
                 }
                 else
                 {
-                    await context.SendActivityAsync($"Nessuna prenotazione esistente");
+                    string[] responses = { "Non esiste alcuna prenotazione attiva!",
+                               "Io non vedo nessuna prenotazione!",
+                               "Ma quale prenotazione intendi scusa..", };
+                    Random rnd = new Random(); //crea new Random class
+                    int i = rnd.Next(0, responses.Length);
+                    await context.SendActivityAsync(responses[i]); //genera una risposta random
                     return await stepContext.EndDialogAsync();
                 }
             }
