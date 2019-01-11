@@ -83,12 +83,17 @@ namespace Botler.Dialogs.Dialoghi
                         DateTime now = DateTime.Now;
                         TimeSpan differenza;
                         differenza = BasicBot.tempoPrenotazione.Subtract(now);
+
                         int minuti = (int)(differenza.TotalMinutes);
                         int secondi = (int)(differenza.TotalSeconds);
+                        int ore = (int)(differenza.TotalHours);
+                        int giorno = (int)(differenza.TotalDays);
 
-                        string[] responses = { "Il tuo parcheggio è ancora disponibile per" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi",
-                            "La disponibilità del tuo parcheggio scade tra" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi",
-                            "Hai ancora" + minuti + " minuti e" + (secondi -(minuti * 60)) + " secondi per usufruire del posteggio prenotato", };
+                        string[] responses = { "Il tuo parcheggio è ancora disponibile per " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi",
+                            "La disponibilità del tuo parcheggio scade tra " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi",
+                            "Hai ancora " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi per usufruire del posteggio prenotato", };
+
+                        await context.SendActivityAsync($"La tua prenotazione è riservata per il giorno " + BasicBot.tempoPrenotazione.ToString("dd MMMM yyyy") + " dalle ore " + BasicBot.tempoPrenotazione.AddHours(-1).ToString("HH:mm:ss") + " alle ore " + BasicBot.tempoPrenotazione.ToString("HH:mm:ss"));
 
                         Random rnd = new Random(); //crea new Random class
                         int i = rnd.Next(0, responses.Length);

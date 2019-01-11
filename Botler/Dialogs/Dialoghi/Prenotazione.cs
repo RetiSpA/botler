@@ -63,15 +63,16 @@ namespace Botler.Dialogs.Dialoghi
                     if (prenotazione != null)
                     {
                         //BasicBot.tempoPrenotazione = DateTime.Now;
-                        BasicBot.tempoPrenotazione = DateTime.Now.AddSeconds(30);
+                        BasicBot.tempoPrenotazione = DateTime.Now.AddHours(1);
                         BasicBot.prenotazione = true;
+
                         var prenotazioneNomeLotto = prenotazione.nomeLotto;
                         var prenotazioneIdPosto = prenotazione.id_posto;
 
                         //risposte possibili
                         string[] responses = { "Hai effettuato una pranotazione in " + prenotazioneNomeLotto + " nel parcheggio " + prenotazioneIdPosto,
                             "La tua prenotazione è la seguente: " + prenotazioneNomeLotto + ", " + prenotazioneIdPosto,
-                            "Il posteggio in " + prenotazioneNomeLotto + " , numero " + prenotazioneIdPosto + " ti è stato assegnato", };
+                            "Il posteggio in " + prenotazioneNomeLotto + ", numero " + prenotazioneIdPosto + " ti è stato assegnato", };
 
                         Random rnd = new Random(); //crea new Random class
                         int i = rnd.Next(0, responses.Length);

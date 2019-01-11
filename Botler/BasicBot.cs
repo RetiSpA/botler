@@ -30,6 +30,11 @@ namespace Botler
         public const string TempoRimanentePrenotazioneIntent = "TempoRimanentePrenotazione";
         public const string VerificaPrenotazioneIntent = "VerificaPrenotazione";
 
+        public const string SaluteNegativoIntent = "SaluteNegativo";
+        public const string SalutePositivoIntent = "SalutePositivo";
+        public const string GoodbyeIntent = "Goodbye";
+        public const string AnomaliaIntent = "Anomalia";
+        public const string RingraziamentiIntent = "Ringraziamenti";
         public const string InformazioniIntent = "Informazioni";
         public const string PossibilitàIntent = "Possibilità";
         public const string NoneIntent = "None";
@@ -255,11 +260,98 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
+            if (topIntent.Equals(GoodbyeIntent))
+            {
+                string[] responses = { "Ciao Ciao! A presto!",
+                                       "Alla Prossima!",
+                                       "Ci vediamo, Ciao!",};
+                //rispsote possibili
+                Random rnd = new Random(); //crea new Random class
+                int i = rnd.Next(0, responses.Length);
+                await dc.Context.SendActivityAsync(responses[i]);
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.RepromptDialogAsync();
+                }
+
+                return true;        // Handled the interrupt.
+            }
+
             if (topIntent.Equals(InformazioniIntent))
             {
                 string[] responses = { "Sono Bot Reti! Sono qui per aiutarti a prenotare un parcheggio :)",
                                        "Mi chiamo Botler! Gestisco una tua prenotazione, basta chiedere!",
                                        "Sono Botler e il mio compito è guidarti nella prenotazione di un posteggio!", };
+                //rispsote possibili
+                Random rnd = new Random(); //crea new Random class
+                int i = rnd.Next(0, responses.Length);
+                await dc.Context.SendActivityAsync(responses[i]);
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.RepromptDialogAsync();
+                }
+
+                return true;        // Handled the interrupt.
+            }
+
+            if (topIntent.Equals(RingraziamentiIntent))
+            {
+                string[] responses = { "Ma figurati! Son qui per questo :)",
+                                       "E di che!",
+                                       "Per così poco!?",
+                                       "Di nulla!",};
+                //rispsote possibili
+                Random rnd = new Random(); //crea new Random class
+                int i = rnd.Next(0, responses.Length);
+                await dc.Context.SendActivityAsync(responses[i]);
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.RepromptDialogAsync();
+                }
+
+                return true;        // Handled the interrupt.
+            }
+
+            if (topIntent.Equals(SalutePositivoIntent))
+            {
+                string[] responses = { "Ricordati che io non posso star male! Nel caso ho qualche bug ahah",
+                                       "Sto sempre bene! come nuovo di pacca!",
+                                       "Benissimo, mai sentito meglio!", };
+                                //rispsote possibili
+                Random rnd = new Random(); //crea new Random class
+                int i = rnd.Next(0, responses.Length);
+                await dc.Context.SendActivityAsync(responses[i]);
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.RepromptDialogAsync();
+                }
+
+                return true;        // Handled the interrupt.
+            }
+
+            if (topIntent.Equals(SaluteNegativoIntent))
+            {
+                string[] responses = { "Ma come faccio a star male!",
+                                       "Perchè cosa dovrei avere? ",
+                                       "Assolutamente no, mai stato meglio!",};
+                //rispsote possibili
+                Random rnd = new Random(); //crea new Random class
+                int i = rnd.Next(0, responses.Length);
+                await dc.Context.SendActivityAsync(responses[i]);
+                if (dc.ActiveDialog != null)
+                {
+                    await dc.RepromptDialogAsync();
+                }
+
+                return true;        // Handled the interrupt.
+            }
+
+            if (topIntent.Equals(AnomaliaIntent))
+            {
+                string[] responses = { "Emh.. Si scusa ci sono!",
+                                       "Certo! Tutto a posto :)",
+                                       "Hai dei dubbi?",
+                                       "Sempre efficiente!",};
                 //rispsote possibili
                 Random rnd = new Random(); //crea new Random class
                 int i = rnd.Next(0, responses.Length);

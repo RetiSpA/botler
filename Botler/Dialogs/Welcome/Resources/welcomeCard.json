@@ -1,27 +1,28 @@
 ﻿{
-  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
   "type": "AdaptiveCard",
   "version": "1.0",
+
   "body": [
     {
       "type": "Image",
-      "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtB3AwMUeNoq4gUBGe6Ocj8kyh3bXa9ZbV7u1fVKQoyKFHdkqU",
-      "size": "stretch"
+      "url": "https://terenzio.net/wp-content/uploads/2017/02/LOGO-RETI-1.png",
+      "size": "stretch",
     },
     {
       "type": "TextBlock",
       "spacing": "medium",
       "size": "default",
       "weight": "bolder",
-      "text": "Welcome to Bot Framework!",
+      "text": "Benvenuto! Sono Botler e sono il bot di Reti s.p.a che ti guiderà in una prenotazione di un posteggio auto.",
       "wrap": true,
       "maxLines": 0
     },
     {
       "type": "TextBlock",
+      "spacing": "medium",
       "size": "default",
-      "isSubtle": "yes",
-      "text": "Now that you have successfully run your bot, follow the links in this Adaptive Card to expand your knowledge of Bot Framework.",
+      "weight": "bolder",
+      "text": "Di seguito troverai qualche link di utilità riguardo la nostra azienda, consultalo per saperne di più!",
       "wrap": true,
       "maxLines": 0
     }
@@ -29,18 +30,18 @@
   "actions": [
     {
       "type": "Action.OpenUrl",
-      "title": "Get an overview",
-      "url": "https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0"
+      "title": "Pagina principale del sito",
+      "url": "https://www.reti.it/"
     },
     {
       "type": "Action.OpenUrl",
-      "title": "Ask a question",
-      "url": "https://stackoverflow.com/questions/tagged/botframework"
+      "title": "Contattaci per qualsiasi curiosità",
+      "url": "https://www.reti.it/contattaci/"
     },
     {
       "type": "Action.OpenUrl",
-      "title": "Learn how to deploy",
-      "url": "https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-deploy-azure?view=azure-bot-service-4.0"
+      "title": "Rimani aggiornato consultando il nostro blog",
+      "url": "https://www.reti.it/blog/"
     }
   ]
 }

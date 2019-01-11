@@ -84,7 +84,7 @@ namespace Botler.Dialogs.Dialoghi
                         var prenotazioneIdPosto = prenotazione.id_posto;
 
                         string[] responses = { "La tua prenotazione? " + prenotazioneNomeLotto + ", " + prenotazioneIdPosto,
-                        "Hai prenotato il parcheggio " + prenotazioneNomeLotto + "numero" + prenotazioneIdPosto,
+                        "Hai prenotato il parcheggio " + prenotazioneNomeLotto + " numero " + prenotazioneIdPosto,
                         prenotazioneNomeLotto + ", " + prenotazioneIdPosto + ", dovrebbe essere questa!",};
 
                         Random rnd = new Random(); //crea new Random class
