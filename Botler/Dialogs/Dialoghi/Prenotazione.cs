@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Choices;
+using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 
 namespace Botler.Dialogs.Dialoghi
@@ -12,6 +15,7 @@ namespace Botler.Dialogs.Dialoghi
     {
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
+        private const string RispostaPrompt = "rispostaPrompt";
 
         // Inizializza una nuova istanza della classe Prenotazione.
         public Prenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
@@ -22,9 +26,11 @@ namespace Botler.Dialogs.Dialoghi
             var waterfallSteps = new WaterfallStep[]
             {
                     InitializeStateStepAsync,
+                    ConfermaPromptStepAsync,
                     PromptForPrenotazioneStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
+            AddDialog(new ChoicePrompt(RispostaPrompt));
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -48,93 +54,119 @@ namespace Botler.Dialogs.Dialoghi
             return await stepContext.NextAsync();
         }
 
+        private async Task<DialogTurnResult> ConfermaPromptStepAsync(
+                                                        WaterfallStepContext stepContext,
+                                                        CancellationToken cancellationToken)
+        {
+            var context = stepContext.Context;
+
+            return await stepContext.PromptAsync("rispostaPrompt", new PromptOptions
+            {
+                Prompt = MessageFactory.Text("Sei sicuro di voler prenotare?"),
+                RetryPrompt = MessageFactory.Text("Seleziona un'opzione dall'elenco!"),
+                Choices = ChoiceFactory.ToChoices(new List<string> { "si","no"}),
+            },
+            cancellationToken);
+        }
+
         private async Task<DialogTurnResult> PromptForPrenotazioneStepAsync(
                                                 WaterfallStepContext stepContext,
                                                 CancellationToken cancellationToken)
         {
+            var risp = (stepContext.Result as FoundChoice).Value;
             var context = stepContext.Context;
 
-            try
+            if (risp.Equals("si"))
             {
-                PosteggioModel posto = await Utility.Utility.setPosteggioAutoassegnato(Utility.Utility.lotto_id);
-                if (posto != null)
+                try
                 {
-                    PrenotazioneModel prenotazione = await Utility.Utility.prenotaPosteggio(Utility.Utility.lotto_id, posto.id_posteggio);
-                    if (prenotazione != null)
+                    PosteggioModel posto = await Utility.Utility.setPosteggioAutoassegnato(Utility.Utility.lotto_id);
+                    if (posto != null)
                     {
-                        //BasicBot.tempoPrenotazione = DateTime.Now;
-                        BasicBot.tempoPrenotazione = DateTime.Now.AddHours(1);
-                        BasicBot.prenotazione = true;
+                        PrenotazioneModel prenotazione = await Utility.Utility.prenotaPosteggio(Utility.Utility.lotto_id, posto.id_posteggio);
+                        if (prenotazione != null)
+                        {
+                            //BasicBot.tempoPrenotazione = DateTime.Now;
+                            BasicBot.tempoPrenotazione = DateTime.Now.AddHours(1);
+                            BasicBot.prenotazione = true;
 
-                        var prenotazioneNomeLotto = prenotazione.nomeLotto;
-                        var prenotazioneIdPosto = prenotazione.id_posto;
+                            var prenotazioneNomeLotto = prenotazione.nomeLotto;
+                            var prenotazioneIdPosto = prenotazione.id_posto;
 
-                        //risposte possibili
-                        string[] responses = { "Hai effettuato una pranotazione in " + prenotazioneNomeLotto + " nel parcheggio " + prenotazioneIdPosto,
+                            //risposte possibili
+                            string[] responses = { "Hai effettuato una pranotazione in " + prenotazioneNomeLotto + " nel parcheggio " + prenotazioneIdPosto,
                             "La tua prenotazione è la seguente: " + prenotazioneNomeLotto + ", " + prenotazioneIdPosto,
                             "Il posteggio in " + prenotazioneNomeLotto + ", numero " + prenotazioneIdPosto + " ti è stato assegnato", };
 
-                        Random rnd = new Random(); //crea new Random class
-                        int i = rnd.Next(0, responses.Length);
-                        await context.SendActivityAsync(responses[i]); //genera una risposta random
-                        return await stepContext.EndDialogAsync();
-                    }
-                    else
-                    {
-                        PrenotazioneModel verificaPrenotazione = await Utility.Utility.getPrenotazione(Utility.Utility.bot_id);
-                        if (verificaPrenotazione != null)
+                            Random rnd = new Random(); //crea new Random class
+                            int i = rnd.Next(0, responses.Length);
+                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+                            return await stepContext.EndDialogAsync();
+                        }
+                        else
                         {
-                            if (DateTime.Compare(DateTime.Now, DateTime.Parse(BasicBot.tempoPrenotazione.ToString())) > 0)
+                            PrenotazioneModel verificaPrenotazione = await Utility.Utility.getPrenotazione(Utility.Utility.bot_id);
+                            if (verificaPrenotazione != null)
                             {
-                                var resp = await Utility.Utility.cancellaPrenotazione(verificaPrenotazione.id_posto);
-                                if (resp)
+                                if (DateTime.Compare(DateTime.Now, DateTime.Parse(BasicBot.tempoPrenotazione.ToString())) > 0)
                                 {
-                                    string[] responses = { "La tua prenotazione è scaduta!",
+                                    var resp = await Utility.Utility.cancellaPrenotazione(verificaPrenotazione.id_posto);
+                                    if (resp)
+                                    {
+                                        string[] responses = { "La tua prenotazione è scaduta!",
                                         "E' terminato il tempo disponibile per il tuo posteggio",
                                         "La prenotazione è espirata", };
+                                        //rispsote possibili
+                                        Random rnd = new Random(); //crea new Random class
+                                        int i = rnd.Next(0, responses.Length);
+                                        await context.SendActivityAsync(responses[i]); //genera una risposta random
+                                        BasicBot.prenotazione = false;
+                                        return await stepContext.EndDialogAsync();
+                                    }
+                                }
+                                else
+                                {
+                                    string[] responses = { "Possiedi già una prenotazione!",
+                                "Puoi avere solo un posto!",
+                                "Ma quanti posti vuoi oh! Ne hai già uno!", };
                                     //rispsote possibili
                                     Random rnd = new Random(); //crea new Random class
                                     int i = rnd.Next(0, responses.Length);
                                     await context.SendActivityAsync(responses[i]); //genera una risposta random
-                                    BasicBot.prenotazione = false;
                                     return await stepContext.EndDialogAsync();
                                 }
                             }
-                            else
-                            {
-                                string[] responses = { "Possiedi già una prenotazione!",
-                                "Puoi avere solo un posto!",
-                                "Ma quanti posti vuoi oh! Ne hai già uno!", };
-                                //rispsote possibili
-                                Random rnd = new Random(); //crea new Random class
-                                int i = rnd.Next(0, responses.Length);
-                                await context.SendActivityAsync(responses[i]); //genera una risposta random
-                                return await stepContext.EndDialogAsync();
-                            }
+                            //else
+                            //{
+                            //    string[] responses = { "Tutti i posti sono occupati!",
+                            //        "Non ci sono più posti!",
+                            //        "Vuoi prenotare un posto eh?! Beh son finiti!", };  //rispsote possibili
+                            //    Random rnd = new Random(); //crea new Random class
+                            //    int i = rnd.Next(0, responses.Length);
+                            //    await context.SendActivityAsync(responses[i]); //genera una risposta random
+                            //    return await stepContext.EndDialogAsync();
+                            //}
                         }
-                        //else
-                        //{
-                        //    string[] responses = { "Tutti i posti sono occupati!",
-                        //        "Non ci sono più posti!",
-                        //        "Vuoi prenotare un posto eh?! Beh son finiti!", };  //rispsote possibili
-                        //    Random rnd = new Random(); //crea new Random class
-                        //    int i = rnd.Next(0, responses.Length);
-                        //    await context.SendActivityAsync(responses[i]); //genera una risposta random
-                        //    return await stepContext.EndDialogAsync();
-                        //}
                     }
-                }
 
-                return await stepContext.EndDialogAsync();
+                    return await stepContext.EndDialogAsync();
+                }
+                catch
+                {
+                    await context.SendActivityAsync($"Impossibile visualizzare la prenotazione!");
+                    return await stepContext.EndDialogAsync();
+                }
             }
-            catch
+            else
             {
-                await context.SendActivityAsync($"Impossibile visualizzare la prenotazione!");
+                await context.SendActivityAsync($"Fammi sapere se cambi idea!");
                 return await stepContext.EndDialogAsync();
             }
         }
     }
 }
+
+
 
 // Se esiste una prenotazione scaduta, avvisa e cancella i dati memorizzati.
 //if (prenotazioneState != null && !string.IsNullOrWhiteSpace(prenotazioneState.nomeLotto))

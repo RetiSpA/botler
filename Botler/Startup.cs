@@ -144,14 +144,6 @@ namespace Botler
                .UseStaticFiles()
                .UseBotFramework();
 
-            // WebApi routes
-            //app.UseMvc(routes =>
-            //{
-            //    routes.MapRoute(
-            //        name: "default",
-            //        template: "wwwwroot/index.html");
-            //});
-
         }
     }
 }

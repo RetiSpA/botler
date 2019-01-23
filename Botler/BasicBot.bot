@@ -6,10 +6,10 @@
       "name": "basic-bot-LUIS",
       "region": "westus",
       "appId": "a1e943db-93ef-469b-b9e1-6610bff5b4cc",
-      "authoringKey": "df7e822a65a5448a91c547fe0fc71738",
+      "authoringKey": "10ccc55e3762457199233a8227998534",
       "version": "0.1",
       "id": "basic-bot-LUIS"
-    }
+    },
   ],
   "padlock": "",
   "version": "2.0"

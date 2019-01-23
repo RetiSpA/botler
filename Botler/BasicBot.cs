@@ -53,7 +53,7 @@ namespace Botler
         /// In the .bot file, multiple instances of LUIS can be configured.
         /// </summary>
         public static readonly string LuisConfiguration = "basic-bot-LUIS";
-        //public static readonly string QnAMakerKey = "botler-qna";
+        public static readonly string QnAMakerKey = "botler-qna";
 
         private readonly IStatePropertyAccessor<PrenotazioneModel> _prenotazioneStateAccessor;
         private readonly IStatePropertyAccessor<PrenotazioneModel> _cancellaPrenotazioneStateAccessor;
@@ -88,11 +88,11 @@ namespace Botler
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `luis` with the id `{LuisConfiguration}`.");
             }
 
-            // Verifica la configurazione di QnA.
-            //if (!_services.QnAServices.ContainsKey(QnAMakerKey))
-            //{
-            //    throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAMakerKey}`.");
-            //}
+            //Verifica la configurazione di QnA.
+            if (!_services.QnAServices.ContainsKey(QnAMakerKey))
+            {
+                throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAMakerKey}`.");
+            }
 
             Dialogs = new DialogSet(_dialogStateAccessor);
             Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory));
@@ -121,12 +121,12 @@ namespace Botler
                 // Perform a call to LUIS to retrieve results for the current activity message.
                 var luisResults = await _services.LuisServices[LuisConfiguration].RecognizeAsync(dc.Context, cancellationToken).ConfigureAwait(false);
 
-                //var response = await _services.QnAServices[QnAMakerKey].GetAnswersAsync(turnContext);
+                var qnaResult = await _services.QnAServices[QnAMakerKey].GetAnswersAsync(turnContext).ConfigureAwait(false);
 
-                //if (response != null && response.Length > 0)
-                //{
-                //    await turnContext.SendActivityAsync(response[0].Answer, cancellationToken: cancellationToken);
-                //}
+                if (qnaResult != null && qnaResult.Length > 0)
+                {
+                    await turnContext.SendActivityAsync(qnaResult[0].Answer, cancellationToken: cancellationToken);
+                }
                 //else
                 //{
                 //    var msg = @"No QnA Maker answers were found. This example uses a QnA Maker Knowledge Base that focuses on smart light bulbs. 
@@ -145,7 +145,7 @@ namespace Botler
                 //await UpdatePresentazioneState(luisResults, dc.Context);
 
                 // Handle conversation interrupts first.
-                var interrupted = await IsTurnInterruptedAsync(dc, topIntent);
+                var interrupted = await IsTurnInterruptedAsync(dc, topScoringIntent.Value.intent, topScoringIntent.Value.score);
                 if (interrupted)
                 {
                     // Bypass the dialog.
@@ -239,10 +239,10 @@ namespace Botler
         }
 
         // Determine if an interruption has occured before we dispatch to any active dialog.
-        private async Task<bool> IsTurnInterruptedAsync(DialogContext dc, string topIntent)
+        private async Task<bool> IsTurnInterruptedAsync(DialogContext dc, string topIntent, double score)
         {
             // See if there are any conversation interrupts we need to handle.
-            if (topIntent.Equals(PresentazioneIntent))
+            if (topIntent.Equals(PresentazioneIntent) && (score > 0.75))
             {
                 string[] responses = { "Hey ciao!",
                                        "Wella!",
@@ -260,7 +260,7 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
-            if (topIntent.Equals(GoodbyeIntent))
+            if (topIntent.Equals(GoodbyeIntent) && (score > 0.75))
             {
                 string[] responses = { "Ciao Ciao! A presto!",
                                        "Alla Prossima!",
@@ -277,7 +277,7 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
-            if (topIntent.Equals(InformazioniIntent))
+            if (topIntent.Equals(InformazioniIntent) && (score > 0.75))
             {
                 string[] responses = { "Sono Bot Reti! Sono qui per aiutarti a prenotare un parcheggio :)",
                                        "Mi chiamo Botler! Gestisco una tua prenotazione, basta chiedere!",
@@ -294,7 +294,7 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
-            if (topIntent.Equals(RingraziamentiIntent))
+            if (topIntent.Equals(RingraziamentiIntent) && (score > 0.75))
             {
                 string[] responses = { "Ma figurati! Son qui per questo :)",
                                        "E di che!",
@@ -312,7 +312,7 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
-            if (topIntent.Equals(SalutePositivoIntent))
+            if (topIntent.Equals(SalutePositivoIntent) && (score > 0.75))
             {
                 string[] responses = { "Ricordati che io non posso star male! Nel caso ho qualche bug ahah",
                                        "Sto sempre bene! come nuovo di pacca!",
@@ -329,7 +329,7 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
-            if (topIntent.Equals(SaluteNegativoIntent))
+            if (topIntent.Equals(SaluteNegativoIntent) && (score > 0.75))
             {
                 string[] responses = { "Ma come faccio a star male!",
                                        "Perchè cosa dovrei avere? ",
@@ -346,7 +346,7 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
-            if (topIntent.Equals(AnomaliaIntent))
+            if (topIntent.Equals(AnomaliaIntent) && (score > 0.75))
             {
                 string[] responses = { "Emh.. Si scusa ci sono!",
                                        "Certo! Tutto a posto :)",
@@ -364,7 +364,7 @@ namespace Botler
                 return true;        // Handled the interrupt.
             }
 
-            if (topIntent.Equals(PossibilitàIntent))
+            if (topIntent.Equals(PossibilitàIntent) && (score > 0.75))
             {
                 await dc.Context.SendActivityAsync("Sono stato progettato per gestire le seguenti mansioni:\n-\tPrenotazione di un parcheggio\n-\tVisualizzazione di una prenotazione\n-\tTempo rimanente relativo alla prenotazione\n-\tCancellazione di una prenotazione attiva");
 
