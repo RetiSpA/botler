@@ -2,6 +2,11 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Resources;
+using System.Globalization;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,13 +20,14 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Botler.Dialogs.Utility;
 
 namespace Botler
 {
     /// <summary>
     /// Main entry point and orchestration for bot.
     /// </summary>
-    public class BasicBot : IBot
+    public class Botler : IBot
     {
         // Intenti LUIS supportati.
         public const string PresentazioneIntent = "Presentazione";
@@ -65,17 +71,19 @@ namespace Botler
         private readonly ConversationState _conversationState;
         private readonly BotServices _services;
 
+        private Responses responses;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="BasicBot"/> class.
+        /// Initializes a new instance of the <see cref="Botler"/> class.
         /// </summary>
         /// <param name="botServices">Bot services.</param>
         /// <param name="accessors">Bot State Accessors.</param>
-        public BasicBot(BotServices services, UserState userState, ConversationState conversationState, ILoggerFactory loggerFactory)
+        public Botler(BotServices services, UserState userState, ConversationState conversationState, ILoggerFactory loggerFactory)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
-
+            // Init Accessors
             _dialogStateAccessor = _conversationState.CreateProperty<DialogState>(nameof(DialogState));
             _prenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             _cancellaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
@@ -93,12 +101,14 @@ namespace Botler
             {
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAMakerKey}`.");
             }
-
+            // Settings up Dialogs
             Dialogs = new DialogSet(_dialogStateAccessor);
             Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory));
             Dialogs.Add(new CancellaPrenotazione(_cancellaPrenotazioneStateAccessor, loggerFactory));
             Dialogs.Add(new VisualizzaTempo(_visualizzaTempoStateAccessor, loggerFactory));
             Dialogs.Add(new VisualizzaPrenotazione(_visualizzaPrenotazioneStateAccessor, loggerFactory));
+
+            responses = new Responses();
         }
 
         private DialogSet Dialogs { get; set; }
@@ -141,6 +151,7 @@ namespace Botler
 
                 var topIntent = topScoringIntent.Value.intent;
 
+                await turnContext.SendActivityAsync($"{topIntent}", cancellationToken: cancellationToken);
                 // update greeting state with any entities captured
                 //await UpdatePresentazioneState(luisResults, dc.Context);
 
@@ -170,33 +181,24 @@ namespace Botler
 
                                 case PrenotazioneIntent:
                                     await dc.BeginDialogAsync(nameof(Prenotazione));
-                                    break;
+                                break;
 
                                 case CancellaPrenotazioneIntent:
-                                    await dc.BeginDialogAsync(nameof(CancellaPrenotazione));
-                                    break;
+                                     await dc.BeginDialogAsync(nameof(CancellaPrenotazione));
+                                break;
 
                                 case TempoRimanentePrenotazioneIntent:
                                     await dc.BeginDialogAsync(nameof(VisualizzaTempo));
-                                    break;
+                                break;
 
                                 case VerificaPrenotazioneIntent:
                                     await dc.BeginDialogAsync(nameof(VisualizzaPrenotazione));
-                                    break;
+                                break;
 
                                 case NoneIntent:
                                 default:
-                                    // Help or no intent identified, either way, let's provide some help.
-                                    // to the user
-                                    string[] responses = { "Non capisco ciò che mi stai dicendo, mi spiace.",
-                                                           "Scusa? Non ti capisco mica...",
-                                                           "Ma che hai detto?!?",
-                                                           "Boh! Non ci ho capito nulla..", };
-                                    //rispsote possibili
-                                    Random rnd = new Random(); //crea new Random class
-                                    int i = rnd.Next(0, responses.Length);
-                                    await dc.Context.SendActivityAsync(responses[i]);
-                                    break;
+                                   await dc.Context.SendActivityAsync(responses.RandomResponses(responses._noneResponse));
+                                break;
                             }
 
                             break;
@@ -244,14 +246,7 @@ namespace Botler
             // See if there are any conversation interrupts we need to handle.
             if (topIntent.Equals(PresentazioneIntent) && (score > 0.75))
             {
-                string[] responses = { "Hey ciao!",
-                                       "Wella!",
-                                       "We! ",
-                                       "Ciao bello!", };
-                //rispsote possibili
-                Random rnd = new Random(); //crea new Random class
-                int i = rnd.Next(0, responses.Length);
-                await dc.Context.SendActivityAsync(responses[i]);
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._presentazioneResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -262,13 +257,7 @@ namespace Botler
 
             if (topIntent.Equals(GoodbyeIntent) && (score > 0.75))
             {
-                string[] responses = { "Ciao Ciao! A presto!",
-                                       "Alla Prossima!",
-                                       "Ci vediamo, Ciao!",};
-                //rispsote possibili
-                Random rnd = new Random(); //crea new Random class
-                int i = rnd.Next(0, responses.Length);
-                await dc.Context.SendActivityAsync(responses[i]);
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._salutoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -279,13 +268,7 @@ namespace Botler
 
             if (topIntent.Equals(InformazioniIntent) && (score > 0.75))
             {
-                string[] responses = { "Sono Bot Reti! Sono qui per aiutarti a prenotare un parcheggio :)",
-                                       "Mi chiamo Botler! Gestisco una tua prenotazione, basta chiedere!",
-                                       "Sono Botler e il mio compito è guidarti nella prenotazione di un posteggio!", };
-                //rispsote possibili
-                Random rnd = new Random(); //crea new Random class
-                int i = rnd.Next(0, responses.Length);
-                await dc.Context.SendActivityAsync(responses[i]);
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._informazioneResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -296,14 +279,7 @@ namespace Botler
 
             if (topIntent.Equals(RingraziamentiIntent) && (score > 0.75))
             {
-                string[] responses = { "Ma figurati! Son qui per questo :)",
-                                       "E di che!",
-                                       "Per così poco!?",
-                                       "Di nulla!",};
-                //rispsote possibili
-                Random rnd = new Random(); //crea new Random class
-                int i = rnd.Next(0, responses.Length);
-                await dc.Context.SendActivityAsync(responses[i]);
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._ringraziamentoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -314,13 +290,7 @@ namespace Botler
 
             if (topIntent.Equals(SalutePositivoIntent) && (score > 0.75))
             {
-                string[] responses = { "Ricordati che io non posso star male! Nel caso ho qualche bug ahah",
-                                       "Sto sempre bene! come nuovo di pacca!",
-                                       "Benissimo, mai sentito meglio!", };
-                                //rispsote possibili
-                Random rnd = new Random(); //crea new Random class
-                int i = rnd.Next(0, responses.Length);
-                await dc.Context.SendActivityAsync(responses[i]);
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._salutoPositivoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -331,13 +301,7 @@ namespace Botler
 
             if (topIntent.Equals(SaluteNegativoIntent) && (score > 0.75))
             {
-                string[] responses = { "Ma come faccio a star male!",
-                                       "Perchè cosa dovrei avere? ",
-                                       "Assolutamente no, mai stato meglio!",};
-                //rispsote possibili
-                Random rnd = new Random(); //crea new Random class
-                int i = rnd.Next(0, responses.Length);
-                await dc.Context.SendActivityAsync(responses[i]);
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._salutoNegativoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -348,14 +312,7 @@ namespace Botler
 
             if (topIntent.Equals(AnomaliaIntent) && (score > 0.75))
             {
-                string[] responses = { "Emh.. Si scusa ci sono!",
-                                       "Certo! Tutto a posto :)",
-                                       "Hai dei dubbi?",
-                                       "Sempre efficiente!",};
-                //rispsote possibili
-                Random rnd = new Random(); //crea new Random class
-                int i = rnd.Next(0, responses.Length);
-                await dc.Context.SendActivityAsync(responses[i]);
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._anomaliaResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();

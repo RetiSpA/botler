@@ -1,9 +1,9 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\formema1\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\formema1\\.nuget\\packages",
-      "C:\\Program Files (x86)\\dotnet\\sdk\\NuGetFallbackFolder"
+      "C:\\Users\\moscagi1\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\moscagi1\\.nuget\\packages",
+      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
     ]
   }
 }

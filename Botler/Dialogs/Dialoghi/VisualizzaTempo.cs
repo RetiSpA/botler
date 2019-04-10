@@ -61,7 +61,7 @@ namespace Botler.Dialogs.Dialoghi
             {
                 if (prenotazione != null)
                 {
-                    if (DateTime.Compare(DateTime.Now, DateTime.Parse(BasicBot.tempoPrenotazione.ToString())) > 0)
+                    if (DateTime.Compare(DateTime.Now, DateTime.Parse(Botler.tempoPrenotazione.ToString())) > 0)
                     {
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
@@ -73,7 +73,7 @@ namespace Botler.Dialogs.Dialoghi
                             Random rnd = new Random(); //crea new Random class
                             int i = rnd.Next(0, responses.Length);
                             await context.SendActivityAsync(responses[i]); //genera una risposta random
-                            BasicBot.prenotazione = false;
+                            Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
                         }
@@ -82,7 +82,7 @@ namespace Botler.Dialogs.Dialoghi
                     {
                         DateTime now = DateTime.Now;
                         TimeSpan differenza;
-                        differenza = BasicBot.tempoPrenotazione.Subtract(now);
+                        differenza = Botler.tempoPrenotazione.Subtract(now);
 
                         int minuti = (int)(differenza.TotalMinutes);
                         int secondi = (int)(differenza.TotalSeconds);
@@ -93,7 +93,7 @@ namespace Botler.Dialogs.Dialoghi
                             "La disponibilità del tuo parcheggio scade tra " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi",
                             "Hai ancora " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi per usufruire del posteggio prenotato", };
 
-                        await context.SendActivityAsync($"La tua prenotazione è riservata per il giorno " + BasicBot.tempoPrenotazione.ToString("dd MMMM yyyy") + " dalle ore " + BasicBot.tempoPrenotazione.AddHours(-1).ToString("HH:mm:ss") + " alle ore " + BasicBot.tempoPrenotazione.ToString("HH:mm:ss"));
+                        await context.SendActivityAsync($"La tua prenotazione è riservata per il giorno " + Botler.tempoPrenotazione.ToString("dd MMMM yyyy") + " dalle ore " + Botler.tempoPrenotazione.AddHours(-1).ToString("HH:mm:ss") + " alle ore " + Botler.tempoPrenotazione.ToString("HH:mm:ss"));
 
                         Random rnd = new Random(); //crea new Random class
                         int i = rnd.Next(0, responses.Length);

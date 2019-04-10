@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Anomalia_1" xml:space="preserve">
+    <value>Emh.. Si scusa ci sono!</value>
+  </data>
+  <data name="Anomalia_2" xml:space="preserve">
+    <value>Certo! Tutto a posto :)</value>
+  </data>
+  <data name="Anomalia_3" xml:space="preserve">
+    <value>Hai dei dubbi</value>
+  </data>
+  <data name="Anomalia_4" xml:space="preserve">
+    <value>Sempre efficiente!</value>
+  </data>
+  <data name="DisponibilitaTerminata_1" xml:space="preserve">
+    <value>Possiedi già una prenotazione!</value>
+  </data>
+  <data name="DisponibilitaTerminata_2" xml:space="preserve">
+    <value>Puoi avere solo un posto!</value>
+  </data>
+  <data name="DisponibilitaTerminata_3" xml:space="preserve">
+    <value>Ma quanti posti vuoi oh! Ne hai già uno!</value>
+  </data>
+  <data name="Informazione_1" xml:space="preserve">
+    <value>Sono Bot Reti! Sono qui per aiutarti a prenotare un parcheggio :)</value>
+  </data>
+  <data name="Informazione_2" xml:space="preserve">
+    <value>Mi chiamo Botler! Gestisco una tua prenotazione, basta chiedere</value>
+  </data>
+  <data name="Informazione_3" xml:space="preserve">
+    <value>Sono Botler e il mio compito è guidarti nella prenotazione di un posteggio!</value>
+  </data>
+  <data name="None_1" xml:space="preserve">
+    <value>Non capisco ciò che mi stai dicendo, mi spiace.</value>
+  </data>
+  <data name="None_2" xml:space="preserve">
+    <value>Scusa? Non ti capisco mica...</value>
+  </data>
+  <data name="None_3" xml:space="preserve">
+    <value>Ma che hai detto?!?</value>
+  </data>
+  <data name="None_4" xml:space="preserve">
+    <value>Boh! Non ci ho capito nulla..</value>
+  </data>
+  <data name="None_5" xml:space="preserve">
+    <value>Ok, Magari vuoi dirmi dell'altro, ti ascolto.</value>
+  </data>
+  <data name="PrenotazioneEffettuata_1" xml:space="preserve">
+    <value>Hai effettuato una pranotazione in  + prenotazioneNomeLotto +  nel parcheggio  + prenotazioneIdPosto</value>
+  </data>
+  <data name="PrenotazioneEliminata_1" xml:space="preserve">
+    <value>Prenotazione cancellata con successo!</value>
+  </data>
+  <data name="PrenotazioneEliminata_2" xml:space="preserve">
+    <value>La prenotazione... Via! Andata! Caput!"</value>
+  </data>
+  <data name="PrenotazioneEliminata_3" xml:space="preserve">
+    <value>Hai cestinato la tua prenotazione!</value>
+  </data>
+  <data name="PrenotazioneNonTrovata_1" xml:space="preserve">
+    <value>Non esiste alcuna prenotazione attiva!</value>
+  </data>
+  <data name="PrenotazioneNonTrovata_2" xml:space="preserve">
+    <value>Io non vedo nessuna prenotazione!</value>
+  </data>
+  <data name="PrenotazioneNonTrovata_3" xml:space="preserve">
+    <value>Ma quale prenotazione intendi scusa..</value>
+  </data>
+  <data name="PrenotazioneScaduta_1" xml:space="preserve">
+    <value>La tua prenotazione è scaduta!</value>
+  </data>
+  <data name="PrenotazioneScaduta_2" xml:space="preserve">
+    <value>E' terminato il tempo disponibile per il tuo posteggio</value>
+  </data>
+  <data name="PrenotazioneScaduta_3" xml:space="preserve">
+    <value>La prenotazione è espirata</value>
+  </data>
+  <data name="Presentazione_1" xml:space="preserve">
+    <value>Hey ciao!</value>
+  </data>
+  <data name="Presentazione_2" xml:space="preserve">
+    <value>Wella!</value>
+  </data>
+  <data name="Presentazione_3" xml:space="preserve">
+    <value>We</value>
+  </data>
+  <data name="Presentazione_4" xml:space="preserve">
+    <value>Ciao bello!</value>
+  </data>
+  <data name="Ringraziamento_1" xml:space="preserve">
+    <value>Ma figurati! Son qui per questo :)</value>
+  </data>
+  <data name="Ringraziamento_2" xml:space="preserve">
+    <value>E di che!</value>
+  </data>
+  <data name="Ringraziamento_3" xml:space="preserve">
+    <value>Per così poco!?</value>
+  </data>
+  <data name="Ringraziamento_4" xml:space="preserve">
+    <value>Di nulla!</value>
+  </data>
+  <data name="SalutoNegativo_1" xml:space="preserve">
+    <value>Ma come faccio a star male!</value>
+  </data>
+  <data name="SalutoNegativo_2" xml:space="preserve">
+    <value>Perchè cosa dovrei avere?</value>
+  </data>
+  <data name="SalutoNegativo_3" xml:space="preserve">
+    <value>Assolutamente no, mai stato meglio!</value>
+  </data>
+  <data name="SalutoPositivo_1" xml:space="preserve">
+    <value>Ricordati che io non posso star male! Nel caso ho qualche bug aha</value>
+  </data>
+  <data name="SalutoPositivo_2" xml:space="preserve">
+    <value>Sto sempre bene! come nuovo di pacca!</value>
+  </data>
+  <data name="SalutoPositivo_3" xml:space="preserve">
+    <value>Benissimo, mai sentito meglio!</value>
+  </data>
+  <data name="Saluto_1" xml:space="preserve">
+    <value>Ciao Ciao! A presto</value>
+  </data>
+  <data name="Saluto_2" xml:space="preserve">
+    <value>Alla Prossima!</value>
+  </data>
+  <data name="Saluto_3" xml:space="preserve">
+    <value>Ci vediamo, Ciao!</value>
+  </data>
+</root>

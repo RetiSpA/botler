@@ -61,7 +61,7 @@ namespace Botler.Dialogs.Dialoghi
                 // Mostra la prenotazione se attiva.
                 if (prenotazione != null)
                 {
-                    if (DateTime.Compare(DateTime.Now, DateTime.Parse(BasicBot.tempoPrenotazione.ToString())) > 0)
+                    if (DateTime.Compare(DateTime.Now, DateTime.Parse(Botler.tempoPrenotazione.ToString())) > 0)
                     {
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
@@ -73,7 +73,7 @@ namespace Botler.Dialogs.Dialoghi
                             Random rnd = new Random(); //crea new Random class
                             int i = rnd.Next(0, responses.Length);
                             await context.SendActivityAsync(responses[i]); //genera una risposta random
-                            BasicBot.prenotazione = false;
+                            Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
                         }

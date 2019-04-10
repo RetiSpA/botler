@@ -106,13 +106,13 @@ namespace Botler
             var userState = new UserState(dataStore);
             services.AddSingleton(userState);
 
-            services.AddBot<BasicBot>(options =>
+            services.AddBot<Botler>(options =>
             {
                 options.CredentialProvider = new SimpleCredentialProvider(endpointService.AppId, endpointService.AppPassword);
 
                 // Catches any errors that occur during a conversation turn and logs them to currently
                 // configured ILogger.
-                ILogger logger = _loggerFactory.CreateLogger<BasicBot>();
+                ILogger logger = _loggerFactory.CreateLogger<Botler>();
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");

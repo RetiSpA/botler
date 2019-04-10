@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Botler.Dialogs.Utility
 {
-    public class Utility 
+    public class Utility
     {
         // Costanti per memorizzare informazioni
         public static int bot_id = 8; // Bot id sul db (per la demo!).
@@ -26,7 +26,7 @@ namespace Botler.Dialogs.Utility
             var uri = new Uri(string.Format(RestUrl));
 
             // var json = JsonConvert.SerializeObject(utente);
-            var json = "{\"email\":\"" + BasicBot.email + "\",\"password\":\"" + BasicBot.password + "\"}";
+            var json = "{\"email\":\"" + Botler.email + "\",\"password\":\"" + Botler.password + "\"}";
             // var json = "{\"email\":\"andrea.guzzo@reti\",\"password\":\"Password01\"}";
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 

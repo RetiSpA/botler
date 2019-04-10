@@ -87,8 +87,8 @@ namespace Botler.Dialogs.Dialoghi
                         if (prenotazione != null)
                         {
                             //BasicBot.tempoPrenotazione = DateTime.Now;
-                            BasicBot.tempoPrenotazione = DateTime.Now.AddHours(1);
-                            BasicBot.prenotazione = true;
+                            Botler.tempoPrenotazione = DateTime.Now.AddHours(1);
+                            Botler.prenotazione = true;
 
                             var prenotazioneNomeLotto = prenotazione.nomeLotto;
                             var prenotazioneIdPosto = prenotazione.id_posto;
@@ -108,7 +108,7 @@ namespace Botler.Dialogs.Dialoghi
                             PrenotazioneModel verificaPrenotazione = await Utility.Utility.getPrenotazione(Utility.Utility.bot_id);
                             if (verificaPrenotazione != null)
                             {
-                                if (DateTime.Compare(DateTime.Now, DateTime.Parse(BasicBot.tempoPrenotazione.ToString())) > 0)
+                                if (DateTime.Compare(DateTime.Now, DateTime.Parse(Botler.tempoPrenotazione.ToString())) > 0)
                                 {
                                     var resp = await Utility.Utility.cancellaPrenotazione(verificaPrenotazione.id_posto);
                                     if (resp)
@@ -120,7 +120,7 @@ namespace Botler.Dialogs.Dialoghi
                                         Random rnd = new Random(); //crea new Random class
                                         int i = rnd.Next(0, responses.Length);
                                         await context.SendActivityAsync(responses[i]); //genera una risposta random
-                                        BasicBot.prenotazione = false;
+                                        Botler.prenotazione = false;
                                         return await stepContext.EndDialogAsync();
                                     }
                                 }

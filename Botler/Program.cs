@@ -4,14 +4,30 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-
+using System;
+using System.Collections;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Resources;
+using System.Globalization;
+using System.Collections.Generic;
 namespace Botler
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            //CreateWebHostBuilder(args).Build().Run();
+            ResourceManager rm = new ResourceManager("Botler.Dialogs.Utility.Responses-it",
+                   Assembly.GetExecutingAssembly());
+            var _resourseSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            //string regexPattern = @name + "_\\d*";
+            //Regex regex = new Regex(regexPattern);
+            var prenotazioneNomeLotto = "Lotto nome";
+            var prenotazioneIdPosto = "82";
+            object resource = rm.GetString("PrenotazioneEffettuata_1");
+            Console.WriteLine(resource.ToString());
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder (string[] args) =>
