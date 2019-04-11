@@ -163,7 +163,13 @@
     <value>Ok, Magari vuoi dirmi dell'altro, ti ascolto.</value>
   </data>
   <data name="PrenotazioneEffettuata_1" xml:space="preserve">
-    <value>Hai effettuato una pranotazione in  + prenotazioneNomeLotto +  nel parcheggio  + prenotazioneIdPosto</value>
+    <value>Possiedi già una prenotazione!</value>
+  </data>
+  <data name="PrenotazioneEffettuata_2" xml:space="preserve">
+    <value>Puoi avere solo un posto!</value>
+  </data>
+  <data name="PrenotazioneEffettuata_3" xml:space="preserve">
+    <value>Ma quanti posti vuoi oh! Ne hai già uno!</value>
   </data>
   <data name="PrenotazioneEliminata_1" xml:space="preserve">
     <value>Prenotazione cancellata con successo!</value>
@@ -191,6 +197,18 @@
   </data>
   <data name="PrenotazioneScaduta_3" xml:space="preserve">
     <value>La prenotazione è espirata</value>
+  </data>
+  <data name="PrenotazioneSceltaNo_1" xml:space="preserve">
+    <value>Ok! Fammi sapere se cambi idea</value>
+  </data>
+  <data name="PrenotazioneSceltaNo_2" xml:space="preserve">
+    <value>Va bene, resto a disposizione!</value>
+  </data>
+  <data name="PrenotazioneSceltaNo_3" xml:space="preserve">
+    <value>Come vuoi, scrivi se hai bisogno :)</value>
+  </data>
+  <data name="PrenotazioneSuccesso_1" xml:space="preserve">
+    <value>Hai effettuato una pranotazione in  + prenotazioneNomeLotto +  nel parcheggio  + prenotazioneIdPosto</value>
   </data>
   <data name="Presentazione_1" xml:space="preserve">
     <value>Hey ciao!</value>

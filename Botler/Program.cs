@@ -17,17 +17,7 @@ namespace Botler
     {
         public static void Main(string[] args)
         {
-            //CreateWebHostBuilder(args).Build().Run();
-            ResourceManager rm = new ResourceManager("Botler.Dialogs.Utility.Responses-it",
-                   Assembly.GetExecutingAssembly());
-            var _resourseSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-            //string regexPattern = @name + "_\\d*";
-            //Regex regex = new Regex(regexPattern);
-            var prenotazioneNomeLotto = "Lotto nome";
-            var prenotazioneIdPosto = "82";
-            object resource = rm.GetString("PrenotazioneEffettuata_1");
-            Console.WriteLine(resource.ToString());
-
+            CreateWebHostBuilder(args).Build().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder (string[] args) =>

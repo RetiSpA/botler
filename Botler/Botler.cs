@@ -151,7 +151,6 @@ namespace Botler
 
                 var topIntent = topScoringIntent.Value.intent;
 
-                await turnContext.SendActivityAsync($"{topIntent}", cancellationToken: cancellationToken);
                 // update greeting state with any entities captured
                 //await UpdatePresentazioneState(luisResults, dc.Context);
 
@@ -246,7 +245,7 @@ namespace Botler
             // See if there are any conversation interrupts we need to handle.
             if (topIntent.Equals(PresentazioneIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._presentazioneResponse));
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.PresentazioneResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -257,7 +256,7 @@ namespace Botler
 
             if (topIntent.Equals(GoodbyeIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._salutoResponse));
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.SalutoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -268,7 +267,7 @@ namespace Botler
 
             if (topIntent.Equals(InformazioniIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._informazioneResponse));
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.InformazioneResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -279,7 +278,7 @@ namespace Botler
 
             if (topIntent.Equals(RingraziamentiIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._ringraziamentoResponse));
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.RingraziamentoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -290,7 +289,7 @@ namespace Botler
 
             if (topIntent.Equals(SalutePositivoIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._salutoPositivoResponse));
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.SalutoPositivoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -301,7 +300,7 @@ namespace Botler
 
             if (topIntent.Equals(SaluteNegativoIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._salutoNegativoResponse));
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.SalutoNegativoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -312,7 +311,7 @@ namespace Botler
 
             if (topIntent.Equals(AnomaliaIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses._anomaliaResponse));
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.AnomaliaResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();

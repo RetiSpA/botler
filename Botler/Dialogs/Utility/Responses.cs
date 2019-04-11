@@ -5,11 +5,9 @@ using System.Text.RegularExpressions;
 using System.Resources;
 using System.Globalization;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.IO;
 using System.Threading;
-using Microsoft.Bot.Builder.AI.QnA;
-using System.Threading.Tasks;
 using Botler.Dialogs.Dialoghi;
 using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
@@ -22,50 +20,49 @@ namespace Botler.Dialogs.Utility
 {
     public class Responses
     {
-        public IList<string> _noneResponse { get; set; }
-        public  IList<string> _anomaliaResponse { get; set; }
-        public  IList<string> _ringraziamentoResponse { get; set; }
-        public  IList<string> _informazioneResponse { get; set; }
-        public  IList<string> _salutoResponse { get; set; }
-        public  IList<string> _salutoPositivoResponse { get; set; }
-        public IList<string> _presentazioneResponse { get; set; }
-        public  IList<string> _salutoNegativoResponse { get; set; }
-
         private readonly ResourceSet _resourseSet;
 
         public Responses()
         {
-            ResourceManager rm = new ResourceManager("Botler.Dialogs.Utility.Responses-it",
-                    Assembly.GetExecutingAssembly());
-            _resourseSet = rm.GetResourceSet(CultureInfo.CurrentUICulture,true,true);
-            // Loads all responses IList<string>
+            ResourceManager rm = new ResourceManager("Botler.Dialogs.Utility.Responses-it", Assembly.GetExecutingAssembly());
+
+            _resourseSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+
             LoadAllResponsesList();
         }
-        private IList<string> GenerateResponsesFromName(string name)
-         {
 
-            IList<string> responses = new List<string>();
+        public IList<string> NoneResponse { get; set; }
 
-            string regexPattern = @name+"_\\d*";
-            Regex regex = new Regex (regexPattern);
+        public IList<string> AnomaliaResponse { get; set; }
 
-            foreach(DictionaryEntry entry in _resourseSet)
-            {
-                string resourceKey = entry.Key.ToString();
-                object resource = entry.Value;
-                var match = regex.Match(resourceKey);
-                if(match.Success)
-                    responses.Add((string)resource);
-            }
-            return responses;
-         }
+        public IList<string> RingraziamentoResponse { get; set; }
+
+        public IList<string> InformazioneResponse { get; set; }
+
+        public IList<string> SalutoResponse { get; set; }
+
+        public IList<string> SalutoPositivoResponse { get; set; }
+
+        public IList<string> PresentazioneResponse { get; set; }
+
+        public IList<string> SalutoNegativoResponse { get; set; }
+
+        public IList<string> PrenotazioneEliminataResponse { get; set; }
+
+        public IList<string> PrenotazioneNonTrovataResponse { get; set; }
+
+        public IList<string> PrenotazioneEffettuataResponse { get; set; }
+
+        public IList<string> PrenotazioneSceltaNoResponse { get; set; }
+
+        public IList<string> PrenotazioneScadutaResponse { get; set; }
 
         /// <summary>
         ///  Prende in input un array precedentemente inizializzato
-        ///  e ritorna un elemento random tra questi
+        ///  e ritorna un elemento random tra questi.
         /// </summary>
-        /// <param name="responses"></param>
-        /// <returns></returns>
+        /// <param name="responses">Lista di possibile risposte.</param>
+        /// <returns>Una stringa casuale della lista.</returns>
         public string RandomResponses(IList<string> responses)
         {
             Random rnd = new Random();
@@ -73,16 +70,52 @@ namespace Botler.Dialogs.Utility
             return responses.ElementAt(i);
         }
 
+        /// <summary>
+        /// Prende dal file Response-it.resx tutti i valori, che hanno
+        /// come chiave "name".
+        /// </summary>
+        /// <param name="name">Chiave dei valori che si vuole prendere.</param>
+        /// <returns>IList<string> di valori assocciati alla chiave "name".</string></returns>
+        private IList<string> GenerateResponsesFromName(string name)
+        {
+            IList<string> responses = new List<string>();
+
+            string regexPattern = @name+"_\\d*";
+            Regex regex = new Regex(regexPattern);
+
+            foreach (DictionaryEntry entry in _resourseSet)
+            {
+                string resourceKey = entry.Key.ToString();
+                object resource = entry.Value;
+                var match = regex.Match(resourceKey);
+                if (match.Success)
+                {
+                    responses.Add((string)resource);
+                }
+            }
+
+            return responses;
+         }
+
+        /// <summary>
+        /// Carica tutte le risposte possibili dal Response-it.resx file
+        /// di tutti i dialoghi.
+        /// </summary>
         private void LoadAllResponsesList()
         {
-            _noneResponse = GenerateResponsesFromName("None");
-            _anomaliaResponse = GenerateResponsesFromName("Anomalia");
-            _ringraziamentoResponse = GenerateResponsesFromName("Ringraziamento");
-            _informazioneResponse = GenerateResponsesFromName("Informazione");
-            _salutoResponse = GenerateResponsesFromName("Saluto");
-            _salutoPositivoResponse = GenerateResponsesFromName("SalutoPositivo");
-            _salutoNegativoResponse = GenerateResponsesFromName("SalutoNegativo");
-            _presentazioneResponse = GenerateResponsesFromName("Presentazione");
+            NoneResponse = GenerateResponsesFromName("None");
+            AnomaliaResponse = GenerateResponsesFromName("Anomalia");
+            RingraziamentoResponse = GenerateResponsesFromName("Ringraziamento");
+            InformazioneResponse = GenerateResponsesFromName("Informazione");
+            SalutoResponse = GenerateResponsesFromName("Saluto");
+            SalutoPositivoResponse = GenerateResponsesFromName("SalutoPositivo");
+            SalutoNegativoResponse = GenerateResponsesFromName("SalutoNegativo");
+            PresentazioneResponse = GenerateResponsesFromName("Presentazione");
+            PrenotazioneEliminataResponse = GenerateResponsesFromName("PrenotazioneEliminata");
+            PrenotazioneEffettuataResponse = GenerateResponsesFromName("PrenotazioneEffettuata");
+            PrenotazioneNonTrovataResponse = GenerateResponsesFromName("PrenotazioneNonTrovata");
+            PrenotazioneSceltaNoResponse = GenerateResponsesFromName("PrenotazioneSceltaNo");
+            PrenotazioneScadutaResponse = GenerateResponsesFromName("PrenotazioneScaduta");
         }
     }
 }

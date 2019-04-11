@@ -6,7 +6,7 @@ using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
-using Microsoft.Bot.Schema;
+using Botler.Dialogs.Utility;
 using Microsoft.Extensions.Logging;
 
 namespace Botler.Dialogs.Dialoghi
@@ -16,6 +16,7 @@ namespace Botler.Dialogs.Dialoghi
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
         private const string RispostaPrompt = "rispostaPrompt";
+        private readonly Responses _responses;
 
         // Inizializza una nuova istanza della classe Prenotazione.
         public Prenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
@@ -31,6 +32,8 @@ namespace Botler.Dialogs.Dialoghi
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
             AddDialog(new ChoicePrompt(RispostaPrompt));
+
+            _responses = new Responses();
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -64,9 +67,8 @@ namespace Botler.Dialogs.Dialoghi
             {
                 Prompt = MessageFactory.Text("Sei sicuro di voler prenotare?"),
                 RetryPrompt = MessageFactory.Text("Seleziona un'opzione dall'elenco!"),
-                Choices = ChoiceFactory.ToChoices(new List<string> { "si","no"}),
-            },
-            cancellationToken);
+                Choices = ChoiceFactory.ToChoices(new List<string> { "si", "no"}),
+            }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> PromptForPrenotazioneStepAsync(
@@ -86,21 +88,21 @@ namespace Botler.Dialogs.Dialoghi
                         PrenotazioneModel prenotazione = await Utility.Utility.prenotaPosteggio(Utility.Utility.lotto_id, posto.id_posteggio);
                         if (prenotazione != null)
                         {
-                            //BasicBot.tempoPrenotazione = DateTime.Now;
+                            // BasicBot.tempoPrenotazione = DateTime.Now;
                             Botler.tempoPrenotazione = DateTime.Now.AddHours(1);
                             Botler.prenotazione = true;
 
                             var prenotazioneNomeLotto = prenotazione.nomeLotto;
                             var prenotazioneIdPosto = prenotazione.id_posto;
 
-                            //risposte possibili
+                            // risposte possibili
                             string[] responses = { "Hai effettuato una pranotazione in " + prenotazioneNomeLotto + " nel parcheggio " + prenotazioneIdPosto,
                             "La tua prenotazione è la seguente: " + prenotazioneNomeLotto + ", " + prenotazioneIdPosto,
                             "Il posteggio in " + prenotazioneNomeLotto + ", numero " + prenotazioneIdPosto + " ti è stato assegnato", };
 
-                            Random rnd = new Random(); //crea new Random class
+                            Random rnd = new Random(); // crea new Random class
                             int i = rnd.Next(0, responses.Length);
-                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+                            await context.SendActivityAsync(responses[i]); // genera una risposta random
                             return await stepContext.EndDialogAsync();
                         }
                         else
@@ -113,26 +115,14 @@ namespace Botler.Dialogs.Dialoghi
                                     var resp = await Utility.Utility.cancellaPrenotazione(verificaPrenotazione.id_posto);
                                     if (resp)
                                     {
-                                        string[] responses = { "La tua prenotazione è scaduta!",
-                                        "E' terminato il tempo disponibile per il tuo posteggio",
-                                        "La prenotazione è espirata", };
-                                        //rispsote possibili
-                                        Random rnd = new Random(); //crea new Random class
-                                        int i = rnd.Next(0, responses.Length);
-                                        await context.SendActivityAsync(responses[i]); //genera una risposta random
+                                        await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse)); 
                                         Botler.prenotazione = false;
                                         return await stepContext.EndDialogAsync();
                                     }
                                 }
                                 else
                                 {
-                                    string[] responses = { "Possiedi già una prenotazione!",
-                                "Puoi avere solo un posto!",
-                                "Ma quanti posti vuoi oh! Ne hai già uno!", };
-                                    //rispsote possibili
-                                    Random rnd = new Random(); //crea new Random class
-                                    int i = rnd.Next(0, responses.Length);
-                                    await context.SendActivityAsync(responses[i]); //genera una risposta random
+                                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneEffettuataResponse)); 
                                     return await stepContext.EndDialogAsync();
                                 }
                             }
@@ -159,7 +149,7 @@ namespace Botler.Dialogs.Dialoghi
             }
             else
             {
-                await context.SendActivityAsync($"Fammi sapere se cambi idea!");
+                await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneSceltaNoResponse));
                 return await stepContext.EndDialogAsync();
             }
         }
