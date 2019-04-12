@@ -196,7 +196,7 @@ namespace Botler
 
                                 case NoneIntent:
                                 default:
-                                   await dc.Context.SendActivityAsync(responses.RandomResponses(responses._noneResponse));
+                                   await dc.Context.SendActivityAsync(responses.RandomResponses(responses.NoneResponse));
                                 break;
                             }
 
@@ -322,7 +322,7 @@ namespace Botler
 
             if (topIntent.Equals(PossibilitàIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync("Sono stato progettato per gestire le seguenti mansioni:\n-\tPrenotazione di un parcheggio\n-\tVisualizzazione di una prenotazione\n-\tTempo rimanente relativo alla prenotazione\n-\tCancellazione di una prenotazione attiva");
+                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.PossibilitaParcheggioResponse));
 
                 if (dc.ActiveDialog != null)
                 {

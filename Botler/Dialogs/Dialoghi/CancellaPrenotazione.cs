@@ -2,10 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Botler.Dialogs.RisorseApi;
+using Botler.Dialogs.Utility;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+
 
 namespace Botler.Dialogs.Dialoghi
 {
@@ -16,6 +18,8 @@ namespace Botler.Dialogs.Dialoghi
 
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
+
+        private readonly Responses _responses;
 
         // Inizializza una nuova istanza della classe CancellaPrenotazione.
         public CancellaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
@@ -30,6 +34,8 @@ namespace Botler.Dialogs.Dialoghi
                     PromptForCancellaPrenotazioneStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
+
+            _responses = new Responses();
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -70,13 +76,7 @@ namespace Botler.Dialogs.Dialoghi
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
                         {
-                            string[] responses = { "La tua prenotazione è scaduta!",
-                                        "E' terminato il tempo disponibile per il tuo posteggio",
-                                        "La prenotazione è espirata", };
-                            //rispsote possibili
-                            Random rnd = new Random(); //crea new Random class
-                            int i = rnd.Next(0, responses.Length);
-                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+                             await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse)); //genera una risposta random
                             Botler.prenotazione = false;
                             return await stepContext.EndDialogAsync();
                         }
@@ -84,25 +84,15 @@ namespace Botler.Dialogs.Dialoghi
                     else
                     {
                         Botler.prenotazione = false;
-                        //rispsote possibili
-                        string[] responses = { "Prenotazione cancellata con successo!",
-                            "La prenotazione... Via! Andata! Caput!",
-                            "Hai cestinato la tua prenotazione!", };
-                        Random rnd = new Random(); //crea new Random class
-                        int i = rnd.Next(0, responses.Length);
-                        await context.SendActivityAsync(responses[i]); //genera una risposta random
+
+                        await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneEliminataResponse)); //genera una risposta random
                         await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         return await stepContext.EndDialogAsync();
                     }
                 }
                 else
                 {
-                    string[] responses = { "Non esiste alcuna prenotazione attiva!",
-                               "Io non vedo nessuna prenotazione!",
-                               "Ma quale prenotazione intendi scusa..", };
-                    Random rnd = new Random(); //crea new Random class
-                    int i = rnd.Next(0, responses.Length);
-                    await context.SendActivityAsync(responses[i]); //genera una risposta random
+                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneNonTrovataResponse)); //genera una risposta random
                     return await stepContext.EndDialogAsync();
                 }
 
@@ -110,7 +100,7 @@ namespace Botler.Dialogs.Dialoghi
             }
             catch
             {
-                await context.SendActivityAsync($"Impossibile cancellare la prenotazione");
+                await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneSessioneScadutaResponse));
                 return await stepContext.EndDialogAsync();
             }
         }

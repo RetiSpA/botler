@@ -5,6 +5,7 @@ using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
+using Botler.Dialogs.Utility;
 
 namespace Botler.Dialogs.Dialoghi
 {
@@ -12,6 +13,7 @@ namespace Botler.Dialogs.Dialoghi
     {
         // Dialog IDs.
         private const string ProfileDialog = "profileDialog";
+        private readonly Responses _responses;
 
         // Inizializza una nuova istanza della classe Visualizza prenotazione.
         public VisualizzaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
@@ -26,6 +28,8 @@ namespace Botler.Dialogs.Dialoghi
                     DisplayPrenotazioneStateStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
+
+            _responses = new Responses();
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -66,13 +70,8 @@ namespace Botler.Dialogs.Dialoghi
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
                         {
-                            string[] responses = { "La tua prenotazione è scaduta!",
-                                        "E' terminato il tempo disponibile per il tuo posteggio",
-                                        "La prenotazione è espirata", };
-                            //rispsote possibili
-                            Random rnd = new Random(); //crea new Random class
-                            int i = rnd.Next(0, responses.Length);
-                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+
+                            await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse));
                             Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
@@ -83,13 +82,8 @@ namespace Botler.Dialogs.Dialoghi
                         var prenotazioneNomeLotto = prenotazione.nomeLotto;
                         var prenotazioneIdPosto = prenotazione.id_posto;
 
-                        string[] responses = { "La tua prenotazione? " + prenotazioneNomeLotto + ", " + prenotazioneIdPosto,
-                        "Hai prenotato il parcheggio " + prenotazioneNomeLotto + " numero " + prenotazioneIdPosto,
-                        prenotazioneNomeLotto + ", " + prenotazioneIdPosto + ", dovrebbe essere questa!",};
-
-                        Random rnd = new Random(); //crea new Random class
-                        int i = rnd.Next(0, responses.Length);
-                        await context.SendActivityAsync(responses[i]); //genera una risposta random tra quelle presenti
+                        string randomRespons = _responses.RandomResponses(_responses.VisualizzaPrenotazioneResponse);
+                        await context.SendActivityAsync(String.Format(@randomRespons, prenotazioneNomeLotto, prenotazioneIdPosto));
 
                         return await stepContext.EndDialogAsync();
                     }
@@ -98,13 +92,7 @@ namespace Botler.Dialogs.Dialoghi
                 else
                 // Nega l'esistenza di una prenotazione
                 {
-                    string[] responses = { "Non esiste alcuna prenotazione attiva!",
-                        "Io non vedo nessuna prenotazione!",
-                        "Ma quale prenotazione intendi scusa..",};
-
-                    Random rnd = new Random();
-                    int i = rnd.Next(0, responses.Length);
-                    await context.SendActivityAsync(responses[i]); //genera una risposta random tra quelle presenti
+                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneNonTrovataResponse));
                     return await stepContext.EndDialogAsync();
                 }
 

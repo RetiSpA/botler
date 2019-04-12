@@ -19,6 +19,8 @@ namespace Botler.Dialogs.Utility
         public static string email; // Variabile di salvataggio credenziale email.
         public static string password; // Variabile di salvataggio credenziale password.
 
+        public static string resourceIT = "Responses-it";
+
         // METODO PER VERIFICARE IL LOGIN
         public static async Task<UserModel> checkLogin()
         {

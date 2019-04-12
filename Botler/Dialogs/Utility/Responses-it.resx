@@ -207,9 +207,6 @@
   <data name="PrenotazioneSceltaNo_3" xml:space="preserve">
     <value>Come vuoi, scrivi se hai bisogno :)</value>
   </data>
-  <data name="PrenotazioneSuccesso_1" xml:space="preserve">
-    <value>Hai effettuato una pranotazione in  + prenotazioneNomeLotto +  nel parcheggio  + prenotazioneIdPosto</value>
-  </data>
   <data name="Presentazione_1" xml:space="preserve">
     <value>Hey ciao!</value>
   </data>
@@ -260,5 +257,50 @@
   </data>
   <data name="Saluto_3" xml:space="preserve">
     <value>Ci vediamo, Ciao!</value>
+  </data>
+  <data name="PrenotazioneSuccesso_1" xml:space="preserve">
+    <value>Hai effettuato una prenotazione in {0} nel parcheggio {1}</value>
+  </data>
+  <data name="PrenotazioneSuccesso_2" xml:space="preserve">
+    <value>La tua prenotazione è la seguente: {0}, {1}</value>
+  </data>
+  <data name="PrenotazioneSuccesso_3" xml:space="preserve">
+    <value>Il posteggio in {0}, numero {1} ti è stato assegnato</value>
+  </data>
+  <data name="PossibilitaParcheggio_1" xml:space="preserve">
+    <value>Sono stato progettato per gestire le seguenti mansioni:\n-\tPrenotazione di un parcheggio\n-\tVisualizzazione di una prenotazione\n-\tTempo rimanente relativo alla prenotazione\n-\tCancellazione di una prenotazione attiva</value>
+  </data>
+  <data name="PossibilitaParcheggio_2" xml:space="preserve">
+    <value>Posso fare per te le seguenti cose:\n-\tPrenotarti un posteggio auto\n-\tVisualizzare una tua prenotazione\n-\tDirti quanto manca alla fine della tua prenotazione\n-\tEliminare per te una tua prenotazione valida</value>
+  </data>
+  <data name="PrenotazioneSessioneScaduta_1" xml:space="preserve">
+    <value>Impossibile visualizzare la prenotazione!</value>
+  </data>
+  <data name="PrenotazioneSessioneScaduta_2" xml:space="preserve">
+    <value>Mi dispiace, non è stato possibile visualizzare la prenotazione!</value>
+  </data>
+  <data name="PrenotazioneSessioneScaduta_3" xml:space="preserve">
+    <value>Riprova, c'è stato qualche problema con la visualizzazione :(</value>
+  </data>
+  <data name="PrenotazioneTempoDisponibile_1" xml:space="preserve">
+    <value>Il tuo parcheggio è ancora disponibile per {0} minuti e {1} secondi</value>
+  </data>
+  <data name="PrenotazioneTempoDisponibile_2" xml:space="preserve">
+    <value>La disponibilità del tuo parcheggio scade tra {0} minuti e {1} secondi</value>
+  </data>
+  <data name="PrenotazioneTempoDisponibile_3" xml:space="preserve">
+    <value>Hai ancora "{0} minuti e {1} secondi per usufruire del posteggio prenotato</value>
+  </data>
+  <data name="PrenotazioneDataOra_1" xml:space="preserve">
+    <value>La tua prenotazione è riservata per il giorno {0}  dalle ore {1} alle ore {2}</value>
+  </data>
+  <data name="VisualizzaPrenotazione_1" xml:space="preserve">
+    <value>La tua prenotazione? {0}, {1}</value>
+  </data>
+  <data name="VisualizzaPrenotazione_2" xml:space="preserve">
+    <value>Hai prenotato il parcheggio {0} numero {1}</value>
+  </data>
+  <data name="VisualizzaPrenotazione_3" xml:space="preserve">
+    <value>{0} , {1} Dovrebbe essere questa :)</value>
   </data>
 </root>

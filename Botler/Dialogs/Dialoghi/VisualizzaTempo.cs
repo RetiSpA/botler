@@ -5,6 +5,7 @@ using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
+using Botler.Dialogs.Utility;
 
 namespace Botler.Dialogs.Dialoghi
 {
@@ -12,6 +13,7 @@ namespace Botler.Dialogs.Dialoghi
     {
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
+        private readonly Responses _responses;
 
         // Inizializza una istanza della classe VisualizzaTempo.
         public VisualizzaTempo(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
@@ -26,6 +28,8 @@ namespace Botler.Dialogs.Dialoghi
                     DisplayScadenzaStateStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
+
+            _responses = new Responses();
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -66,13 +70,7 @@ namespace Botler.Dialogs.Dialoghi
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
                         {
-                            string[] responses = { "La tua prenotazione è scaduta!",
-                                        "E' terminato il tempo disponibile per il tuo posteggio",
-                                        "La prenotazione è espirata", };
-                            //rispsote possibili
-                            Random rnd = new Random(); //crea new Random class
-                            int i = rnd.Next(0, responses.Length);
-                            await context.SendActivityAsync(responses[i]); //genera una risposta random
+                            await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse)); //genera una risposta random
                             Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
@@ -85,34 +83,28 @@ namespace Botler.Dialogs.Dialoghi
                         differenza = Botler.tempoPrenotazione.Subtract(now);
 
                         int minuti = (int)(differenza.TotalMinutes);
-                        int secondi = (int)(differenza.TotalSeconds);
+                        int secondi = (int)(differenza.TotalSeconds) - (minuti*60);
                         int ore = (int)(differenza.TotalHours);
                         int giorno = (int)(differenza.TotalDays);
 
-                        string[] responses = { "Il tuo parcheggio è ancora disponibile per " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi",
-                            "La disponibilità del tuo parcheggio scade tra " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi",
-                            "Hai ancora " + minuti + " minuti e " + (secondi -(minuti * 60)) + " secondi per usufruire del posteggio prenotato", };
+                        string tempoPrenotazioneData = Botler.tempoPrenotazione.ToString("dd MMMM yyyy");
+                        string tempoPrenotazioneOraInizio = Botler.tempoPrenotazione.AddHours(-1).ToString("HH:mm:ss");
+                        string tempoPrenotazioneOraFine = Botler.tempoPrenotazione.ToString("HH:mm:ss");
 
-                        await context.SendActivityAsync($"La tua prenotazione è riservata per il giorno " + Botler.tempoPrenotazione.ToString("dd MMMM yyyy") + " dalle ore " + Botler.tempoPrenotazione.AddHours(-1).ToString("HH:mm:ss") + " alle ore " + Botler.tempoPrenotazione.ToString("HH:mm:ss"));
+                        // Invio data e ora della prenotazione, e tempo di validità
+                        string randomRespDataOra = _responses.RandomResponses(_responses.PrenotazioneDataOraResponse);
+                        await context.SendActivityAsync(String.Format(@randomRespDataOra, tempoPrenotazioneData, tempoPrenotazioneOraInizio, tempoPrenotazioneOraFine));
+                        // Invio del tempo a disposizione, prima che il parcheggio scada
+                        string randomRespTempoDisp = _responses.RandomResponses(_responses.PrenotazioneTempoDisponibileResponse);
+                        await context.SendActivityAsync(String.Format(@randomRespTempoDisp, minuti, secondi));
 
-                        Random rnd = new Random(); //crea new Random class
-                        int i = rnd.Next(0, responses.Length);
-                        await context.SendActivityAsync(responses[i]); //genera una risposta random
-
-                        //await context.SendActivityAsync($"Il tuo parcheggio sarà disponibile ancora per: {minuti} minuti e {secondi - (minuti * 60)} secondi");
                         return await stepContext.EndDialogAsync();
                     }
                     return await stepContext.EndDialogAsync();
                 }
                 else
                 {
-                    string[] responses = { "Non esiste alcuna prenotazione attiva!",
-                        "Io non vedo nessuna prenotazione!",
-                        "Ma quale prenotazione intendi scusa..",};
-
-                    Random rnd = new Random();
-                    int i = rnd.Next(0, responses.Length);
-                    await context.SendActivityAsync(responses[i]); //genera una risposta random tra quelle presenti
+                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneNonTrovataResponse));
                     return await stepContext.EndDialogAsync();
                 }
             }

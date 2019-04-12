@@ -28,34 +28,66 @@ namespace Botler.Dialogs.Utility
 
             _resourseSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
-            LoadAllResponsesList();
+            NoneResponse = GenerateResponsesFromName("None");
+            AnomaliaResponse = GenerateResponsesFromName("Anomalia");
+            RingraziamentoResponse = GenerateResponsesFromName("Ringraziamento");
+            InformazioneResponse = GenerateResponsesFromName("Informazione");
+            SalutoResponse = GenerateResponsesFromName("Saluto");
+            SalutoPositivoResponse = GenerateResponsesFromName("SalutoPositivo");
+            SalutoNegativoResponse = GenerateResponsesFromName("SalutoNegativo");
+            PresentazioneResponse = GenerateResponsesFromName("Presentazione");
+            PrenotazioneSuccessoResponse = GenerateResponsesFromName("PrenotazioneSuccesso");
+            PrenotazioneEliminataResponse = GenerateResponsesFromName("PrenotazioneEliminata");
+            PrenotazioneEffettuataResponse = GenerateResponsesFromName("PrenotazioneEffettuata");
+            PrenotazioneNonTrovataResponse = GenerateResponsesFromName("PrenotazioneNonTrovata");
+            PrenotazioneSceltaNoResponse = GenerateResponsesFromName("PrenotazioneSceltaNo");
+            PrenotazioneScadutaResponse = GenerateResponsesFromName("PrenotazioneScaduta");
+            PossibilitaParcheggioResponse = GenerateResponsesFromName("PossibilitaParcheggio");
+            PrenotazioneSessioneScadutaResponse = GenerateResponsesFromName("PrenotazioneSessioneScaduta");
+            PrenotazioneTempoDisponibileResponse = GenerateResponsesFromName("PrenotazioneTempoDisponibile");
+            PrenotazioneDataOraResponse = GenerateResponsesFromName("PrenotazioneDataOra");
+            VisualizzaPrenotazioneResponse = GenerateResponsesFromName("VisualizzaPrenotazione");
+
         }
 
-        public IList<string> NoneResponse { get; set; }
+        public IList<string> NoneResponse { get; }
 
-        public IList<string> AnomaliaResponse { get; set; }
+        public IList<string> AnomaliaResponse { get; }
 
-        public IList<string> RingraziamentoResponse { get; set; }
+        public IList<string> RingraziamentoResponse { get; }
 
-        public IList<string> InformazioneResponse { get; set; }
+        public IList<string> InformazioneResponse { get; }
 
-        public IList<string> SalutoResponse { get; set; }
+        public IList<string> SalutoResponse { get; }
 
-        public IList<string> SalutoPositivoResponse { get; set; }
+        public IList<string> SalutoPositivoResponse { get; }
 
-        public IList<string> PresentazioneResponse { get; set; }
+        public IList<string> PresentazioneResponse { get; }
 
-        public IList<string> SalutoNegativoResponse { get; set; }
+        public IList<string> SalutoNegativoResponse { get; }
 
-        public IList<string> PrenotazioneEliminataResponse { get; set; }
+        public IList<string> PrenotazioneEliminataResponse { get; }
 
-        public IList<string> PrenotazioneNonTrovataResponse { get; set; }
+        public IList<string> PrenotazioneNonTrovataResponse { get; }
 
-        public IList<string> PrenotazioneEffettuataResponse { get; set; }
+        public IList<string> PrenotazioneEffettuataResponse { get; }
 
-        public IList<string> PrenotazioneSceltaNoResponse { get; set; }
+        public IList<string> PrenotazioneSceltaNoResponse { get; }
 
-        public IList<string> PrenotazioneScadutaResponse { get; set; }
+        public IList<string> PrenotazioneScadutaResponse { get; }
+
+        public IList<string> PossibilitaParcheggioResponse { get; }
+
+        public IList<string> PrenotazioneSuccessoResponse { get; }
+
+        public IList<string> PrenotazioneSessioneScadutaResponse { get; }
+
+        public IList<string> PrenotazioneTempoDisponibileResponse { get; }
+
+        public IList<string> PrenotazioneDataOraResponse { get; }
+
+        public IList<string> VisualizzaPrenotazioneResponse { get; }
+
 
         /// <summary>
         ///  Prende in input un array precedentemente inizializzato
@@ -96,26 +128,5 @@ namespace Botler.Dialogs.Utility
 
             return responses;
          }
-
-        /// <summary>
-        /// Carica tutte le risposte possibili dal Response-it.resx file
-        /// di tutti i dialoghi.
-        /// </summary>
-        private void LoadAllResponsesList()
-        {
-            NoneResponse = GenerateResponsesFromName("None");
-            AnomaliaResponse = GenerateResponsesFromName("Anomalia");
-            RingraziamentoResponse = GenerateResponsesFromName("Ringraziamento");
-            InformazioneResponse = GenerateResponsesFromName("Informazione");
-            SalutoResponse = GenerateResponsesFromName("Saluto");
-            SalutoPositivoResponse = GenerateResponsesFromName("SalutoPositivo");
-            SalutoNegativoResponse = GenerateResponsesFromName("SalutoNegativo");
-            PresentazioneResponse = GenerateResponsesFromName("Presentazione");
-            PrenotazioneEliminataResponse = GenerateResponsesFromName("PrenotazioneEliminata");
-            PrenotazioneEffettuataResponse = GenerateResponsesFromName("PrenotazioneEffettuata");
-            PrenotazioneNonTrovataResponse = GenerateResponsesFromName("PrenotazioneNonTrovata");
-            PrenotazioneSceltaNoResponse = GenerateResponsesFromName("PrenotazioneSceltaNo");
-            PrenotazioneScadutaResponse = GenerateResponsesFromName("PrenotazioneScaduta");
-        }
     }
 }
