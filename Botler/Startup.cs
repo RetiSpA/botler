@@ -12,6 +12,7 @@ using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Botler.Dialogs.Utility;
 
 namespace Botler
 {
@@ -102,9 +103,12 @@ namespace Botler
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);
             services.AddSingleton(conversationState);
-
+            // Create and add User state
             var userState = new UserState(dataStore);
             services.AddSingleton(userState);
+            // Create and add responses
+            var responses = new Responses();
+            services.AddSingleton(responses);
 
             services.AddBot<Botler>(options =>
             {

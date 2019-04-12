@@ -71,18 +71,19 @@ namespace Botler
         private readonly ConversationState _conversationState;
         private readonly BotServices _services;
 
-        private Responses responses;
+        private readonly Responses _responses;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Botler"/> class.
         /// </summary>
         /// <param name="botServices">Bot services.</param>
         /// <param name="accessors">Bot State Accessors.</param>
-        public Botler(BotServices services, UserState userState, ConversationState conversationState, ILoggerFactory loggerFactory)
+        public Botler(BotServices services, UserState userState, ConversationState conversationState, Responses responses, ILoggerFactory loggerFactory)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _userState = userState ?? throw new ArgumentNullException(nameof(userState));
             _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
+            _responses = responses ?? throw new ArgumentNullException(nameof(responses));
             // Init Accessors
             _dialogStateAccessor = _conversationState.CreateProperty<DialogState>(nameof(DialogState));
             _prenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
@@ -103,12 +104,10 @@ namespace Botler
             }
             // Settings up Dialogs
             Dialogs = new DialogSet(_dialogStateAccessor);
-            Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory));
-            Dialogs.Add(new CancellaPrenotazione(_cancellaPrenotazioneStateAccessor, loggerFactory));
-            Dialogs.Add(new VisualizzaTempo(_visualizzaTempoStateAccessor, loggerFactory));
-            Dialogs.Add(new VisualizzaPrenotazione(_visualizzaPrenotazioneStateAccessor, loggerFactory));
-
-            responses = new Responses();
+            Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory, responses));
+            Dialogs.Add(new CancellaPrenotazione(_cancellaPrenotazioneStateAccessor, loggerFactory, responses));
+            Dialogs.Add(new VisualizzaTempo(_visualizzaTempoStateAccessor, loggerFactory, responses));
+            Dialogs.Add(new VisualizzaPrenotazione(_visualizzaPrenotazioneStateAccessor, loggerFactory, responses));
         }
 
         private DialogSet Dialogs { get; set; }
@@ -196,7 +195,7 @@ namespace Botler
 
                                 case NoneIntent:
                                 default:
-                                   await dc.Context.SendActivityAsync(responses.RandomResponses(responses.NoneResponse));
+                                   await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.NoneResponse));
                                 break;
                             }
 
@@ -234,7 +233,7 @@ namespace Botler
                     }
                 }
             }
-
+            // Update the states
             await _conversationState.SaveChangesAsync(turnContext);
             await _userState.SaveChangesAsync(turnContext);
         }
@@ -245,7 +244,7 @@ namespace Botler
             // See if there are any conversation interrupts we need to handle.
             if (topIntent.Equals(PresentazioneIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.PresentazioneResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.PresentazioneResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -256,7 +255,7 @@ namespace Botler
 
             if (topIntent.Equals(GoodbyeIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.SalutoResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.SalutoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -267,7 +266,7 @@ namespace Botler
 
             if (topIntent.Equals(InformazioniIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.InformazioneResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.InformazioneResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -278,7 +277,7 @@ namespace Botler
 
             if (topIntent.Equals(RingraziamentiIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.RingraziamentoResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.RingraziamentoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -289,7 +288,7 @@ namespace Botler
 
             if (topIntent.Equals(SalutePositivoIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.SalutoPositivoResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.SalutoPositivoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -300,7 +299,7 @@ namespace Botler
 
             if (topIntent.Equals(SaluteNegativoIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.SalutoNegativoResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.SalutoNegativoResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -311,7 +310,7 @@ namespace Botler
 
             if (topIntent.Equals(AnomaliaIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.AnomaliaResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.AnomaliaResponse));
                 if (dc.ActiveDialog != null)
                 {
                     await dc.RepromptDialogAsync();
@@ -322,7 +321,7 @@ namespace Botler
 
             if (topIntent.Equals(PossibilitàIntent) && (score > 0.75))
             {
-                await dc.Context.SendActivityAsync(responses.RandomResponses(responses.PossibilitaParcheggioResponse));
+                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.PossibilitaParcheggioResponse));
 
                 if (dc.ActiveDialog != null)
                 {

@@ -88,7 +88,6 @@ namespace Botler.Dialogs.Utility
 
         public IList<string> VisualizzaPrenotazioneResponse { get; }
 
-
         /// <summary>
         ///  Prende in input un array precedentemente inizializzato
         ///  e ritorna un elemento random tra questi.
@@ -120,6 +119,7 @@ namespace Botler.Dialogs.Utility
                 string resourceKey = entry.Key.ToString();
                 object resource = entry.Value;
                 var match = regex.Match(resourceKey);
+
                 if (match.Success)
                 {
                     responses.Add((string)resource);

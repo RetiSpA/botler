@@ -22,7 +22,7 @@ namespace Botler.Dialogs.Dialoghi
         private readonly Responses _responses;
 
         // Inizializza una nuova istanza della classe CancellaPrenotazione.
-        public CancellaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
+        public CancellaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory, Responses responses)
             : base(nameof(CancellaPrenotazione))
         {
             UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
@@ -35,7 +35,7 @@ namespace Botler.Dialogs.Dialoghi
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
 
-            _responses = new Responses();
+            _responses = responses;
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }

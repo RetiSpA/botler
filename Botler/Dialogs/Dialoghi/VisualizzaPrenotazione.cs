@@ -16,7 +16,7 @@ namespace Botler.Dialogs.Dialoghi
         private readonly Responses _responses;
 
         // Inizializza una nuova istanza della classe Visualizza prenotazione.
-        public VisualizzaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
+        public VisualizzaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory, Responses responses)
             : base(nameof(VisualizzaPrenotazione))
         {
             UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
@@ -29,7 +29,7 @@ namespace Botler.Dialogs.Dialoghi
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
 
-            _responses = new Responses();
+            _responses = responses;
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
