@@ -11,16 +11,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Net.Http;
 using Microsoft.Bot.Builder.AI.QnA;
 using System.Threading.Tasks;
 using Botler.Dialogs.Dialoghi;
 using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Botler.Dialogs.Utility;
+using Botler;
+using Newtonsoft.Json.Linq;
+using Botler.Controller;
+using static Botler.Dialogs.Utility.BotConst;
 
 namespace Botler
 {
@@ -29,23 +35,8 @@ namespace Botler
     /// </summary>
     public class Botler : IBot
     {
-        // Intenti LUIS supportati.
-        public const string PresentazioneIntent = "Presentazione";
-        public const string PrenotazioneIntent = "Prenotazione";
-        public const string CancellaPrenotazioneIntent = "Cancellazione";
-        public const string TempoRimanentePrenotazioneIntent = "TempoRimanentePrenotazione";
-        public const string VerificaPrenotazioneIntent = "VerificaPrenotazione";
 
-        public const string SaluteNegativoIntent = "SaluteNegativo";
-        public const string SalutePositivoIntent = "SalutePositivo";
-        public const string GoodbyeIntent = "Goodbye";
-        public const string AnomaliaIntent = "Anomalia";
-        public const string RingraziamentiIntent = "Ringraziamenti";
-        public const string InformazioniIntent = "Informazioni";
-        public const string PossibilitàIntent = "Possibilità";
-        public const string NoneIntent = "None";
-
-        public static bool autenticazione = false;
+        private bool autenticazione = false;
         public static bool askCredential = false;
         public static DateTime tempoPrenotazione;
         public static Boolean prenotazione = false;
@@ -58,38 +49,20 @@ namespace Botler
         /// Key in the bot config (.bot file) for the LUIS instance.
         /// In the .bot file, multiple instances of LUIS can be configured.
         /// </summary>
-        public static readonly string LuisConfiguration = "basic-bot-LUIS";
-        public static readonly string QnAMakerKey = "botler-qna";
-
-        private readonly IStatePropertyAccessor<PrenotazioneModel> _prenotazioneStateAccessor;
-        private readonly IStatePropertyAccessor<PrenotazioneModel> _cancellaPrenotazioneStateAccessor;
-        private readonly IStatePropertyAccessor<PrenotazioneModel> _visualizzaTempoStateAccessor;
-        private readonly IStatePropertyAccessor<PrenotazioneModel> _visualizzaPrenotazioneStateAccessor;
-
-        private readonly IStatePropertyAccessor<DialogState> _dialogStateAccessor;
-        private readonly UserState _userState;
-        private readonly ConversationState _conversationState;
+        private readonly BotlerAccessors _accessors;
         private readonly BotServices _services;
 
-        private readonly Responses _responses;
+        private TurnController TurnController;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Botler"/> class.
         /// </summary>
         /// <param name="botServices">Bot services.</param>
         /// <param name="accessors">Bot State Accessors.</param>
-        public Botler(BotServices services, UserState userState, ConversationState conversationState, Responses responses, ILoggerFactory loggerFactory)
+        public Botler(BotServices services, BotlerAccessors accessors, ILoggerFactory loggerFactory)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
-            _userState = userState ?? throw new ArgumentNullException(nameof(userState));
-            _conversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
-            _responses = responses ?? throw new ArgumentNullException(nameof(responses));
-            // Init Accessors
-            _dialogStateAccessor = _conversationState.CreateProperty<DialogState>(nameof(DialogState));
-            _prenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
-            _cancellaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
-            _visualizzaTempoStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
-            _visualizzaPrenotazioneStateAccessor = _userState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
+            _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
 
             // Verifica la configurazione di LUIS.
             if (!_services.LuisServices.ContainsKey(LuisConfiguration))
@@ -102,293 +75,22 @@ namespace Botler
             {
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAMakerKey}`.");
             }
-            // Settings up Dialogs
-            Dialogs = new DialogSet(_dialogStateAccessor);
-            Dialogs.Add(new Prenotazione(_prenotazioneStateAccessor, loggerFactory, responses));
-            Dialogs.Add(new CancellaPrenotazione(_cancellaPrenotazioneStateAccessor, loggerFactory, responses));
-            Dialogs.Add(new VisualizzaTempo(_visualizzaTempoStateAccessor, loggerFactory, responses));
-            Dialogs.Add(new VisualizzaPrenotazione(_visualizzaPrenotazioneStateAccessor, loggerFactory, responses));
+ 
+            TurnController = new TurnController(_accessors, _services);
         }
 
         private DialogSet Dialogs { get; set; }
 
         /// <summary>
-        /// Run every turn of the conversation. Handles orchestration of messages.
+        /// Run every turn of the conversation.
+        /// Gives the responsability to handle the orchestration of messages to TurnController
         /// </summary>
         /// <param name="turnContext">Bot Turn Context.</param>
         /// <param name="cancellationToken">Task CancellationToken.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var activity = turnContext.Activity;
-
-            // Create a dialog context
-            var dc = await Dialogs.CreateContextAsync(turnContext);
-
-            if (activity.Type == ActivityTypes.Message)
-            {
-                // Perform a call to LUIS to retrieve results for the current activity message.
-                var luisResults = await _services.LuisServices[LuisConfiguration].RecognizeAsync(dc.Context, cancellationToken).ConfigureAwait(false);
-
-                var qnaResult = await _services.QnAServices[QnAMakerKey].GetAnswersAsync(turnContext).ConfigureAwait(false);
-
-                if (qnaResult != null && qnaResult.Length > 0)
-                {
-                    await turnContext.SendActivityAsync(qnaResult[0].Answer, cancellationToken: cancellationToken);
-                }
-                //else
-                //{
-                //    var msg = @"No QnA Maker answers were found. This example uses a QnA Maker Knowledge Base that focuses on smart light bulbs. 
-                //        To see QnA Maker in action, ask the bot questions like 'Why won't it turn on?' or 'I need help'.";
-
-                //    await turnContext.SendActivityAsync(msg, cancellationToken: cancellationToken);
-                //}
-
-                // If any entities were updated, treat as interruption.
-                // For example, "no my name is tony" will manifest as an update of the name to be "tony".
-                var topScoringIntent = luisResults?.GetTopScoringIntent();
-
-                var topIntent = topScoringIntent.Value.intent;
-
-                // update greeting state with any entities captured
-                //await UpdatePresentazioneState(luisResults, dc.Context);
-
-                // Handle conversation interrupts first.
-                var interrupted = await IsTurnInterruptedAsync(dc, topScoringIntent.Value.intent, topScoringIntent.Value.score);
-                if (interrupted)
-                {
-                    // Bypass the dialog.
-                    // Save state before the next turn.
-                    await _conversationState.SaveChangesAsync(turnContext);
-                    await _userState.SaveChangesAsync(turnContext);
-                    return;
-                }
-
-                // Continue the current dialog
-                var dialogResult = await dc.ContinueDialogAsync();
-
-                // if no one has responded,
-                if (!dc.Context.Responded)
-                {
-                    // examine results from active dialog
-                    switch (dialogResult.Status)
-                    {
-                        case DialogTurnStatus.Empty:
-                            switch (topIntent)
-                            {
-
-                                case PrenotazioneIntent:
-                                    await dc.BeginDialogAsync(nameof(Prenotazione));
-                                break;
-
-                                case CancellaPrenotazioneIntent:
-                                     await dc.BeginDialogAsync(nameof(CancellaPrenotazione));
-                                break;
-
-                                case TempoRimanentePrenotazioneIntent:
-                                    await dc.BeginDialogAsync(nameof(VisualizzaTempo));
-                                break;
-
-                                case VerificaPrenotazioneIntent:
-                                    await dc.BeginDialogAsync(nameof(VisualizzaPrenotazione));
-                                break;
-
-                                case NoneIntent:
-                                default:
-                                   await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.NoneResponse));
-                                break;
-                            }
-
-                            break;
-
-                        case DialogTurnStatus.Waiting:
-                            // The active dialog is waiting for a response from the user, so do nothing.
-                            break;
-
-                        case DialogTurnStatus.Complete:
-                            await dc.EndDialogAsync();
-                            break;
-
-                        default:
-                            await dc.CancelAllDialogsAsync();
-                            break;
-                    }
-                }
-            }
-            else if (activity.Type == ActivityTypes.ConversationUpdate)
-            {
-                if (activity.MembersAdded.Any())
-                {
-                    // Iterate over all new members added to the conversation.
-                    foreach (var member in activity.MembersAdded)
-                    {
-                        // Greet anyone that was not the target (recipient) of this message.
-                        // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
-                        if (member.Id != activity.Recipient.Id)
-                        {
-                            var welcomeCard = CreateAdaptiveCardAttachment();
-                            var response = CreateResponse(activity, welcomeCard);
-                            await dc.Context.SendActivityAsync(response).ConfigureAwait(false);
-                        }
-                    }
-                }
-            }
-            // Update the states
-            await _conversationState.SaveChangesAsync(turnContext);
-            await _userState.SaveChangesAsync(turnContext);
+             await TurnController.TurnHandlerAsync(turnContext, cancellationToken);
         }
-
-        // Determine if an interruption has occured before we dispatch to any active dialog.
-        private async Task<bool> IsTurnInterruptedAsync(DialogContext dc, string topIntent, double score)
-        {
-            // See if there are any conversation interrupts we need to handle.
-            if (topIntent.Equals(PresentazioneIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.PresentazioneResponse));
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            if (topIntent.Equals(GoodbyeIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.SalutoResponse));
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            if (topIntent.Equals(InformazioniIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.InformazioneResponse));
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            if (topIntent.Equals(RingraziamentiIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.RingraziamentoResponse));
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            if (topIntent.Equals(SalutePositivoIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.SalutoPositivoResponse));
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            if (topIntent.Equals(SaluteNegativoIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.SalutoNegativoResponse));
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            if (topIntent.Equals(AnomaliaIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.AnomaliaResponse));
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            if (topIntent.Equals(PossibilitàIntent) && (score > 0.75))
-            {
-                await dc.Context.SendActivityAsync(_responses.RandomResponses(_responses.PossibilitaParcheggioResponse));
-
-                if (dc.ActiveDialog != null)
-                {
-                    await dc.RepromptDialogAsync();
-                }
-
-                return true;        // Handled the interrupt.
-            }
-
-            return false;           // Did not handle the interrupt.
-        }
-
-        // Create an attachment message response.
-        private Activity CreateResponse(Activity activity, Attachment attachment)
-        {
-            var response = activity.CreateReply();
-            response.Attachments = new List<Attachment>() { attachment };
-            return response;
-        }
-
-        // Load attachment from file.
-        private Attachment CreateAdaptiveCardAttachment()
-        {
-            var adaptiveCard = File.ReadAllText(@".\Dialogs\Welcome\Resources\welcomeCard.json");
-            return new Attachment()
-            {
-                ContentType = "application/vnd.microsoft.card.adaptive",
-                Content = JsonConvert.DeserializeObject(adaptiveCard),
-            };
-        }
-
-        /// <summary>
-        /// Helper function to update presentazione state with entities returned by LUIS.
-        /// </summary>
-        /// <param name="luisResult">LUIS recognizer <see cref="RecognizerResult"/>.</param>
-        /// <param name="turnContext">A <see cref="ITurnContext"/> containing all the data needed
-        /// for processing this conversation turn.</param>
-        /// <returns>A task that represents the work queued to execute.</returns>
-
-        //private async Task UpdatePresentazioneState(RecognizerResult luisResult, ITurnContext turnContext)
-        //{
-        //    if (luisResult.Entities != null && luisResult.Entities.HasValues)
-        //    {
-        //        // Get latest GreetingState
-        //        var presentazioneState = await _presentazioneStateAccessor.GetAsync(turnContext, () => new UserModel(0,null));
-        //        var entities = luisResult.Entities;
-
-        //        // Supported LUIS Entities
-        //        string[] nomeEntities = { "nome", "nome_paternAny" };
-
-        //        // Update any entities
-        //        // Note: Consider a confirm dialog, instead of just updating.
-        //        foreach (var nome in nomeEntities)
-        //        {
-        //            // Check if we found valid slot values in entities returned from LUIS.
-        //            if (entities[nome] != null)
-        //            {
-        //                // Capitalize and set new user name.
-        //                var newNome = (string)entities[nome][0];
-        //                presentazioneState.nome = char.ToUpper(newNome[0]) + newNome.Substring(1);
-        //                break;
-        //            }
-        //        }
-
-        //        // Set the new values into state.
-        //        await _presentazioneStateAccessor.SetAsync(turnContext, presentazioneState);
-        //    }
-        //}
     }
 }

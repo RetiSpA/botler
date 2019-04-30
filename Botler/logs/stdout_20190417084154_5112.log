@@ -1,0 +1,14 @@
+
+Unhandled Exception: System.ArgumentException: The content root 'C:\Users\moscagi1\Documents\GitHub\botler\Botler\bin\Debug\netcoreapp2.2\wwwrooot' does not exist.
+Parameter name: contentRootPath
+   at Microsoft.AspNetCore.Hosting.Internal.HostingEnvironmentExtensions.Initialize(IHostingEnvironment hostingEnvironment, String contentRootPath, WebHostOptions options)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.BuildCommonServices(AggregateException& hostingStartupErrors)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Botler.Program.Main(String[] args) in C:\Users\moscagi1\Documents\GitHub\botler\Botler\Program.cs:line 20
+
+Unhandled Exception: System.ArgumentException: The content root 'C:\Users\moscagi1\Documents\GitHub\botler\Botler\bin\Debug\netcoreapp2.2\wwwrooot' does not exist.
+Parameter name: contentRootPath
+   at Microsoft.AspNetCore.Hosting.Internal.HostingEnvironmentExtensions.Initialize(IHostingEnvironment hostingEnvironment, String contentRootPath, WebHostOptions options)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.BuildCommonServices(AggregateException& hostingStartupErrors)
+   at Microsoft.AspNetCore.Hosting.WebHostBuilder.Build()
+   at Botler.Program.Main(String[] args) in C:\Users\moscagi1\Documents\GitHub\botler\Botler\Program.cs:line 20

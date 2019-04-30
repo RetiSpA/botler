@@ -13,6 +13,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Botler.Dialogs.Utility;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
+//using BotAuth.AADv2;
+
 
 namespace Botler
 {
@@ -49,6 +56,11 @@ namespace Botler
         /// <value>
         /// The <see cref="IConfiguration"/> that represents a set of key/value application configuration properties.
         /// </value>
+        public Startup(IConfiguration configuration)
+        {
+            this.Configuration = configuration;
+        }
+
         public IConfiguration Configuration { get; }
 
         /// <summary>
@@ -66,6 +78,7 @@ namespace Botler
 
             // Add BotServices singleton.
             // Create the connected services from .bot file.
+            var serviceBot = new BotServices(botConfig);
             services.AddSingleton(sp => new BotServices(botConfig));
 
             //services.AddMvc();
@@ -73,6 +86,7 @@ namespace Botler
             // Retrieve current endpoint.
             var environment = _isProduction ? "production" : "development";
             var service = botConfig.Services.Where(s => s.Type == "endpoint" && s.Name == environment).FirstOrDefault();
+            
             if (!(service is EndpointService endpointService))
             {
                 throw new InvalidOperationException($"The .bot file does not contain an endpoint with name '{environment}'.");
@@ -81,34 +95,26 @@ namespace Botler
             // Memory Storage is for local bot debugging only. When the bot
             // is restarted, everything stored in memory will be gone.
             IStorage dataStore = new MemoryStorage();
-
-            // For production bots use the Azure Blob or
-            // Azure CosmosDB storage providers. For the Azure
-            // based storage providers, add the Microsoft.Bot.Builder.Azure
-            // Nuget package to your solution. That package is found at:
-            // https://www.nuget.org/packages/Microsoft.Bot.Builder.Azure/
-            // Un-comment the following lines to use Azure Blob Storage
-            // // Storage configuration name or ID from the .bot file.
-            // const string StorageConfigurationId = "<STORAGE-NAME-OR-ID-FROM-BOT-FILE>";
-            // var blobConfig = botConfig.FindServiceByNameOrId(StorageConfigurationId);
-            // if (!(blobConfig is BlobStorageService blobStorageConfig))
-            // {
-            //    throw new InvalidOperationException($"The .bot file does not contain an blob storage with name '{StorageConfigurationId}'.");
-            // }
-            // // Default container name.
-            // const string DefaultBotContainer = "<DEFAULT-CONTAINER>";
-            // var storageContainer = string.IsNullOrWhiteSpace(blobStorageConfig.Container) ? DefaultBotContainer : blobStorageConfig.Container;
-            // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage(blobStorageConfig.ConnectionString, storageContainer);
-
+         
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);
             services.AddSingleton(conversationState);
             // Create and add User state
             var userState = new UserState(dataStore);
             services.AddSingleton(userState);
+
+            var accessors = new BotlerAccessors(userState, conversationState);
+
+            services.AddSingleton<BotlerAccessors>(sp =>
+            {
+                return new BotlerAccessors(userState, conversationState)
+                {
+                    UserState = userState,
+                    ConversationState = conversationState,
+                };
+            });
+
             // Create and add responses
-            var responses = new Responses();
-            services.AddSingleton(responses);
 
             services.AddBot<Botler>(options =>
             {

@@ -8,6 +8,8 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Botler.Dialogs.Utility;
 using Microsoft.Extensions.Logging;
+using static Botler.Dialogs.Utility.Responses;
+using static Botler.Dialogs.Utility.ListsResponsesIT;
 
 namespace Botler.Dialogs.Dialoghi
 {
@@ -16,10 +18,10 @@ namespace Botler.Dialogs.Dialoghi
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
         private const string RispostaPrompt = "rispostaPrompt";
-        private readonly Responses _responses;
+
 
         // Inizializza una nuova istanza della classe Prenotazione.
-        public Prenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory, Responses responses)
+        public Prenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
             : base(nameof(Prenotazione))
         {
             UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
@@ -32,8 +34,6 @@ namespace Botler.Dialogs.Dialoghi
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
             AddDialog(new ChoicePrompt(RispostaPrompt));
-
-            _responses = responses;
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -94,7 +94,7 @@ namespace Botler.Dialogs.Dialoghi
 
                             var prenotazioneNomeLotto = prenotazione.nomeLotto;
                             var prenotazioneIdPosto = prenotazione.id_posto.ToString();
-                            string randomResp = _responses.RandomResponses(_responses.PrenotazioneSuccessoResponse);
+                            string randomResp =  RandomResponses( PrenotazioneSuccessoResponse);
 
                             await context.SendActivityAsync(String.Format(@randomResp ,prenotazioneNomeLotto, prenotazioneIdPosto));
                             return await stepContext.EndDialogAsync();
@@ -109,14 +109,14 @@ namespace Botler.Dialogs.Dialoghi
                                     var resp = await Utility.Utility.cancellaPrenotazione(verificaPrenotazione.id_posto);
                                     if (resp)
                                     {
-                                        await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse));
+                                        await context.SendActivityAsync( RandomResponses( PrenotazioneScadutaResponse));
                                         Botler.prenotazione = false;
                                         return await stepContext.EndDialogAsync();
                                     }
                                 }
                                 else
                                 {
-                                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneEffettuataResponse));
+                                    await context.SendActivityAsync( RandomResponses( PrenotazioneEffettuataResponse));
                                     return await stepContext.EndDialogAsync();
                                 }
                             }
@@ -137,13 +137,13 @@ namespace Botler.Dialogs.Dialoghi
                 }
                 catch
                 {
-                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneSessioneScadutaResponse));
+                    await context.SendActivityAsync( RandomResponses( PrenotazioneSessioneScadutaResponse));
                     return await stepContext.EndDialogAsync();
                 }
             }
             else
             {
-                await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneSceltaNoResponse));
+                await context.SendActivityAsync( RandomResponses( PrenotazioneSceltaNoResponse));
                 return await stepContext.EndDialogAsync();
             }
         }

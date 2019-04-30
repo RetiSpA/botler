@@ -6,6 +6,8 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
 using Botler.Dialogs.Utility;
+using static Botler.Dialogs.Utility.Responses;
+using static Botler.Dialogs.Utility.ListsResponsesIT;
 
 namespace Botler.Dialogs.Dialoghi
 {
@@ -13,10 +15,10 @@ namespace Botler.Dialogs.Dialoghi
     {
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
-        private readonly Responses _responses;
+
 
         // Inizializza una istanza della classe VisualizzaTempo.
-        public VisualizzaTempo(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory, Responses responses)
+        public VisualizzaTempo(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
             : base(nameof(VisualizzaTempo))
         {
             UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
@@ -28,8 +30,6 @@ namespace Botler.Dialogs.Dialoghi
                     DisplayScadenzaStateStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
-
-            _responses = responses;
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -70,7 +70,7 @@ namespace Botler.Dialogs.Dialoghi
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
                         {
-                            await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse)); //genera una risposta random
+                            await context.SendActivityAsync( RandomResponses( PrenotazioneScadutaResponse)); //genera una risposta random
                             Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
@@ -92,10 +92,10 @@ namespace Botler.Dialogs.Dialoghi
                         string tempoPrenotazioneOraFine = Botler.tempoPrenotazione.ToString("HH:mm:ss");
 
                         // Invio data e ora della prenotazione, e tempo di validità
-                        string randomRespDataOra = _responses.RandomResponses(_responses.PrenotazioneDataOraResponse);
+                        string randomRespDataOra =  RandomResponses( PrenotazioneDataOraResponse);
                         await context.SendActivityAsync(String.Format(@randomRespDataOra, tempoPrenotazioneData, tempoPrenotazioneOraInizio, tempoPrenotazioneOraFine));
                         // Invio del tempo a disposizione, prima che il parcheggio scada
-                        string randomRespTempoDisp = _responses.RandomResponses(_responses.PrenotazioneTempoDisponibileResponse);
+                        string randomRespTempoDisp =  RandomResponses( PrenotazioneTempoDisponibileResponse);
                         await context.SendActivityAsync(String.Format(@randomRespTempoDisp, minuti, secondi));
 
                         return await stepContext.EndDialogAsync();
@@ -104,7 +104,7 @@ namespace Botler.Dialogs.Dialoghi
                 }
                 else
                 {
-                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneNonTrovataResponse));
+                    await context.SendActivityAsync( RandomResponses( PrenotazioneNonTrovataResponse));
                     return await stepContext.EndDialogAsync();
                 }
             }

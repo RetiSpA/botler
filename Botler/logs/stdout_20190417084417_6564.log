@@ -1,0 +1,8 @@
+Hosting environment: Development
+Content root path: C:\Users\moscagi1\Documents\GitHub\botler\Botler
+Now listening on: http://127.0.0.1:26010
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/favicon.ico  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 76.7095ms 404 

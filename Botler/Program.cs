@@ -4,13 +4,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Resources;
-using System.Globalization;
-using System.Collections.Generic;
+
 namespace Botler
 {
     public class Program
@@ -20,7 +14,7 @@ namespace Botler
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder (string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureLogging((hostingContext, logging) =>
                 {

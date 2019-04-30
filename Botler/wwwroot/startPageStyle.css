@@ -15,11 +15,14 @@ h2 {
 }
 
 p {
-    color: whitesmoke;
+    color: black;
 }
 
-iframe {
+#webchat{
     background-color: whitesmoke;
+    min-width: 400px;
+    min-height: 500px;
+    height: 50%;
 }
 
 ul li {

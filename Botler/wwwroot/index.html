@@ -1,32 +1,97 @@
 ﻿<!DOCTYPE html>
 <html>
-<link rel="stylesheet" href="startPageStyle.css">
-<head>
-    <title>botler</title>
-    <meta charset="utf-8" />
-</head>
-<body style="font-family:'Segoe UI'" , background="WorldBackground.png">
-    <div class="testo">
-        <div class="header">
-            <img src="Innovazione.png" alt="logo" />
-            <h1>BotLer</h1>
+    <!-- <link rel="stylesheet" href="startPageStyle.css"> -->
+    <head>
+        <title>Botler - WebChat -</title>
+        <meta charset="utf-8" />
+    </head>
+    <body style="font-family:'Segoe UI'" , background="WorldBackground.png">
+        <div class="testo">
+            <div class="header">
+                <img src="Innovazione.png" alt="logo" />
+                <h1>BotLer</h1>
+            </div>
+            <pr>Smart Parking Bot</pr>
+            <div rel="immagineBot"><img src="bb8RetiResize.png" alt="immaginebot" height="100" width="100" /></div>
+            <pr>Si interfaccia ai dispositivi IoT grazie alle API SmartParking</pr>
+            <pr>Utilizza LUIS come base di conoscenza per il riconoscimento del linguaggio naturale</pr>
+
+            <style>
+                body {
+                    background-color: whitesmoke;
+                }
+
+                div {
+                    text-align: center;
+                }
+
+                h1 {
+                    color: #eb212e;
+                }
+
+                h2 {
+                    color: black;
+                }
+
+                pr {
+                    color: white;
+                }
+
+                p{
+                    color: black;
+                }
+                #webchat{
+                    background-color: whitesmokes;
+                    min-width: 400px;
+                    min-height: 500px;
+                    height: 50%;
+                }
+
+                ul li {
+                    text-align: center;
+                    color: whitesmoke;
+                }
+
+                p#linkReti {
+                    color: black;
+                }
+
+                a {
+                    color: black;
+                    text-decoration: none;
+                }
+            </style>
+
+            <p><a href="https://join.skype.com/bot/d027b06b-687b-4f3f-aabc-192364e8b8e3"><img alt="Add Bot to Skype"
+                    height="38" width="142" src="https://secure.skypeassets.com/content/dam/scom/images/add-bot-button/add-to-skype-buttons02-36px.png" /></a></p>
+
+            <!-- [Old WebChat V3] <iframe src='https://webchat.botframework.com/embed/botLerV4?s=BpzXqPdzQ6o.cwA.ejw.ojlT0_4bYtgtB-ANz3C5hnOtoJ3BKotb2quLYopPyN8'
+                 style='min-width: 400px; width: 100%; min-height: 500px;'></iframe> -->
+
+            <!-- WebChat V4 -->
+            <div id="webchat" role="main"></div>
+            <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+            <script>
+              window.WebChat.renderWebChat({
+                directLine: window.WebChat.createDirectLine({ token: 'fTY02w2BYk0.cwA.HWA.AQLUTaP6cvBhZCa8ysE_zSTGQWOpLQiAIK2BqzUXY0c' }),
+                userID: 'YOUR_USER_ID',
+                username: 'Web Chat User',
+                locale: 'en-US',
+                botAvatarInitials: 'Butler',
+                userAvatarInitials: 'You'
+              }, document.getElementById('webchat'));
+            </script>
+
+            <!--<p>Domande Utili</p>
+            <div id="menu">
+                <ul>
+                    <li>Prenota parcheggio</li>
+                    <li>Cancella prenotazione</li>
+                    <li>Visualizza prenotazione</li>
+                    <li>Tempo rimanente</li>
+                </ul>
+            </div>-->
+            <p id="linkReti"><a href="http://www.reti.it"> www.reti.it </a></p>
         </div>
-        <p>Smart Parking Bot</p>
-        <div rel="immagineBot"><img src="bb8RetiResize.png" alt="immaginebot" height="100" width="100" /></div>
-        <p>Si interfaccia ai dispositivi IoT grazie alle API SmartParking</p>
-        <p>Utilizza LUIS come base di conoscenza per il riconoscimento del linguaggio naturale</p>
-        <p><a href="https://join.skype.com/bot/d027b06b-687b-4f3f-aabc-192364e8b8e3"><img alt="Add Bot to Skype" height="38" width="142" src="https://secure.skypeassets.com/content/dam/scom/images/add-bot-button/add-to-skype-buttons02-36px.png" /></a></p>
-        <iframe src='https://webchat.botframework.com/embed/botLerV4?s=BpzXqPdzQ6o.cwA.ejw.ojlT0_4bYtgtB-ANz3C5hnOtoJ3BKotb2quLYopPyN8' style='min-width: 400px; width: 100%; min-height: 500px;'></iframe>
-        <!--<p>Domande Utili</p>
-        <div id="menu">
-            <ul>
-                <li>Prenota parcheggio</li>
-                <li>Cancella prenotazione</li>
-                <li>Visualizza prenotazione</li>
-                <li>Tempo rimanente</li>
-            </ul>
-        </div>-->
-        <p id="linkReti"><a href="http://www.reti.it"> www.reti.it </a></p>
-    </div>
-</body>
+    </body>
 </html>

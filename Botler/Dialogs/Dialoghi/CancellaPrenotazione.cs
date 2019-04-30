@@ -7,6 +7,8 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using static Botler.Dialogs.Utility.Responses;
+using static Botler.Dialogs.Utility.ListsResponsesIT;
 
 
 namespace Botler.Dialogs.Dialoghi
@@ -19,10 +21,8 @@ namespace Botler.Dialogs.Dialoghi
         // Dialog IDs
         private const string ProfileDialog = "profileDialog";
 
-        private readonly Responses _responses;
-
         // Inizializza una nuova istanza della classe CancellaPrenotazione.
-        public CancellaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory, Responses responses)
+        public CancellaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
             : base(nameof(CancellaPrenotazione))
         {
             UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
@@ -34,8 +34,6 @@ namespace Botler.Dialogs.Dialoghi
                     PromptForCancellaPrenotazioneStepAsync,
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
-
-            _responses = responses;
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -76,7 +74,7 @@ namespace Botler.Dialogs.Dialoghi
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
                         {
-                             await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse)); //genera una risposta random
+                             await context.SendActivityAsync( RandomResponses(PrenotazioneScadutaResponse)); //genera una risposta random
                             Botler.prenotazione = false;
                             return await stepContext.EndDialogAsync();
                         }
@@ -85,14 +83,14 @@ namespace Botler.Dialogs.Dialoghi
                     {
                         Botler.prenotazione = false;
 
-                        await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneEliminataResponse)); //genera una risposta random
+                        await context.SendActivityAsync( RandomResponses( PrenotazioneEliminataResponse)); //genera una risposta random
                         await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         return await stepContext.EndDialogAsync();
                     }
                 }
                 else
                 {
-                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneNonTrovataResponse)); //genera una risposta random
+                    await context.SendActivityAsync( RandomResponses( PrenotazioneNonTrovataResponse)); //genera una risposta random
                     return await stepContext.EndDialogAsync();
                 }
 
@@ -100,7 +98,7 @@ namespace Botler.Dialogs.Dialoghi
             }
             catch
             {
-                await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneSessioneScadutaResponse));
+                await context.SendActivityAsync( RandomResponses( PrenotazioneSessioneScadutaResponse));
                 return await stepContext.EndDialogAsync();
             }
         }

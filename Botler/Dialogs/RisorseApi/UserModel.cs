@@ -10,6 +10,8 @@ namespace Botler.Dialogs.RisorseApi
 
         public int id_utente { get; set; }
 
+        public bool autenticato { get; set; } = false;
+
         public UserModel(int id_utente, string email)
         {
             this.id_utente = id_utente;

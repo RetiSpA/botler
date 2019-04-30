@@ -38,5 +38,5 @@ msbuild.wrn
 
 # Bot Configurations
 *.bot
-# 
+#
 .csproj

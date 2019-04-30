@@ -6,17 +6,17 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Extensions.Logging;
 using Botler.Dialogs.Utility;
-
+using static Botler.Dialogs.Utility.Responses;
+using static Botler.Dialogs.Utility.ListsResponsesIT;
 namespace Botler.Dialogs.Dialoghi
 {
     public class VisualizzaPrenotazione : ComponentDialog
     {
         // Dialog IDs.
         private const string ProfileDialog = "profileDialog";
-        private readonly Responses _responses;
 
         // Inizializza una nuova istanza della classe Visualizza prenotazione.
-        public VisualizzaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory, Responses responses)
+        public VisualizzaPrenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
             : base(nameof(VisualizzaPrenotazione))
         {
             UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
@@ -29,7 +29,6 @@ namespace Botler.Dialogs.Dialoghi
             };
             AddDialog(new WaterfallDialog(ProfileDialog, waterfallSteps));
 
-            _responses = responses;
         }
 
         public IStatePropertyAccessor<PrenotazioneModel> UserProfileAccessor { get; }
@@ -71,7 +70,7 @@ namespace Botler.Dialogs.Dialoghi
                         if (resp)
                         {
 
-                            await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneScadutaResponse));
+                            await context.SendActivityAsync( RandomResponses( PrenotazioneScadutaResponse));
                             Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
@@ -82,7 +81,7 @@ namespace Botler.Dialogs.Dialoghi
                         var prenotazioneNomeLotto = prenotazione.nomeLotto;
                         var prenotazioneIdPosto = prenotazione.id_posto;
 
-                        string randomRespons = _responses.RandomResponses(_responses.VisualizzaPrenotazioneResponse);
+                        string randomRespons =  RandomResponses( VisualizzaPrenotazioneResponse);
                         await context.SendActivityAsync(String.Format(@randomRespons, prenotazioneNomeLotto, prenotazioneIdPosto));
 
                         return await stepContext.EndDialogAsync();
@@ -92,7 +91,7 @@ namespace Botler.Dialogs.Dialoghi
                 else
                 // Nega l'esistenza di una prenotazione
                 {
-                    await context.SendActivityAsync(_responses.RandomResponses(_responses.PrenotazioneNonTrovataResponse));
+                    await context.SendActivityAsync( RandomResponses( PrenotazioneNonTrovataResponse));
                     return await stepContext.EndDialogAsync();
                 }
 
