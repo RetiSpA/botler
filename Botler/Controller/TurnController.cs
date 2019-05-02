@@ -48,7 +48,7 @@ namespace Botler.Controller
 
         private ITurnContext CurrentTurn;
 
-        private readonly ScenarioController<IScenario> _scenarioController;
+        private readonly ScenarioController _scenarioController;
 
         public TurnController(BotlerAccessors accessors, BotServices services)
         {
@@ -81,6 +81,9 @@ namespace Botler.Controller
                 case ActivityTypes.Event:
                     await StartEventActivityAsync(cancellationToken: cancellationToken);
                     break;
+                case ActionTypes.ImBack:
+                    await CurrentTurn.SendActivityAsync("Inizio fase di autenticaizone in corso", cancellationToken: cancellationToken);
+                    break;
             }
         }
 
@@ -112,7 +115,7 @@ namespace Botler.Controller
                         // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
                         if (member.Id != CurrentActivity.Recipient.Id)
                         {
-                            var welcomeCard = CreateAdaptiveCardAttachment();
+                            var welcomeCard = CreateWelcomeHeroCard();
                             var response = CreateResponse(CurrentActivity, welcomeCard);
                             await CurrentTurn.SendActivityAsync(response).ConfigureAwait(false);
                         }
@@ -141,7 +144,16 @@ namespace Botler.Controller
             // Check if is in Interrupeted state -> Need to handle interrupts first.
             var isInterrupted =  await _scenarioController.CreateResponseForInterruptedStateAsync();
 
-            if (isInterrupted != string.Empty) //Send the response based on interruption intent and save the state before the next turn
+            if(isInterrupted.Equals("Autenticazione"))
+            {
+                Console.WriteLine("PostBack: Autenticazione");
+                await SaveState();
+                await _scenarioController.HandleDialogResultStatusAsync();
+                await SaveState();
+                return;
+            }
+
+            if (isInterrupted != string.Empty) // Send the response based on interruption intent and save the state before the next turn
             {
                 await CurrentTurn.SendActivityAsync(isInterrupted, cancellationToken: cancellationToken);
                 await _scenarioController.RepromptLastActivityDialogAsync();
@@ -172,6 +184,7 @@ namespace Botler.Controller
             return luisServiceResult;
 
         }
+
         /// <summary>
         /// QnA Result
         /// </summary>
@@ -228,6 +241,26 @@ namespace Botler.Controller
                 ContentType = "application/vnd.microsoft.card.adaptive",
                 Content = JsonConvert.DeserializeObject(adaptiveCard),
             };
+        }
+
+        private Attachment CreateWelcomeHeroCard()
+        {
+            var heroCard = new HeroCard()
+            {
+                Title = "Botler",
+                Subtitle = "Il ChatBot di Reti S.p.A",
+                Buttons = new List<CardAction> {
+
+                    new CardAction(ActionTypes.OpenUrl, "Pagina principale del sito", value: "https://www.reti.it/"),
+                    new CardAction(ActionTypes.OpenUrl, "Contattaci per qualsiasi curiosità", value: "https://www.reti.it/contattaci/"),
+                    new CardAction(ActionTypes.OpenUrl, "Rimani aggiornato consultando il nostro blog", value: "https://www.reti.it/blog/"),
+                    new CardAction(ActionTypes.PostBack, "Sei un dipedente Reti S.p.A? Autenticati qui", value: "Autenticazione")
+                },
+                Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
+
+            };
+
+            return heroCard.ToAttachment();
         }
     }
 

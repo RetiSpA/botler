@@ -5,15 +5,15 @@
   "body": [
     {
       "type": "Image",
-      "url": "https://terenzio.net/wp-content/uploads/2017/02/LOGO-RETI-1.png",
-      "size": "stretch",
+      "url": "https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif",
+      "size": "stretch"
     },
     {
       "type": "TextBlock",
       "spacing": "medium",
       "size": "default",
       "weight": "bolder",
-      "text": "Benvenuto! Sono Botler e sono il bot di Reti s.p.a che ti guiderà in una prenotazione di un posteggio auto.",
+      "text": "Benvenuto! Sono Botler e sono il bot di Reti S.p.A",
       "wrap": true,
       "maxLines": 0
     },
@@ -23,6 +23,15 @@
       "size": "default",
       "weight": "bolder",
       "text": "Di seguito troverai qualche link di utilità riguardo la nostra azienda, consultalo per saperne di più!",
+      "wrap": true,
+      "maxLines": 0
+    },
+    {
+      "type": "TextBlock",
+      "spacing": "medium",
+      "size": "default",
+      "weight": "bolder",
+      "text": "Se sei un dipendente Reti, e vuoi autenticarti, usa il comando: Autenticazione",
       "wrap": true,
       "maxLines": 0
     }

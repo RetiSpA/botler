@@ -19,5 +19,7 @@ namespace Botler.Dialogs.Scenari
         DialogSet GetDialogSet();
 
         Dialog GetDialogByID(string ID);
+
+        bool isAnAuthScenario();
     }
 }

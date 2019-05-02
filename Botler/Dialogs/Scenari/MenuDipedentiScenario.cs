@@ -18,29 +18,29 @@ using static Botler.Dialogs.Utility.Responses;
 
 namespace Botler.Dialogs.Scenari
 {
-    public class DefaultScenario : IScenario
+    public class MenuDipedentiScenario : IScenario
     {
-        public DefaultScenario(BotlerAccessors accessors)
+        private readonly DialogSet _dialogs;
+
+        public MenuDipedentiScenario(BotlerAccessors accessors)
         {
-            ScenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
-            ScenarioDialogs.Add(new MenuDipendenti(accessors));
+            _dialogs = new DialogSet(accessors.DialogStateAccessor);
+            _dialogs.Add(new MenuDipendenti(accessors));
         }
 
-        private DialogSet ScenarioDialogs;
-
-        public Dialog GetDialogByID(string idDialog)
+        public Dialog GetDialogByID(string ID)
         {
-            return ScenarioDialogs.Find(nameof(idDialog));
-        }
-
-        public string GetScenarioID()
-        {
-            return "Default";
+            throw new NotImplementedException();
         }
 
         public DialogSet GetDialogSet()
         {
-            return ScenarioDialogs;
+            return _dialogs;
+        }
+
+        public string GetScenarioID()
+        {
+            return "MenuDipendenti";
         }
 
         public bool isAnAuthScenario()

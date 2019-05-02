@@ -31,11 +31,13 @@ namespace Botler
             ConversationState = conversationState ?? throw new ArgumentNullException(nameof(conversationState));
 
             DialogStateAccessor = ConversationState.CreateProperty<DialogState>(nameof(DialogState));
+            ScenarioStateAccessors = UserState.CreateProperty<string>(nameof(IScenario));
             PrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             CancellaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             VisualizzaTempoStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             VisualizzaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
-            ScenarioStateAccessors = ConversationState.CreateProperty<IScenario>(nameof(IScenario));
+            AutenticazioneDipedenteAccessors = UserState.CreateProperty<bool>("AutenticazioneDipedente");
+
         }
 
         public UserState UserState { get; set; }
@@ -52,7 +54,9 @@ namespace Botler
 
         public IStatePropertyAccessor<DialogState> DialogStateAccessor { get; set; }
 
-        public IStatePropertyAccessor<IScenario> ScenarioStateAccessors { get; set; }
+        public IStatePropertyAccessor<string> ScenarioStateAccessors { get; set; }
+
+        public IStatePropertyAccessor<bool> AutenticazioneDipedenteAccessors { get; set; }
 
         public async Task SaveConvStateAsync(ITurnContext turnContext)
         {

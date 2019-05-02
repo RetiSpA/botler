@@ -21,22 +21,23 @@ namespace Botler.Dialogs.Scenari
     public class ParkingScenario : IScenario
     {
         private readonly BotlerAccessors _accessors;
+
         public ParkingScenario(BotlerAccessors accessors)
         {
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             ILoggerFactory loggerFactory = new LoggerFactory();
             ScenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
-            // Aggiungere Dialogo Autenticazione TODO
+            
             ScenarioDialogs.Add(new Prenotazione(_accessors.PrenotazioneStateAccessor, loggerFactory));
             ScenarioDialogs.Add(new CancellaPrenotazione(_accessors.CancellaPrenotazioneStateAccessor, loggerFactory));
             ScenarioDialogs.Add(new VisualizzaTempo(_accessors.VisualizzaTempoStateAccessor, loggerFactory));
             ScenarioDialogs.Add(new VisualizzaPrenotazione(_accessors.VisualizzaPrenotazioneStateAccessor, loggerFactory));
         }
+
         private DialogSet ScenarioDialogs;
-     
-        public bool IsAnAuthScenario { get; } = true;
 
         public TokenResponse tokenAuth { get; set; }
+
         public Dialog GetDialogByID(string idDialog)
         {
             return ScenarioDialogs.Find(nameof(idDialog));
@@ -51,5 +52,11 @@ namespace Botler.Dialogs.Scenari
         {
             return ScenarioDialogs;
         }
+
+        public bool isAnAuthScenario()
+        {
+            return true;
+        }
+
     }
 }

@@ -75,11 +75,9 @@ namespace Botler
             {
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAMakerKey}`.");
             }
- 
+
             TurnController = new TurnController(_accessors, _services);
         }
-
-        private DialogSet Dialogs { get; set; }
 
         /// <summary>
         /// Run every turn of the conversation.

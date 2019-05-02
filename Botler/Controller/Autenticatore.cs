@@ -28,10 +28,18 @@ using static Botler.Dialogs.Utility.BotConst;
 namespace Botler.Controller
 {
 
-    public class Authenticator
+    public class Autenticatore
     {
+
         private Regex magicCodeRegex = new Regex("\\d{6}");
-        public async Task SendOAuthCardAsync(ITurnContext turnContext, IMessageActivity message, CancellationToken cancellationToken = default(CancellationToken))
+
+        private readonly ITurnContext _turn;
+
+        public Autenticatore()
+        {
+        }
+
+        public async Task<IMessageActivity> SendOAuthCardAsync(ITurnContext turnContext, IMessageActivity message, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (message.Attachments == null)
             {
@@ -43,7 +51,7 @@ namespace Botler.Controller
                 ContentType = OAuthCard.ContentType,
                 Content = new OAuthCard
                 {
-                    Text = "Per continuare hai bisogno di autenticarti:",
+                    Text = "Clicca qui per procedere con l'autenticazione:",
                     ConnectionName = ConnectionName,
                     Buttons = new[]
                     {
@@ -56,8 +64,37 @@ namespace Botler.Controller
                     },
                 },
             });
-            message.Text = string.Empty; // not need to reply the msg
-            await turnContext.SendActivityAsync(message, cancellationToken).ConfigureAwait(false);
+            Console.WriteLine("Sending OAuthCard");
+           // message.Text = string.Empty; // not need to reply the msg
+           return message;
+        }
+        public Activity CreateOAuthCard(ITurnContext turn)
+        {
+            var response = turn.Activity.CreateReply();
+            response.Attachments.Add(new Attachment
+            {
+                ContentType = OAuthCard.ContentType,
+                Content = new OAuthCard
+                {
+                    Text = "Clicca qui per procedere con l'autenticazione:",
+                    ConnectionName = ConnectionName,
+                    Buttons = new[]
+                    {
+                        new CardAction
+                        {
+                            Title = "Sign In",
+                            Text = "Sign In",
+                            Type = ActionTypes.Signin,
+                        },
+                    },
+                },
+            });
+            return response;
+        }
+        public bool MagicCodeFound(string magicCode)
+        {
+            var matched = magicCodeRegex.Match(magicCode);
+            return matched.Success;
         }
 
         public async Task<TokenResponse> RecognizeTokenAsync(ITurnContext turnContext,  BotFrameworkAdapter adapter, CancellationToken cancellationToken = default(CancellationToken))
@@ -77,7 +114,7 @@ namespace Botler.Controller
                 var magicCode = magicCodeObject.GetValue("state")?.ToString();
 
                 var token = await adapter.GetUserTokenAsync(turnContext, ConnectionName, magicCode, cancellationToken).ConfigureAwait(false);
-                await turnContext.SendActivityAsync(token.ToString()+"Invoke", cancellationToken: cancellationToken);
+                //await turnContext.SendActivityAsync(token.ToString()+"Invoke", cancellationToken: cancellationToken);
 
                 return token;
             }
