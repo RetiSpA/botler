@@ -23,7 +23,6 @@ namespace Botler.Dialogs.Scenari
         public DefaultScenario(BotlerAccessors accessors)
         {
             ScenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
-            ScenarioDialogs.Add(new MenuDipendenti(accessors));
         }
 
         private DialogSet ScenarioDialogs;

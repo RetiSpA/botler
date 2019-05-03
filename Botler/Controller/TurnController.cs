@@ -81,9 +81,6 @@ namespace Botler.Controller
                 case ActivityTypes.Event:
                     await StartEventActivityAsync(cancellationToken: cancellationToken);
                     break;
-                case ActionTypes.ImBack:
-                    await CurrentTurn.SendActivityAsync("Inizio fase di autenticaizone in corso", cancellationToken: cancellationToken);
-                    break;
             }
         }
 
@@ -94,7 +91,8 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task StartEventActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException();
+            // _scenarioController.InitTurnAccessors(CurrentTurn, new LuisServiceResult(), cancellationToken);
+            // await _scenarioController.HandleCommandAsync();
         }
 
         /// <summary>
@@ -144,11 +142,11 @@ namespace Botler.Controller
             // Check if is in Interrupeted state -> Need to handle interrupts first.
             var isInterrupted =  await _scenarioController.CreateResponseForInterruptedStateAsync();
 
-            if(isInterrupted.Equals("Autenticazione"))
+            // Checks if in this turn the user send a command
+            var commandFound = await _scenarioController.HandleCommandAsync();
+
+            if(commandFound)
             {
-                Console.WriteLine("PostBack: Autenticazione");
-                await SaveState();
-                await _scenarioController.HandleDialogResultStatusAsync();
                 await SaveState();
                 return;
             }
@@ -215,7 +213,7 @@ namespace Botler.Controller
             if (!CurrentTurn.Responded)
             {
                 var result =  await _scenarioController.HandleDialogResultStatusAsync();
-
+               
                 if(result is null) // None Intent returned
                 {
                     await CurrentTurn.SendActivityAsync(RandomResponses(NoneResponse));
@@ -254,7 +252,7 @@ namespace Botler.Controller
                     new CardAction(ActionTypes.OpenUrl, "Pagina principale del sito", value: "https://www.reti.it/"),
                     new CardAction(ActionTypes.OpenUrl, "Contattaci per qualsiasi curiosità", value: "https://www.reti.it/contattaci/"),
                     new CardAction(ActionTypes.OpenUrl, "Rimani aggiornato consultando il nostro blog", value: "https://www.reti.it/blog/"),
-                    new CardAction(ActionTypes.PostBack, "Sei un dipedente Reti S.p.A? Autenticati qui", value: "Autenticazione")
+                    new CardAction(ActionTypes.PostBack, "Clicca qui per accedere all'Area Riservata Reti S.p.A", value: "Autenticazione")
                 },
                 Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
 
@@ -271,8 +269,4 @@ namespace Botler.Controller
         public Tuple<string,double> TopScoringIntent { get; set; }
 
     }
-
-
-
-
 }

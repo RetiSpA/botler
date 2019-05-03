@@ -72,9 +72,9 @@ namespace Botler.Dialogs.Utility
 
         public static IList<string> PrenotazioneScadutaResponse { get; } = GenerateResponsesFromName("PrenotazioneScaduta");
 
-        public static IList<string> PossibilitaParcheggioResponse { get; } = GenerateResponsesFromName("PrenotazioneParcheggio");
+        public static IList<string> PossibilitaParcheggioResponse { get; } = GenerateResponsesFromName("PossibilitaParcheggio");
 
-        public static IList<string> PrenotazioneSuccessoResponse { get; } = GenerateResponsesFromName("PossibilitaSuccesso");
+        public static IList<string> PrenotazioneSuccessoResponse { get; } = GenerateResponsesFromName("PrenotazioneSuccesso");
 
         public static IList<string> PrenotazioneSessioneScadutaResponse { get; } = GenerateResponsesFromName("PrenotazioneSessioneScaduta");
 

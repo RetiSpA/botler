@@ -301,13 +301,14 @@
     <value>Hai prenotato il parcheggio {0} numero {1}</value>
   </data>
   <data name="VisualizzaPrenotazione_3" xml:space="preserve">
-    <value>{0} , {1} Dovrebbe essere questa :)</value>
+    <value>{0} , {1} Ecco la tua prenotazione:)</value>
   </data>
   <data name="AutenticazioneSuccesso_1" xml:space="preserve">
     <value>Sei stato autenticato con successo!</value>
   </data>
   <data name="AutenticazioneSuccesso_2" xml:space="preserve">
     <value>Autenticazione completata!</value>
+  </data>
   <data name="AutenticazioneSuccesso_3" xml:space="preserve">
     <value>Login Effettuato, Benvenuto</value>
   </data>

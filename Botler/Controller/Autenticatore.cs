@@ -35,42 +35,12 @@ namespace Botler.Controller
 
         private readonly ITurnContext _turn;
 
-        public Autenticatore()
-        {
-        }
+        public Autenticatore(){}
 
-        public async Task<IMessageActivity> SendOAuthCardAsync(ITurnContext turnContext, IMessageActivity message, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (message.Attachments == null)
-            {
-                message.Attachments = new List<Attachment>();
-            }
-
-            message.Attachments.Add(new Attachment
-            {
-                ContentType = OAuthCard.ContentType,
-                Content = new OAuthCard
-                {
-                    Text = "Clicca qui per procedere con l'autenticazione:",
-                    ConnectionName = ConnectionName,
-                    Buttons = new[]
-                    {
-                        new CardAction
-                        {
-                            Title = "Sign In",
-                            Text = "Sign In",
-                            Type = ActionTypes.Signin,
-                        },
-                    },
-                },
-            });
-            Console.WriteLine("Sending OAuthCard");
-           // message.Text = string.Empty; // not need to reply the msg
-           return message;
-        }
         public Activity CreateOAuthCard(ITurnContext turn)
         {
             var response = turn.Activity.CreateReply();
+
             response.Attachments.Add(new Attachment
             {
                 ContentType = OAuthCard.ContentType,
@@ -91,8 +61,10 @@ namespace Botler.Controller
             });
             return response;
         }
+
         public bool MagicCodeFound(string magicCode)
         {
+            if (magicCode is null) return false;
             var matched = magicCodeRegex.Match(magicCode);
             return matched.Success;
         }
@@ -114,7 +86,6 @@ namespace Botler.Controller
                 var magicCode = magicCodeObject.GetValue("state")?.ToString();
 
                 var token = await adapter.GetUserTokenAsync(turnContext, ConnectionName, magicCode, cancellationToken).ConfigureAwait(false);
-                //await turnContext.SendActivityAsync(token.ToString()+"Invoke", cancellationToken: cancellationToken);
 
                 return token;
             }
@@ -133,9 +104,7 @@ namespace Botler.Controller
 
             return null;
         }
-                    //await CurrentTurn.SendActivityAsync(RandomResponses(NoneResponse));
-                    //autenticazione = true;
-                    //await SendOAuthCardAsync(turnContext, CurrentActivity.AsMessageActivity(), cancellationToken: cancellationToken);
+
         private bool IsTokenResponseEvent(ITurnContext turnContext)
         {
             var activity = turnContext.Activity;

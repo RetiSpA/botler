@@ -94,7 +94,7 @@ namespace Botler.Dialogs.Dialoghi
 
                             var prenotazioneNomeLotto = prenotazione.nomeLotto;
                             var prenotazioneIdPosto = prenotazione.id_posto.ToString();
-                            string randomResp =  RandomResponses( PrenotazioneSuccessoResponse);
+                            string randomResp =  RandomResponses(PrenotazioneSuccessoResponse);
 
                             await context.SendActivityAsync(String.Format(@randomResp ,prenotazioneNomeLotto, prenotazioneIdPosto));
                             return await stepContext.EndDialogAsync();
@@ -109,14 +109,14 @@ namespace Botler.Dialogs.Dialoghi
                                     var resp = await Utility.Utility.cancellaPrenotazione(verificaPrenotazione.id_posto);
                                     if (resp)
                                     {
-                                        await context.SendActivityAsync( RandomResponses( PrenotazioneScadutaResponse));
+                                        await context.SendActivityAsync(RandomResponses(PrenotazioneScadutaResponse));
                                         Botler.prenotazione = false;
                                         return await stepContext.EndDialogAsync();
                                     }
                                 }
                                 else
                                 {
-                                    await context.SendActivityAsync( RandomResponses( PrenotazioneEffettuataResponse));
+                                    await context.SendActivityAsync(RandomResponses(PrenotazioneEffettuataResponse));
                                     return await stepContext.EndDialogAsync();
                                 }
                             }

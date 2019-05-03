@@ -92,10 +92,10 @@ namespace Botler.Dialogs.Dialoghi
                         string tempoPrenotazioneOraFine = Botler.tempoPrenotazione.ToString("HH:mm:ss");
 
                         // Invio data e ora della prenotazione, e tempo di validità
-                        string randomRespDataOra =  RandomResponses( PrenotazioneDataOraResponse);
+                        string randomRespDataOra =  RandomResponses(PrenotazioneDataOraResponse);
                         await context.SendActivityAsync(String.Format(@randomRespDataOra, tempoPrenotazioneData, tempoPrenotazioneOraInizio, tempoPrenotazioneOraFine));
                         // Invio del tempo a disposizione, prima che il parcheggio scada
-                        string randomRespTempoDisp =  RandomResponses( PrenotazioneTempoDisponibileResponse);
+                        string randomRespTempoDisp =  RandomResponses(PrenotazioneTempoDisponibileResponse);
                         await context.SendActivityAsync(String.Format(@randomRespTempoDisp, minuti, secondi));
 
                         return await stepContext.EndDialogAsync();

@@ -20,7 +20,7 @@ namespace Botler.Dialogs.Utility
 {
     public static class Responses
     {
-        private static ResourceSet _resourseSet = new ResourceManager("Botler.Dialogs.Welcome.Resources.Responses-it", Assembly.GetExecutingAssembly())
+        private static ResourceSet _resourseSet = new ResourceManager("Botler.Dialogs.Resources.Responses-it", Assembly.GetExecutingAssembly())
         .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
         /// <summary>
