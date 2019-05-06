@@ -14,7 +14,7 @@ namespace Botler.Controller
         {
             var heroCard = new HeroCard()
             {
-                Title = "Botler - Parcheggio Aziandale -",
+                Title = "Botler - Parcheggio Aziendale  -",
                 Subtitle = "Il ChatBot di Reti S.p.A",
                 Buttons = new List<CardAction> {
 
