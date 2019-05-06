@@ -86,17 +86,23 @@ namespace Botler.Dialogs.Utility
 
         public static IList<string> AutenticazioneSuccessoResponse { get; } = GenerateResponsesFromName("AutenticazioneSuccesso");
 
+        public static IList<string> AutenticazioneNecessariaResponse { get; } = GenerateResponsesFromName("AutentecazioneNecessaria");
+
     }
 
     [Serializable]
     public static class Scenari
     {
-        public const string Default= "Default";
+        public const string Default = "Default";
 
         public const string MenuDipedenti = "MenuDipendenti";
 
         public const string Autenticazione = "Autenticazione";
 
-        public const string Parking= "Parking";
+        public const string Parking = "Parking";
+
+        public const string Welcome = "Welcome";
+
+        public const string News = "News";
     }
 }

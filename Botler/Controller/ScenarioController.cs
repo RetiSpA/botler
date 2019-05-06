@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +25,6 @@ using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
-
 using static Botler.Dialogs.Utility.Scenari;
 
 namespace Botler.Dialogs.Scenari
@@ -43,31 +45,44 @@ namespace Botler.Dialogs.Scenari
 
         private CancellationToken cancellationToken;
 
-        public ScenarioController(BotlerAccessors accessors)
+        private Dictionary<string, ISendAttachment> sendsAttachment;
+
+        public ScenarioController(BotlerAccessors accessors, ITurnContext currentTurn, LuisServiceResult luisServiceResult, CancellationToken cancellationToken)
         {
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
 
             currentScenario = new DefaultScenario(_accessors);
 
             _autenticatore = new Autenticatore();
-        }
 
-        /// <summary>
-        /// This method will initialize all the property of the current ITurnContext from TurnController class
-        /// </summary>
-        /// <param name="currentTurn"></param>
-        /// <param name="luisServiceResult">Luis RecognizeResult and TopIntent and TopScoring</param>
-        /// <param name="cancellationToken"></param>
-        public void InitTurnAccessors(ITurnContext currentTurn, LuisServiceResult luisServiceResult, CancellationToken cancellationToken)
-        {
             this.currentTurn = currentTurn ?? throw new ArgumentNullException(nameof(currentTurn));
+
             this.luisResult = luisServiceResult ?? throw new ArgumentNullException(nameof(luisServiceResult));
+
             this.cancellationToken = cancellationToken;
 
+            sendsAttachment = new Dictionary<string, ISendAttachment>();
+            sendsAttachment.Add(Welcome, new SendWelcomeCard());
+            sendsAttachment.Add(Parking, new SendMenuParkingCard());
+            sendsAttachment.Add(MenuDipedenti, new SendMenuDipendentiCard());
+            sendsAttachment.Add(News, new SendMenuNewsCard());
+        }
+
+        public ScenarioController(ITurnContext currentTurn, CancellationToken cancellationToken)
+        {
+            this.currentTurn = currentTurn ?? throw new ArgumentNullException(nameof(currentTurn));
+
+            this.cancellationToken = cancellationToken;
+
+            sendsAttachment = new Dictionary<string, ISendAttachment>();
+            sendsAttachment.Add(Welcome, new SendWelcomeCard());
+            sendsAttachment.Add(Parking, new SendMenuParkingCard());
+            sendsAttachment.Add(MenuDipedenti, new SendMenuDipendentiCard());
+            sendsAttachment.Add(News, new SendMenuNewsCard());
         }
 
         /// <summary>
-        /// Create a response for all kind of Interrupeted intent, and recognize the 'Autenticazione' command
+        /// Create a response for all kind of Interrupeted intent.
         /// </summary>
         /// <returns>A string that will be send to user</returns>
         public async Task<string> CreateResponseForInterruptedStateAsync()
@@ -135,17 +150,21 @@ namespace Botler.Dialogs.Scenari
             return string.Empty;           // Did not handle
         }
 
-        public async Task<bool> HandleCommandAsync()
+        /// <summary>
+        /// Recognize a command, and start the right procedure
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> HandleScenarioChangedAsync()
         {
             var topIntent = luisResult.TopScoringIntent.Item1; // intent
             var score = luisResult.TopScoringIntent.Item2; // score
             var message = currentTurn.Activity.Text;
+            var alreadyAuth = await _accessors.AutenticazioneDipedenteAccessors.GetAsync(currentTurn, () => false, cancellationToken);
 
             // The user want to SignIn
             if ((topIntent.Equals(Autenticazione) && (score > 0.75)) || _autenticatore.MagicCodeFound(currentTurn.Activity.Text))
             {
                 await _accessors.ScenarioStateAccessors.SetAsync(currentTurn, Autenticazione);
-                var alreadyAuth = await _accessors.AutenticazioneDipedenteAccessors.GetAsync(currentTurn, () => false, cancellationToken);
                 await SaveState();
 
                 if(alreadyAuth)
@@ -159,13 +178,23 @@ namespace Botler.Dialogs.Scenari
                    return true;
                 }
             }
-            // The user want to park a car
-            if ((topIntent.Equals(Parking) && (score > 0.75)) ||  message.Equals(Parking))
+            // The user want to do something about  the Parking
+            if ( ((topIntent.Equals(PrenotazioneIntent) || topIntent.Equals(CancellaPrenotazioneIntent) ||  topIntent.Equals(TempoRimanentePrenotazioneIntent) ||   topIntent.Equals(VerificaPrenotazioneIntent))
+              && (score > 0.75)) ||  message.Equals(Parking))
             {
-                await _accessors.ScenarioStateAccessors.SetAsync(currentTurn, Parking);
-                await SaveState();
-                await SendMenuParkingHeroCard();
-                return true;
+                if(alreadyAuth)
+                {
+                    await _accessors.ScenarioStateAccessors.SetAsync(currentTurn, Parking);
+                    await SaveState();
+                    await SendMenuAsync(Parking);
+                    return true;
+                }
+                else
+                {
+                    await currentTurn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse), cancellationToken: cancellationToken);
+                    await SendMenuAsync(MenuDipedenti);
+                    return false;
+                }
             }
 
             return false;
@@ -229,14 +258,13 @@ namespace Botler.Dialogs.Scenari
             {
                 await AuthPhasesAsync();
             }
-
             return null;
         }
 
         private async Task<DialogTurnResult> StartParkingDialog()
         {
             var topIntent = luisResult.TopScoringIntent.Item1;
-            Console.WriteLine(topIntent);
+
             switch (topIntent)
             {
                 case PrenotazioneIntent:
@@ -257,12 +285,6 @@ namespace Botler.Dialogs.Scenari
             }
         }
 
-        private async Task CreateDialogContextFromScenarioAsync()
-        {
-            DialogSet dialogSet = currentScenario.GetDialogSet();
-            currentDialogContext = await dialogSet.CreateContextAsync(currentTurn);
-        }
-
         /// <summary>
         /// Read the BotlerAccessors to read the actual Scenario, if is null, it will create the dummy Scenario:
         /// DefaultScenario
@@ -271,7 +293,13 @@ namespace Botler.Dialogs.Scenari
         private async Task RetrieveScenarioStateAsync()
         {
             var scenarioID = await _accessors.ScenarioStateAccessors.GetAsync(currentTurn, () => new string(Default), cancellationToken);
-            currentScenario = await ScenarioFactory(scenarioID);
+            currentScenario = ScenarioFactory(scenarioID);
+        }
+
+        private async Task CreateDialogContextFromScenarioAsync()
+        {
+            DialogSet dialogSet = currentScenario.GetDialogSet();
+            currentDialogContext = await dialogSet.CreateContextAsync(currentTurn);
         }
 
         private async Task SaveState()
@@ -280,7 +308,7 @@ namespace Botler.Dialogs.Scenari
             await _accessors.SaveUserStateAsyn(currentTurn);
         }
 
-        private async Task<IScenario> ScenarioFactory(string scenarioID)
+        private IScenario ScenarioFactory(string scenarioID)
         {
             if (scenarioID.Equals(Default))
             {
@@ -345,73 +373,33 @@ namespace Botler.Dialogs.Scenari
                     // Changes the CurrentDialog
                     await _accessors.AutenticazioneDipedenteAccessors.SetAsync(currentTurn, true);
                     await _accessors.ScenarioStateAccessors.SetAsync(currentTurn, Default);
+                    await SaveState();
+                    // Changes CurrentScenario and create DialogContext with it
                     await RetrieveScenarioStateAsync();
                     await CreateDialogContextFromScenarioAsync();
-                    await currentTurn.SendActivityAsync(RandomResponses(AutenticazioneSuccessoResponse), cancellationToken: cancellationToken);
-                    await SendMenuDipedentiHeroCardAsync();
+                    // Sends  a success response to the user
+                    await  currentTurn.SendActivityAsync(RandomResponses(AutenticazioneSuccessoResponse), cancellationToken: cancellationToken);
+                    await SendMenuAsync(MenuDipedenti);
+
                     return true;
                 }
                 else
                 return false;
         }
 
-        private async  Task SendMenuDipedentiHeroCardAsync()
+    /// <summary>
+    ///  Send as an Attachament the menu associates with menuID if exists
+    /// </summary>
+    /// <param name="menuID"></param>
+    /// <returns></returns>
+        public async Task SendMenuAsync(string menuID)
         {
-            var response = CreateResponse(currentTurn.Activity, CreateMenuDipdentiHeroCard());
-            await currentTurn.SendActivityAsync(response, cancellationToken).ConfigureAwait(false);
-        }
+            ISendAttachment send;
 
-        private async Task SendMenuParkingHeroCard()
-        {
-            var response = CreateResponse(currentTurn.Activity, CreateMenuParkingHeroCard());
-            await currentTurn.SendActivityAsync(response, cancellationToken).ConfigureAwait(false);
-        }
-
-        private Attachment CreateMenuDipdentiHeroCard()
-        {
-            var heroCard = new HeroCard()
+            if(sendsAttachment.TryGetValue(menuID, out send))
             {
-                Title = "Botler - Area Riservata -",
-                Subtitle = "Il ChatBot di Reti S.p.A",
-                Buttons = new List<CardAction> {
-
-                    new CardAction(ActionTypes.PostBack, "Parcheggio Aziendale", value: Parking),
-                    new CardAction(ActionTypes.PostBack, "QnA e F.A.Q Aziendale", value: "QnAInterno"),
-                    new CardAction(ActionTypes.PostBack ,"News di Reti S.p.A", value: "News"),
-                },
-                Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
-
-            };
-
-            return heroCard.ToAttachment();
-        }
-
-       private Attachment CreateMenuParkingHeroCard()
-        {
-            var heroCard = new HeroCard()
-            {
-                Title = "Botler - Parcheggio Aziandale -",
-                Subtitle = "Il ChatBot di Reti S.p.A",
-                Buttons = new List<CardAction> {
-
-                    new CardAction(ActionTypes.PostBack, "Prenota posto auto", value: PrenotazioneIntent),
-                    new CardAction(ActionTypes.PostBack, "Visualizza tempo a disposizione", value: TempoRimanentePrenotazioneIntent),
-                    new CardAction(ActionTypes.PostBack, "Visualizza Prenotazione", value: VerificaPrenotazioneIntent),
-                    new CardAction(ActionTypes.PostBack, "Cancella Prenotazione", value: CancellaPrenotazioneIntent),
-
-                },
-                Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
-
-            };
-
-            return heroCard.ToAttachment();
-        }
-
-        private Activity CreateResponse(Activity activity, Attachment attachment)
-        {
-            var response = activity.CreateReply();
-            response.Attachments = new List<Attachment>() { attachment };
-            return response;
+                await send.SendAttachmentAsync(currentTurn);
+            }
         }
     }
 }

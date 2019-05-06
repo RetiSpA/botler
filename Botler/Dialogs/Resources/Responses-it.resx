@@ -312,4 +312,10 @@
   <data name="AutenticazioneSuccesso_3" xml:space="preserve">
     <value>Login Effettuato, Benvenuto</value>
   </data>
+  <data name ="AutenticazioneNecessaria_1" xml:space="preserve">
+    <value>Questa funzionalità è riservata ai dipedenti, autenticati per entrare nell'area riservata</value>
+   </data>
+  <data name = "AutenticazioneNecessaria_2" xml:space="preserve">
+    <value> Autenticati per accedera all'Area Riservata </value>
+  </data>
 </root>

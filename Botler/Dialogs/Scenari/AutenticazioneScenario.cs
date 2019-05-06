@@ -22,24 +22,10 @@ namespace Botler.Dialogs.Scenari
             _dialogs = new DialogSet(accessors.DialogStateAccessor);
         }
 
-        public Dialog GetDialogByID(string ID)
-        {
-            return null;
-        }
-
         public DialogSet GetDialogSet()
         {
             return _dialogs;
         }
 
-        public string GetScenarioID()
-        {
-            return "AutenticazioneScenario";
-        }
-
-        public bool isAnAuthScenario()
-        {
-            return false;
-        }
     }
 }

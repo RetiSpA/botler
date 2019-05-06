@@ -21,12 +21,14 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Botler.Dialogs.Utility;
 using Botler;
+using Botler.Dialogs.Scenari;
 using Newtonsoft.Json.Linq;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
+using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
-using Botler.Dialogs.Scenari;
+
 
 /// <summary>
 /// This class takes the responsability
@@ -44,18 +46,17 @@ namespace Botler.Controller
 
         private readonly BotServices _services;
 
-        private Activity CurrentActivity;
+        private Activity currentActivity;
 
-        private ITurnContext CurrentTurn;
+        private ITurnContext currentTurn;
 
-        private readonly ScenarioController _scenarioController;
+        private  ScenarioController scenarioController;
 
         public TurnController(BotlerAccessors accessors, BotServices services)
         {
             ILoggerFactory loggerFactory = new LoggerFactory();
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             _services = services ?? throw new ArgumentNullException(nameof(services));
-            _scenarioController = new ScenarioController(_accessors);
         }
 
         /// <summary>
@@ -66,11 +67,10 @@ namespace Botler.Controller
         /// <returns></returns>
         public async Task TurnHandlerAsync(ITurnContext turn, CancellationToken cancellationToken = default(CancellationToken))
         {
-            CurrentTurn = turn;
-            CurrentActivity = turn.Activity;
-            // _scenarioController.CreateDialogContextFromScenarioAsync(turn);
+            currentTurn = turn;
+            currentActivity = turn.Activity;
 
-            switch (CurrentActivity.Type)
+            switch (currentActivity.Type)
             {
                 case ActivityTypes.Message:
                     await StartMessageActivityAsync(cancellationToken: cancellationToken);
@@ -91,8 +91,7 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task StartEventActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            // _scenarioController.InitTurnAccessors(CurrentTurn, new LuisServiceResult(), cancellationToken);
-            // await _scenarioController.HandleCommandAsync();
+            throw new NotImplementedException(nameof(StartEventActivityAsync));
         }
 
         /// <summary>
@@ -102,20 +101,16 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task StartConversationUpdateActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
+            scenarioController = new ScenarioController(currentTurn, cancellationToken);
 
-            // _scenarioController.CreateWelcomeCard()
-            if (CurrentActivity.MembersAdded.Any())
+            if (currentActivity.MembersAdded.Any())
                 {
                     // Iterate over all new members added to the conversation.
-                    foreach (var member in CurrentActivity.MembersAdded)
+                    foreach (var member in currentActivity.MembersAdded)
                     {
-                        // Greet anyone that was not the target (recipient) of this message.
-                        // To learn more about Adaptive Cards, see https://aka.ms/msbot-adaptivecards for more details.
-                        if (member.Id != CurrentActivity.Recipient.Id)
+                        if (member.Id != currentActivity.Recipient.Id)
                         {
-                            var welcomeCard = CreateWelcomeHeroCard();
-                            var response = CreateResponse(CurrentActivity, welcomeCard);
-                            await CurrentTurn.SendActivityAsync(response).ConfigureAwait(false);
+                             await scenarioController.SendMenuAsync(Welcome);
                         }
                     }
                 }
@@ -137,33 +132,39 @@ namespace Botler.Controller
             // QnA Service result, in case we find a question.
             QueryResult[] qnaResult = await GetQnAResult();
 
-            _scenarioController.InitTurnAccessors(CurrentTurn, luisServiceResult, cancellationToken: cancellationToken);
+            if (qnaResult .Length > 0 )
+            {
+                await  SendQnAAnswerAsync(qnaResult, cancellationToken);
+                return;
+            }
+
+            scenarioController = new ScenarioController(_accessors, currentTurn, luisServiceResult, cancellationToken: cancellationToken);
 
             // Check if is in Interrupeted state -> Need to handle interrupts first.
-            var isInterrupted =  await _scenarioController.CreateResponseForInterruptedStateAsync();
+            var isInterrupted =  await scenarioController.CreateResponseForInterruptedStateAsync();
 
-            // Checks if in this turn the user send a command
-            var commandFound = await _scenarioController.HandleCommandAsync();
+            // Checks if in this turn the user send a command or want to change the scenario, and handle it
+            var scenarioChanged = await scenarioController.HandleScenarioChangedAsync();
 
-            if(commandFound)
+            if(scenarioChanged)
             {
-                await SaveState();
                 return;
             }
 
             if (isInterrupted != string.Empty) // Send the response based on interruption intent and save the state before the next turn
             {
-                await CurrentTurn.SendActivityAsync(isInterrupted, cancellationToken: cancellationToken);
-                await _scenarioController.RepromptLastActivityDialogAsync();
-                await SaveState();
-
+                await currentTurn.SendActivityAsync(isInterrupted, cancellationToken: cancellationToken);
+                await scenarioController.RepromptLastActivityDialogAsync();
                 return;
             }
             // Here we may decide to continue with the current scenario(and hence the current dialog) or switch to a different one.
             else await ContinueCurrentDialogAsync(luisServiceResult);
+        }
 
-            await SaveState();
-
+        private async Task SendQnAAnswerAsync(QueryResult[] qnaResult, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var answer = qnaResult[0].Answer;
+            await currentTurn.SendActivityAsync(answer, cancellationToken: cancellationToken);
         }
 
         /// <summary>
@@ -175,7 +176,7 @@ namespace Botler.Controller
         {
             LuisServiceResult luisServiceResult = new LuisServiceResult();
 
-            luisServiceResult.LuisResult =  await _services.LuisServices[LuisConfiguration].RecognizeAsync(CurrentTurn, cancellationToken).ConfigureAwait(false);
+            luisServiceResult.LuisResult = await _services.LuisServices[LuisConfiguration].RecognizeAsync(currentTurn, cancellationToken).ConfigureAwait(false);
 
             luisServiceResult.TopScoringIntent = luisServiceResult.LuisResult?.GetTopScoringIntent().ToTuple<string,double>();
 
@@ -189,17 +190,7 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task<QueryResult[]> GetQnAResult()
         {
-            return await  _services.QnAServices[QnAMakerKey].GetAnswersAsync(CurrentTurn).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Save the conversation and user states
-        /// </summary>
-        /// <returns></returns>
-        private async Task SaveState()
-        {
-            await _accessors.SaveConvStateAsync(CurrentTurn);
-            await _accessors.SaveUserStateAsyn(CurrentTurn);
+            return await _services.QnAServices[QnAMakerKey].GetAnswersAsync(currentTurn).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -210,13 +201,13 @@ namespace Botler.Controller
         private async Task<DialogTurnResult> ContinueCurrentDialogAsync(LuisServiceResult luisServiceResult)
         {
             // If no one has responded
-            if (!CurrentTurn.Responded)
+            if (!currentTurn.Responded)
             {
-                var result =  await _scenarioController.HandleDialogResultStatusAsync();
-               
+                var result = await scenarioController.HandleDialogResultStatusAsync();
+
                 if(result is null) // None Intent returned
                 {
-                    await CurrentTurn.SendActivityAsync(RandomResponses(NoneResponse));
+                    await currentTurn.SendActivityAsync(RandomResponses(NoneResponse));
                 }
 
                 return result;
@@ -224,42 +215,6 @@ namespace Botler.Controller
             return null;
         }
 
-        private Activity CreateResponse(Activity activity, Attachment attachment)
-        {
-            var response = activity.CreateReply();
-            response.Attachments = new List<Attachment>() { attachment };
-            return response;
-        }
-
-        private Attachment CreateAdaptiveCardAttachment()
-        {
-            var adaptiveCard = File.ReadAllText(@".\Dialogs\Welcome\Resources\welcomeCard.json");
-            return new Attachment()
-            {
-                ContentType = "application/vnd.microsoft.card.adaptive",
-                Content = JsonConvert.DeserializeObject(adaptiveCard),
-            };
-        }
-
-        private Attachment CreateWelcomeHeroCard()
-        {
-            var heroCard = new HeroCard()
-            {
-                Title = "Botler",
-                Subtitle = "Il ChatBot di Reti S.p.A",
-                Buttons = new List<CardAction> {
-
-                    new CardAction(ActionTypes.OpenUrl, "Pagina principale del sito", value: "https://www.reti.it/"),
-                    new CardAction(ActionTypes.OpenUrl, "Contattaci per qualsiasi curiosità", value: "https://www.reti.it/contattaci/"),
-                    new CardAction(ActionTypes.OpenUrl, "Rimani aggiornato consultando il nostro blog", value: "https://www.reti.it/blog/"),
-                    new CardAction(ActionTypes.PostBack, "Clicca qui per accedere all'Area Riservata Reti S.p.A", value: "Autenticazione")
-                },
-                Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
-
-            };
-
-            return heroCard.ToAttachment();
-        }
     }
 
     public class LuisServiceResult

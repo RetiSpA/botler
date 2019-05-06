@@ -32,19 +32,11 @@ namespace Botler.Dialogs.Scenari
             return ScenarioDialogs.Find(nameof(idDialog));
         }
 
-        public string GetScenarioID()
-        {
-            return "Default";
-        }
 
         public DialogSet GetDialogSet()
         {
             return ScenarioDialogs;
         }
 
-        public bool isAnAuthScenario()
-        {
-            return false;
-        }
     }
 }
