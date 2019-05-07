@@ -318,4 +318,13 @@
   <data name = "AutenticazioneNecessaria_2" xml:space="preserve">
     <value> Autenticati per accedera all'Area Riservata </value>
   </data>
+  <data name = "AutentacazioneEffettuata_1" xml:space ="preserve">
+    <value> Hai già effettuato l'accesso</value>
+   </data>
+  <data name = "AutentacaizoneEffettuata_2" xml:space ="preserve">
+    <value> Sei già stato autenticato!</value>
+  </data>
+<data name = "AutenticaizoneNecessaria_3" xml:space="preserve">
+  <value> Non c'è ne bisogno, sei già stato autorizzato :) </value>
+</data>
 </root>

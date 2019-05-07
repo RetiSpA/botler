@@ -76,9 +76,6 @@ namespace Botler.Dialogs.Scenari
 
             sendsAttachment = new Dictionary<string, ISendAttachment>();
             sendsAttachment.Add(Welcome, new SendWelcomeCard());
-            sendsAttachment.Add(Parking, new SendMenuParkingCard());
-            sendsAttachment.Add(MenuDipedenti, new SendMenuDipendentiCard());
-            sendsAttachment.Add(News, new SendMenuNewsCard());
         }
 
         /// <summary>
@@ -154,38 +151,50 @@ namespace Botler.Dialogs.Scenari
         /// Recognize a command, and start the right procedure
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> HandleScenarioChangedAsync()
+        public async Task<bool> HandleCommandAsync()
         {
             var topIntent = luisResult.TopScoringIntent.Item1; // intent
             var score = luisResult.TopScoringIntent.Item2; // score
             var message = currentTurn.Activity.Text;
             var alreadyAuth = await _accessors.AutenticazioneDipedenteAccessors.GetAsync(currentTurn, () => false, cancellationToken);
+            Console.WriteLine("Autenticato:"+ alreadyAuth);
+            await RetrieveScenarioStateAsync();
+            await CreateDialogContextFromScenarioAsync();
+            await SaveState();
+
+            var scenario = currentScenario.ToString();
+            Console.WriteLine(scenario);
 
             // The user want to SignIn
-            if ((topIntent.Equals(Autenticazione) && (score > 0.75)) || _autenticatore.MagicCodeFound(currentTurn.Activity.Text))
+            if ((topIntent.Equals(Autenticazione) && (score > 0.75)) || _autenticatore.MagicCodeFound(message))
             {
                 await _accessors.ScenarioStateAccessors.SetAsync(currentTurn, Autenticazione);
                 await SaveState();
 
                 if(alreadyAuth)
                 {
-                    return false;
+                   await  currentTurn.SendActivityAsync(RandomResponses(AutenticazioneEffettuata), cancellationToken: cancellationToken);
+                  return false;
                 }
 
                 else
                 {
-                   await HandleDialogResultStatusAsync();
+                  // await HandleDialogResultStatusAsync();
+                  await SendMenuAsync(MenuDipedenti);
+                  await _accessors.AutenticazioneDipedenteAccessors.SetAsync(currentTurn, true, cancellationToken);
+                  await SaveState();
                    return true;
                 }
             }
             // The user want to do something about  the Parking
-            if ( ((topIntent.Equals(PrenotazioneIntent) || topIntent.Equals(CancellaPrenotazioneIntent) ||  topIntent.Equals(TempoRimanentePrenotazioneIntent) ||   topIntent.Equals(VerificaPrenotazioneIntent))
-              && (score > 0.75)) ||  message.Equals(Parking))
+            if ((topIntent.Equals(Parking) || message.Equals(Parking)))
             {
                 if(alreadyAuth)
                 {
                     await _accessors.ScenarioStateAccessors.SetAsync(currentTurn, Parking);
                     await SaveState();
+                    await RetrieveScenarioStateAsync();
+                    await CreateDialogContextFromScenarioAsync();
                     await SendMenuAsync(Parking);
                     return true;
                 }
@@ -209,6 +218,8 @@ namespace Botler.Dialogs.Scenari
             await RetrieveScenarioStateAsync(); // Read the BotlerAccessors
             await CreateDialogContextFromScenarioAsync();
             var dialogResult = await currentDialogContext.ContinueDialogAsync();
+            var scenario = currentScenario.ToString();
+            Console.WriteLine(scenario);
 
             switch (dialogResult.Status)
                 {
@@ -256,6 +267,13 @@ namespace Botler.Dialogs.Scenari
 
             if(currentScenario.GetType() == typeof(AutenticazioneScenario))
             {
+                var alreadyAuth = _accessors.AutenticazioneDipedenteAccessors.GetAsync(currentTurn, () => false, cancellationToken: cancellationToken).Result;
+                if(alreadyAuth)
+                {
+                     await  currentTurn.SendActivityAsync(RandomResponses(AutenticazioneEffettuata), cancellationToken: cancellationToken);
+                     return null;
+                }
+               else
                 await AuthPhasesAsync();
             }
             return null;
@@ -264,27 +282,44 @@ namespace Botler.Dialogs.Scenari
         private async Task<DialogTurnResult> StartParkingDialog()
         {
             var topIntent = luisResult.TopScoringIntent.Item1;
-
+            // Controlla autenticazione
+           DialogTurnResult dialogResult = null;
             switch (topIntent)
             {
                 case PrenotazioneIntent:
-                    return await currentDialogContext.BeginDialogAsync(nameof(Prenotazione));
+                   dialogResult = await currentDialogContext.BeginDialogAsync(nameof(Prenotazione));
+
+                   return dialogResult;
 
                 case CancellaPrenotazioneIntent:
-                    return await currentDialogContext.BeginDialogAsync(nameof(CancellaPrenotazione));
+                    dialogResult = await currentDialogContext.BeginDialogAsync(nameof(CancellaPrenotazione));
+
+                   return dialogResult;
 
                 case TempoRimanentePrenotazioneIntent:
-                    return await currentDialogContext.BeginDialogAsync(nameof(VisualizzaTempo));
+                    dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaTempo));
+
+                   return dialogResult;
 
                 case VerificaPrenotazioneIntent:
-                    return await currentDialogContext.BeginDialogAsync(nameof(VisualizzaPrenotazione));
+                   dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaPrenotazione));
+
+                   return dialogResult;
 
                 case NoneIntent:
                     default:
-                    return null;
+                    return dialogResult;
             }
         }
 
+        private bool  CheckCurrentScenario(string topIntent)
+        {
+            DialogSet  dialogSet = currentScenario.GetDialogSet();
+            Dialog dialog = dialogSet.Find(topIntent);
+
+           if(dialog is null) return false;
+           else return true;
+        }
         /// <summary>
         /// Read the BotlerAccessors to read the actual Scenario, if is null, it will create the dummy Scenario:
         /// DefaultScenario
@@ -302,7 +337,7 @@ namespace Botler.Dialogs.Scenari
             currentDialogContext = await dialogSet.CreateContextAsync(currentTurn);
         }
 
-        private async Task SaveState()
+        public async Task SaveState()
         {
             await _accessors.SaveConvStateAsync(currentTurn);
             await _accessors.SaveUserStateAsyn(currentTurn);
@@ -371,7 +406,7 @@ namespace Botler.Dialogs.Scenari
                 if (tokenResponse != null) // Autenticazione Succeded
                 {
                     // Changes the CurrentDialog
-                    await _accessors.AutenticazioneDipedenteAccessors.SetAsync(currentTurn, true);
+                    await _accessors.AutenticazioneDipedenteAccessors.SetAsync(currentTurn, true, cancellationToken);
                     await _accessors.ScenarioStateAccessors.SetAsync(currentTurn, Default);
                     await SaveState();
                     // Changes CurrentScenario and create DialogContext with it
@@ -383,8 +418,7 @@ namespace Botler.Dialogs.Scenari
 
                     return true;
                 }
-                else
-                return false;
+                else return false;
         }
 
     /// <summary>

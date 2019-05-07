@@ -27,7 +27,9 @@ using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
-
+using static Botler.Dialogs.Utility.Commands;
+using Botler.Model;
+using Botler.Helper.Commands;
 
 /// <summary>
 /// This class takes the responsability
@@ -109,7 +111,8 @@ namespace Botler.Controller
                     {
                         if (member.Id != currentActivity.Recipient.Id)
                         {
-                             await scenarioController.SendMenuAsync(Welcome);
+                            ICommand welcomeCommand = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandWelcome);
+                             await welcomeCommand.ExecuteCommandAsync();
                         }
                     }
                 }
@@ -137,27 +140,30 @@ namespace Botler.Controller
                 return;
             }
 
+            //await CommandRecognizer.ExecuteCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn);
             scenarioController = new ScenarioController(_accessors, currentTurn, luisServiceResult, cancellationToken: cancellationToken);
 
             // Check if is in Interrupeted state -> Need to handle interrupts first.
             var isInterrupted =  await scenarioController.CreateResponseForInterruptedStateAsync();
 
+             if (isInterrupted != string.Empty) // Send the response based on interruption intent and save the state before the next turn
+            {
+                await currentTurn.SendActivityAsync(isInterrupted, cancellationToken: cancellationToken);
+                await scenarioController.RepromptLastActivityDialogAsync();
+                return;
+            }
+
             // Checks if in this turn the user send a command or want to change the scenario, and handle it
-            var scenarioChanged = await scenarioController.HandleScenarioChangedAsync();
+            var scenarioChanged = await scenarioController.HandleCommandAsync();
 
             if(scenarioChanged)
             {
                 return;
             }
 
-            if (isInterrupted != string.Empty) // Send the response based on interruption intent and save the state before the next turn
-            {
-                await currentTurn.SendActivityAsync(isInterrupted, cancellationToken: cancellationToken);
-                await scenarioController.RepromptLastActivityDialogAsync();
-                return;
-            }
             // Here we may decide to continue with the current scenario(and hence the current dialog) or switch to a different one.
             else await ContinueCurrentDialogAsync(luisServiceResult);
+            await scenarioController.SaveState();
         }
 
         private async Task SendQnAAnswerAsync(QueryResult[] qnaResult, CancellationToken cancellationToken = default(CancellationToken))

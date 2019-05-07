@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using Botler.Dialogs.Utility;
 using Botler;
 using Botler.Dialogs.Scenari;
+using static Botler.Dialogs.Utility.Scenari;
 
 namespace Botler
 {
@@ -58,6 +59,12 @@ namespace Botler
 
         public IStatePropertyAccessor<bool> AutenticazioneDipedenteAccessors { get; set; }
 
+       public async Task SaveStateAsync(ITurnContext currentTurn)
+        {
+            await SaveConvStateAsync(currentTurn);
+            await SaveUserStateAsyn(currentTurn);
+        }
+
         public async Task SaveConvStateAsync(ITurnContext turnContext)
         {
                await ConversationState.SaveChangesAsync(turnContext);
@@ -67,5 +74,6 @@ namespace Botler
         {
             await UserState.SaveChangesAsync(turnContext);
         }
+        
     }
 }

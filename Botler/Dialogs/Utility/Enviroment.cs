@@ -40,7 +40,7 @@ namespace Botler.Dialogs.Utility
     {
         public static string ConnectionName = "BotLogin";
         public static string LuisConfiguration = "basic-bot-LUIS";
-        public static string QnAMakerKey = "botler-qna";
+        public static string QnAMakerKey = "botler-qna-pubblica";
     }
 
     [Serializable]
@@ -86,7 +86,9 @@ namespace Botler.Dialogs.Utility
 
         public static IList<string> AutenticazioneSuccessoResponse { get; } = GenerateResponsesFromName("AutenticazioneSuccesso");
 
-        public static IList<string> AutenticazioneNecessariaResponse { get; } = GenerateResponsesFromName("AutentecazioneNecessaria");
+        public static IList<string> AutenticazioneNecessariaResponse { get; } = GenerateResponsesFromName("AutenticazioneNecessaria");
+
+        public static IList<string> AutenticazioneEffettuata { get; } = GenerateResponsesFromName("AutentacazioneEffettuata");
 
     }
 
@@ -104,5 +106,20 @@ namespace Botler.Dialogs.Utility
         public const string Welcome = "Welcome";
 
         public const string News = "News";
+
+    }
+
+    [Serializable]
+
+    public static class Commands
+    {
+        public const string CommandWelcome = "commandWelcome";
+
+        public const string CommandParking = "commandParking";
+
+        public const string CommandAuthentication = "commandAuthentication";
+
+        public const string CommandAreaRiservata = "commandAreaRiservata";
+        
     }
 }

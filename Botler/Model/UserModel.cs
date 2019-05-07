@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Bot.Schema;
 
 namespace Botler.Dialogs.RisorseApi
 {
@@ -11,6 +12,8 @@ namespace Botler.Dialogs.RisorseApi
         public int id_utente { get; set; }
 
         public bool autenticato { get; set; } = false;
+
+        public TokenResponse token { get; set; }
 
         public UserModel(int id_utente, string email)
         {
