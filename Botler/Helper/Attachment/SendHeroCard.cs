@@ -29,6 +29,5 @@ namespace Botler.Controller
         {
             await turn.SendActivityAsync(response).ConfigureAwait(false);
         }
-
     }
 }

@@ -327,4 +327,15 @@
 <data name = "AutenticaizoneNecessaria_3" xml:space="preserve">
   <value> Non c'è ne bisogno, sei già stato autorizzato :) </value>
 </data>
+<data name ="Possibilita_1" xml:space ="preserve">
+  <value> Ecco una lista di comandi utili per te:
+  - parcheggio -> visualizza il menu dedicato al parcheggio di un auto.
+  - login -> iniza la fase di autenticazione.
+  - help -> menu di aiuto, e possibilita.
+  - exit -> esce dalla convesazione attuale e inizia una nuova.
+  - benvenuto -> visualizza menu principale.
+  - area riservata -> visualizza il menu dedicato ai dipedenti Reti S.p.A.
+  </value>
+</data>
+
 </root>

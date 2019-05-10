@@ -45,7 +45,7 @@ namespace Botler.Dialogs.Utility
         public static IList<string> GenerateResponsesFromName(string name)
         {
             IList<string> responses = new List<string>();
-    
+
             string regexPattern = @name+"_\\d*";
             Regex regex = new Regex(regexPattern);
 
@@ -59,9 +59,12 @@ namespace Botler.Dialogs.Utility
                 {
                     responses.Add((string)resource);
                 }
+
             }
 
             return responses;
          }
+
     }
+
 }

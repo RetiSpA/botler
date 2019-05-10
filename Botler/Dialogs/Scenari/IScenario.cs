@@ -16,5 +16,8 @@ namespace Botler.Dialogs.Scenari
     {
         DialogSet GetDialogSet();
 
+        Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult);
+
+        bool NeedAuthentication();
     }
 }

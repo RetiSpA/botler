@@ -59,6 +59,8 @@ namespace Botler
 
         public IStatePropertyAccessor<bool> AutenticazioneDipedenteAccessors { get; set; }
 
+        public IStatePropertyAccessor<UserModel> UserModelAccessors { get; set; }
+
        public async Task SaveStateAsync(ITurnContext currentTurn)
         {
             await SaveConvStateAsync(currentTurn);
@@ -74,6 +76,6 @@ namespace Botler
         {
             await UserState.SaveChangesAsync(turnContext);
         }
-        
+
     }
 }

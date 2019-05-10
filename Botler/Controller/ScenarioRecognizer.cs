@@ -1,5 +1,4 @@
 
-
 using System;
 using System.Threading.Tasks;
 using Botler.Dialogs.Scenari;
@@ -14,30 +13,51 @@ namespace Botler.Controller
 {
     public class ScenarioRecognizer
     {
-        public static  async Task<IScenario>  ExtractCurrentScenarioAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
+        public static async Task<IScenario>  ExtractCurrentScenarioAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
             var topIntent = luisServiceResult.TopScoringIntent.Item1; // Intent
             var score = luisServiceResult.TopScoringIntent.Item2; // Score
 
-            IScenario currentScenario = await  ScenarioFactoryFromBotStateAsync(accessors, turn);
+            IScenario currentScenario = await GetScenarioFromBotStateAsync(accessors, turn);
 
-            IScenario topIntentScenario =  ScenarioFactoryFromLuisIntent(luisServiceResult, accessors);
-
-            return currentScenario.GetType() == topIntentScenario.GetType()  ?  currentScenario : throw new Exception();
-        }
-
-        private static  IScenario ScenarioFactoryFromLuisIntent(LuisServiceResult luisServiceResult, BotlerAccessors accessors)
-        {
-            bool parkingScenario = isAParkingIntent(luisServiceResult);
-
-            //bool  autenticazioneScenario = isAnAuthIntent(luisServiceResult);
-
-            if(parkingScenario)
+            if(currentScenario is DefaultScenario)
             {
-                return new ParkingScenario(accessors);
+
+                IScenario topIntentScenario = GetScenarioFromLuis(luisServiceResult, accessors, turn);
+
+                if(topIntentScenario.NeedAuthentication())
+                {
+                    var alreadyAuth = await Autenticatore.UserAlreadyAuth(turn, accessors);
+
+                    if(alreadyAuth)
+                    {
+                        return topIntentScenario;
+                    }
+
+                    else
+                    {
+                        await turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
+                        return ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione);
+                    }
+
+                }
+                return topIntentScenario;
             }
 
-            return new DefaultScenario(accessors);
+            //return currentScenario.GetType() == topIntentScenario.GetType()  ?  currentScenario : throw new Exception();
+            return currentScenario;
+        }
+
+        private static  IScenario GetScenarioFromLuis(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
+        {
+             //bool  autenticazioneScenario = isAnAuthIntent(luisServiceResult);
+
+            if(isAParkingIntent(luisServiceResult))
+            {
+                return ScenarioFactory.FactoryMethod(accessors, turn, Parking);
+            }
+
+            return ScenarioFactory.FactoryMethod(accessors, turn, Default);
 
         }
 
@@ -53,26 +73,26 @@ namespace Botler.Controller
                            && (score > 0.75);
         }
 
-        private static async Task< IScenario>  ScenarioFactoryFromBotStateAsync(BotlerAccessors accessors, ITurnContext turn)
+        private static async Task< IScenario>  GetScenarioFromBotStateAsync(BotlerAccessors accessors, ITurnContext turn)
         {
             string scenarioID = await  accessors.ScenarioStateAccessors.GetAsync(turn, () => new string(Default));
 
            if (scenarioID.Equals(Default))
             {
-                return new DefaultScenario(accessors);
+                return ScenarioFactory.FactoryMethod(accessors, turn, Default);;
             }
 
             if (scenarioID.Equals(Parking))
             {
-                return new ParkingScenario(accessors);
+                return ScenarioFactory.FactoryMethod(accessors, turn, Parking);
             }
 
             if(scenarioID.Equals(Autenticazione))
             {
-                return new AutenticazioneScenario(accessors);
+                return ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione);
             }
 
-            return new DefaultScenario(accessors);
+            return ScenarioFactory.FactoryMethod(accessors, turn, Default);
 
         }
     }

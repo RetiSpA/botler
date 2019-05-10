@@ -71,9 +71,9 @@ namespace Botler
             }
 
             //Verifica la configurazione di QnA.
-            if (!_services.QnAServices.ContainsKey(QnAMakerKey))
+            if (!_services.QnAServices.ContainsKey(QnAPublicKey))
             {
-                throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAMakerKey}`.");
+                throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAPublicKey}`.");
             }
 
             TurnController = new TurnController(_accessors, _services);

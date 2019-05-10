@@ -22,7 +22,7 @@ namespace Botler.Controller
                     new CardAction(ActionTypes.PostBack, "Leggi l'ultimo numero del Magazine Reti", value: ""),
                     new CardAction(ActionTypes.PostBack, "Visualizza Calendario", value: ""),
                 },
-                Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
+               // Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
 
             };
 

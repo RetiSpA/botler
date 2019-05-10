@@ -86,7 +86,7 @@ namespace Botler
             // Retrieve current endpoint.
             var environment = _isProduction ? "production" : "development";
             var service = botConfig.Services.Where(s => s.Type == "endpoint" && s.Name == environment).FirstOrDefault();
-            
+
             if (!(service is EndpointService endpointService))
             {
                 throw new InvalidOperationException($"The .bot file does not contain an endpoint with name '{environment}'.");
@@ -95,7 +95,7 @@ namespace Botler
             // Memory Storage is for local bot debugging only. When the bot
             // is restarted, everything stored in memory will be gone.
             IStorage dataStore = new MemoryStorage();
-         
+
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);
             services.AddSingleton(conversationState);

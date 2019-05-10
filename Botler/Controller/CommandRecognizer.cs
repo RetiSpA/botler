@@ -14,30 +14,31 @@ namespace Botler.Controller
 {
     public class CommandRecognizer
     {
-
         public static async Task<bool>  ExecutedCommandFromLuisResultAsync(LuisServiceResult LuisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
-            var entities = LuisServiceResult.LuisResult.Entities;
-            IList<ICommand> listCommands = new List<ICommand>();
-            ICommand command = null;
+          var entities = LuisServiceResult.LuisResult.Entities;
+          IList<ICommand> listCommands = new List<ICommand>();
+          ICommand command = null;
 
-            foreach(var ent in entities)
+          foreach(var ent in entities)
+          {
+            command  = CommandFactory.FactoryMethod(turn, accessors, ent.Key);
+
+            if(command != null)
             {
-              command  = CommandFactory.FactoryMethod(turn, accessors, ent.Key);
               listCommands.Add(command);
             }
 
+          }
+
             // We want to handle 1 command at time
-            if (listCommands.Count > 1) return false;
+          if (listCommands.Count > 1 || listCommands.Count < 1) return false;
 
-            else
-            {
-                await listCommands[0].ExecuteCommandAsync();
-                return true; // Command found and executed
-            }
-
+          else
+          {
+              await listCommands[0].ExecuteCommandAsync();
+              return true; // Command found and executed
+          }
         }
-
     }
-
 }

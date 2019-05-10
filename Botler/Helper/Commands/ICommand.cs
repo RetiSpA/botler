@@ -5,6 +5,5 @@ namespace Botler.Model
     public interface  ICommand
     {
         Task ExecuteCommandAsync();
-        
     }
 }

@@ -26,7 +26,7 @@ namespace Botler.Helper.Commands
            return ent.Equals(CommandAuthentication);
         }
 
-         private static bool ParkingCommandFound(string ent)
+        private static bool ParkingCommandFound(string ent)
         {
             return ent.Equals(CommandParking);
         }

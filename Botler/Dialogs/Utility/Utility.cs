@@ -43,11 +43,13 @@ namespace Botler.Dialogs.Utility
                 var responseContent = await response.Content.ReadAsStringAsync();
                 return JsonConvert.DeserializeObject<UserModel>(responseContent);
             }
+
             else
             {
                 Debug.WriteLine("++++ STATUS CODE FROM LOGIN REQUEST: " + response.StatusCode + "\r\nMessage:" + response.RequestMessage + "\r\n" + response.Content.ReadAsStringAsync().Result);
                 return null;
             }
+
         }
 
         // Chimata per verificare quale parcheggio è stato assegnato.
@@ -69,15 +71,19 @@ namespace Botler.Dialogs.Utility
                     var content = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<PosteggioModel>(content);
                 }
+
                 else
                 {
                     return null;
                 }
+
             }
+
             catch
             {
                 return null;
             }
+
         }
 
         // Metodo per prenotare effettivamente un parcheggio,
@@ -98,11 +104,14 @@ namespace Botler.Dialogs.Utility
                 {
                     return null;
                 }
+
             }
+
             catch
             {
                 return null;
             }
+
         }
 
         // Chiamata effettiva per le API.
@@ -169,5 +178,7 @@ namespace Botler.Dialogs.Utility
         {
             return "http://retismartparking.azurewebsites.net/api/prenotazione/utente/" + id_utente;
         }
+
     }
+
 }

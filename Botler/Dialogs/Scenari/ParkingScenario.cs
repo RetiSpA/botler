@@ -11,6 +11,7 @@ using Botler.Dialogs.Utility;
 using Microsoft.Extensions.Logging;
 using Microsoft.Bot.Schema;
 using Botler.Controller;
+using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
@@ -22,9 +23,13 @@ namespace Botler.Dialogs.Scenari
     {
         private readonly BotlerAccessors _accessors;
 
-        public ParkingScenario(BotlerAccessors accessors)
+        private readonly ITurnContext _turn;
+
+        public ParkingScenario(BotlerAccessors accessors, ITurnContext turn)
         {
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
+            _turn = turn ?? throw new ArgumentNullException(nameof(turn));
+
             ILoggerFactory loggerFactory = new LoggerFactory();
             ScenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
 
@@ -41,6 +46,87 @@ namespace Botler.Dialogs.Scenari
             return ScenarioDialogs;
         }
 
+        public async Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult)
+        {
+            DialogContext currentDialogContext = await ScenarioDialogs.CreateContextAsync(_turn);
+            var dialogResult = await currentDialogContext.ContinueDialogAsync();
+            switch (dialogResult.Status)
+                {
+                    case DialogTurnStatus.Empty:
+                    {
+                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Parking);
+                        return await StartDialog(luisServiceResult);
+                    }
 
+                    case DialogTurnStatus.Waiting:
+                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Parking);
+                        break;
+
+                    case DialogTurnStatus.Complete:
+                    {
+                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Default);
+                        return await currentDialogContext.EndDialogAsync();
+                    }
+
+                    default:
+                    {
+                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Default);
+                        return await currentDialogContext.CancelAllDialogsAsync();
+                    }
+                }
+            return null;
+        }
+
+        private async Task<DialogTurnResult> StartDialog(LuisServiceResult luisServiceResult)
+        {
+             var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
+             var score = luisServiceResult.TopScoringIntent.Item2; // score
+             DialogContext currentDialogContext = await ScenarioDialogs.CreateContextAsync(_turn);
+
+            // Controlla autenticazione
+            DialogTurnResult dialogResult = null;
+
+            if(topIntent.Equals(PrenotazioneIntent) && score > 0.75)
+            {
+                dialogResult = await currentDialogContext.BeginDialogAsync(nameof(Prenotazione));
+
+                return dialogResult;
+
+            }
+
+            if(topIntent.Equals(TempoRimanentePrenotazioneIntent) && score > 0.75)
+            {
+
+                dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaTempo));
+
+                return dialogResult;
+            }
+
+            if(topIntent.Equals(CancellaPrenotazioneIntent) && score > 0.75)
+            {
+                dialogResult = await currentDialogContext.BeginDialogAsync(nameof(CancellaPrenotazione));
+
+                 return dialogResult;
+
+            }
+
+            if(topIntent.Equals(VerificaPrenotazioneIntent) && score > 0.75)
+            {
+                dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaPrenotazione));
+
+                return dialogResult;
+            }
+
+            else
+            {
+                await _turn.SendActivityAsync(RandomResponses(NoneResponse));
+                return dialogResult;
+            }
+        }
+
+        public bool NeedAuthentication()
+        {
+            return true;
+        }
     }
 }

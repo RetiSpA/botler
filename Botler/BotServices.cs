@@ -58,6 +58,7 @@ namespace Botler
                                 EndpointKey = qna.EndpointKey,
                                 Host = qna.Hostname,
                             };
+
                             var qnaMaker = new QnAMaker(qnaEndpoint);
                             this.QnAServices.Add(qna.Name, qnaMaker);
                             break;

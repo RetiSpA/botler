@@ -4,6 +4,7 @@ using Microsoft.Bot.Builder;
 using Botler.Model;
 using Botler.Controller;
 using static Botler.Dialogs.Utility.Scenari;
+using Botler.Helper.Attachment;
 
 namespace Botler.Helper.Commands
 {
@@ -18,7 +19,7 @@ namespace Botler.Helper.Commands
 
         public async Task ExecuteCommandAsync()
         {
-           ISendAttachment send = new SendMenuDipendentiCard();
+           ISendAttachment send = SendAttachmentFactory.FactoryMethod(MenuDipedenti);
            await send.SendAttachmentAsync(turn);
         }
     }

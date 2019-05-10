@@ -22,14 +22,13 @@ using Newtonsoft.Json;
 using Botler.Dialogs.Utility;
 using Botler;
 using Botler.Dialogs.Scenari;
-using Newtonsoft.Json.Linq;
+using Botler.Helper.Commands;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.Commands;
 using Botler.Model;
-using Botler.Helper.Commands;
 
 /// <summary>
 /// This class takes the responsability
@@ -102,8 +101,6 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task StartConversationUpdateActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            scenarioController = new ScenarioController(currentTurn, cancellationToken);
-
             if (currentActivity.MembersAdded.Any())
                 {
                     // Iterate over all new members added to the conversation.
@@ -112,7 +109,7 @@ namespace Botler.Controller
                         if (member.Id != currentActivity.Recipient.Id)
                         {
                             ICommand welcomeCommand = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandWelcome);
-                             await welcomeCommand.ExecuteCommandAsync();
+                            await welcomeCommand.ExecuteCommandAsync();
                         }
                     }
                 }
@@ -128,42 +125,41 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task StartMessageActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
+
             // We want to get always a LUIS result first.
             LuisServiceResult luisServiceResult = await CreateLuisServiceResult(cancellationToken);
 
-            // QnA Service result, in case we find a question.
-            QueryResult[] qnaResult = await GetQnAResult();
+            // // QnA Service result, in case we find a question.
+            // QueryResult[] qnaResult = await GetQnAResult();
 
-            if (qnaResult .Length > 0 )
+            // if (qnaResult.Length > 0 )
+            // {
+            //     await SendQnAAnswerAsync(qnaResult, cancellationToken);
+            //     return;
+            // }
+
+            var interruptionHandled = await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn);
+            if(interruptionHandled)
             {
-                await  SendQnAAnswerAsync(qnaResult, cancellationToken);
+                await SaveState();
                 return;
             }
 
-            //await CommandRecognizer.ExecuteCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn);
-            scenarioController = new ScenarioController(_accessors, currentTurn, luisServiceResult, cancellationToken: cancellationToken);
-
-            // Check if is in Interrupeted state -> Need to handle interrupts first.
-            var isInterrupted =  await scenarioController.CreateResponseForInterruptedStateAsync();
-
-             if (isInterrupted != string.Empty) // Send the response based on interruption intent and save the state before the next turn
+            var commandExecuted = await CommandRecognizer.ExecutedCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn);
+            if(commandExecuted)
             {
-                await currentTurn.SendActivityAsync(isInterrupted, cancellationToken: cancellationToken);
-                await scenarioController.RepromptLastActivityDialogAsync();
+                await SaveState();
                 return;
             }
 
-            // Checks if in this turn the user send a command or want to change the scenario, and handle it
-            var scenarioChanged = await scenarioController.HandleCommandAsync();
+            IScenario currentScenario = await ScenarioRecognizer.ExtractCurrentScenarioAsync(luisServiceResult, _accessors, currentTurn);
 
-            if(scenarioChanged)
-            {
-                return;
-            }
+            scenarioController = new ScenarioController(_accessors, currentTurn, luisServiceResult, currentScenario);
 
-            // Here we may decide to continue with the current scenario(and hence the current dialog) or switch to a different one.
-            else await ContinueCurrentDialogAsync(luisServiceResult);
-            await scenarioController.SaveState();
+            await scenarioController.HandleScenarioDialogAsync();
+
+            await SaveState();
+
         }
 
         private async Task SendQnAAnswerAsync(QueryResult[] qnaResult, CancellationToken cancellationToken = default(CancellationToken))
@@ -195,7 +191,7 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task<QueryResult[]> GetQnAResult()
         {
-            return await _services.QnAServices[QnAMakerKey].GetAnswersAsync(currentTurn).ConfigureAwait(false);
+            return await _services.QnAServices[QnAPublicKey].GetAnswersAsync(currentTurn).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -208,7 +204,7 @@ namespace Botler.Controller
             // If no one has responded
             if (!currentTurn.Responded)
             {
-                var result = await scenarioController.HandleDialogResultStatusAsync();
+                var result = await scenarioController.HandleScenarioDialogAsync();
 
                 if(result is null) // None Intent returned
                 {
@@ -218,6 +214,12 @@ namespace Botler.Controller
                 return result;
             }
             return null;
+        }
+
+        private async Task SaveState()
+        {
+            await _accessors.SaveConvStateAsync(currentTurn);
+            await _accessors.SaveUserStateAsyn(currentTurn);
         }
 
     }

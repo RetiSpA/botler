@@ -105,6 +105,11 @@ namespace Botler.Controller
             return null;
         }
 
+        public async static Task<bool> UserAlreadyAuth(ITurnContext turnContext, BotlerAccessors accessors)
+        {
+            return await accessors.AutenticazioneDipedenteAccessors.GetAsync(turnContext, () => false);
+        }
+
         private bool IsTokenResponseEvent(ITurnContext turnContext)
         {
             var activity = turnContext.Activity;
@@ -116,5 +121,8 @@ namespace Botler.Controller
             var activity = turnContext.Activity;
             return activity.Type == ActivityTypes.Invoke && activity.Name == "signin/verifyState";
         }
+
+
     }
+
 }

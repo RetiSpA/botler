@@ -65,17 +65,15 @@ namespace Botler.Controller
 
             if (topIntent.Equals(PossibilitàIntent) && (score > 0.75))
             {
-                 response = RandomResponses(PossibilitaParcheggioResponse);
+                 response = RandomResponses(PossibilitaResponse);
 
                          // Handled the interrupt.
             }
 
                   if(response == string.Empty) return false;   // Did not handle
 
-                  await turn.SendActivityAsync(response);
+                  await turn.SendActivityAsync(response).ConfigureAwait(false);
                   return true;
         }
-
     }
-
 }

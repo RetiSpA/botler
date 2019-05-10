@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
+using Microsoft.Bot.Builder.Dialogs;
 using Activity = Microsoft.Bot.Schema.Activity;
 using static Botler.Dialogs.Utility.LuisIntent;
 
@@ -15,7 +16,7 @@ namespace Botler.Controller
             var heroCard = new HeroCard()
             {
                 Title = "Botler - Parcheggio Aziendale  -",
-                Subtitle = "Il ChatBot di Reti S.p.A",
+                Subtitle = "Ecco le principali azioni previste per il Parcheggio Aziendale:",
                 Buttons = new List<CardAction> {
 
                     new CardAction(ActionTypes.PostBack, "Prenota posto auto", value: PrenotazioneIntent),
@@ -24,7 +25,7 @@ namespace Botler.Controller
                     new CardAction(ActionTypes.PostBack, "Cancella Prenotazione", value: CancellaPrenotazioneIntent),
 
                 },
-                Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
+               // Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
 
             };
 

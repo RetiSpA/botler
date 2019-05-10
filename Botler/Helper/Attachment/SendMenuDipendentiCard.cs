@@ -15,19 +15,18 @@ namespace Botler.Controller
             var heroCard = new HeroCard()
             {
                 Title = "Botler - Area Riservata -",
-                Subtitle = "Il ChatBot di Reti S.p.A",
+                Subtitle = "Menu riservato ai dipedenti di Reti S.p.A, ecco le principali azioni:",
                 Buttons = new List<CardAction> {
 
                     new CardAction(ActionTypes.PostBack, "Parcheggio Aziendale", value: Parking),
                     new CardAction(ActionTypes.PostBack, "QnA e F.A.Q Aziendale", value: "QnAInterno"),
                     new CardAction(ActionTypes.PostBack ,"News di Reti S.p.A", value: "News"),
                 },
-                Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
+                //Images = new List<CardImage> { new CardImage("https://i.pinimg.com/originals/0c/67/5a/0c675a8e1061478d2b7b21b330093444.gif")}
 
             };
 
             return heroCard.ToAttachment();
         }
-
     }
 }
