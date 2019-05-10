@@ -16,6 +16,7 @@ using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
+using Botler.Services;
 
 namespace Botler.Dialogs.Scenari
 {
@@ -50,6 +51,7 @@ namespace Botler.Dialogs.Scenari
         {
             DialogContext currentDialogContext = await ScenarioDialogs.CreateContextAsync(_turn);
             var dialogResult = await currentDialogContext.ContinueDialogAsync();
+  
             switch (dialogResult.Status)
                 {
                     case DialogTurnStatus.Empty:

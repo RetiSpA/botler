@@ -18,6 +18,8 @@ namespace Botler.Helper.Commands
 
             if(AreaRiservataCommandFound(entity)) return new AreaRiservataCommand(turn);
 
+            if(QnAPublicCommandFound(entity)) return new QnAPublicCommand(accessors, turn);
+
             return null;
         }
 
@@ -39,6 +41,16 @@ namespace Botler.Helper.Commands
         private static bool AreaRiservataCommandFound(string ent)
         {
           return ent.Equals(CommandAreaRiservata);
+        }
+
+        private static bool QnAPublicCommandFound(string ent)
+        {
+            return ent.Equals(CommandQnAPublic);
+        }
+
+        private static bool QnARiservataCommandFound(string ent)
+        {
+            return ent.Equals(CommandQnARiservata);
         }
     }
 }

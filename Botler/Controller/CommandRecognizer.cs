@@ -9,14 +9,15 @@ using Botler.Controller;
 using Microsoft.Bot.Builder;
 using Newtonsoft.Json.Linq;
 using Botler.Helper.Commands;
+using Botler.Services;
 
 namespace Botler.Controller
 {
     public class CommandRecognizer
     {
-        public static async Task<bool>  ExecutedCommandFromLuisResultAsync(LuisServiceResult LuisServiceResult, BotlerAccessors accessors, ITurnContext turn)
+        public static async Task<bool>  ExecutedCommandFromLuisResultAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
-          var entities = LuisServiceResult.LuisResult.Entities;
+          var entities = luisServiceResult.LuisResult.Entities;
           IList<ICommand> listCommands = new List<ICommand>();
           ICommand command = null;
 
@@ -32,7 +33,7 @@ namespace Botler.Controller
           }
 
             // We want to handle 1 command at time
-          if (listCommands.Count > 1 || listCommands.Count < 1) return false;
+          if (listCommands.Count != 1) return false;
 
           else
           {

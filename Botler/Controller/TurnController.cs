@@ -29,6 +29,7 @@ using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.Commands;
 using Botler.Model;
+using Botler.Services;
 
 /// <summary>
 /// This class takes the responsability
@@ -129,7 +130,7 @@ namespace Botler.Controller
             // We want to get always a LUIS result first.
             LuisServiceResult luisServiceResult = await CreateLuisServiceResult(cancellationToken);
 
-            // // QnA Service result, in case we find a question.
+            // QnA Service result, in case we find a question.
             // QueryResult[] qnaResult = await GetQnAResult();
 
             // if (qnaResult.Length > 0 )
@@ -152,6 +153,13 @@ namespace Botler.Controller
                 return;
             }
 
+            var qnaActive = await QnAController.CheckQnAIsActive(_accessors, currentTurn);
+            if(qnaActive)
+            {
+                await QnAController.AnswerTurnUserQuestionAsync(currentTurn, _accessors, _services);
+                await SaveState();
+                return;
+            }
             IScenario currentScenario = await ScenarioRecognizer.ExtractCurrentScenarioAsync(luisServiceResult, _accessors, currentTurn);
 
             scenarioController = new ScenarioController(_accessors, currentTurn, luisServiceResult, currentScenario);
@@ -164,8 +172,11 @@ namespace Botler.Controller
 
         private async Task SendQnAAnswerAsync(QueryResult[] qnaResult, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var answer = qnaResult[0].Answer;
-            await currentTurn.SendActivityAsync(answer, cancellationToken: cancellationToken);
+            foreach(QueryResult result in qnaResult)
+             {
+                var answer = result.Answer;
+                await currentTurn.SendActivityAsync(answer, cancellationToken: cancellationToken);
+             }
         }
 
         /// <summary>
@@ -221,14 +232,6 @@ namespace Botler.Controller
             await _accessors.SaveConvStateAsync(currentTurn);
             await _accessors.SaveUserStateAsyn(currentTurn);
         }
-
-    }
-
-    public class LuisServiceResult
-    {
-        public RecognizerResult LuisResult { get; set; }
-
-        public Tuple<string,double> TopScoringIntent { get; set; }
 
     }
 }

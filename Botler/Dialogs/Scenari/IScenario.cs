@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
 using Botler.Controller;
 using System.Threading.Tasks;
+using Botler.Services;
 
 namespace Botler.Dialogs.Scenari
 {

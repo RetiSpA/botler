@@ -337,5 +337,32 @@
   - area riservata -> visualizza il menu dedicato ai dipedenti Reti S.p.A.
   </value>
 </data>
-
+<data name ="QnAPublic_1" xml:space="preserve">
+  <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A. 
+  Posso rispondere alle domande di carattere genere sulla Azienda.
+  Ecco qualche domanda di esempio, per aiutarti:
+  </value>
+</data>
+<data name="Domanda_1" xml:space="preserve">
+  <value> - Domanda: "Chi siete?"</value>
+</data>
+<data name="Domanda_2" xml:space="preserve">
+  <value> - Domanda : "Dove siete?
+  </value>
+</data>
+<data name="Domanda_3" xml:space="preserve">
+  <value> - Domanda : "Fate formazione?"</value>
+</data>
+<data name="Domanda_4" xml:space="preserve">
+  <value> - Domanda : "Di cosa vi occupate?"</value>
+</data>
+<data name="Domanda_5" xml:space="preserve">
+  <value> - Domanda : "Come faccio a contattarvi?"</value>
+</data>
+<data name = "Domanda_6" xml:space="preserve">
+  <value> - Domanda : "Quali sono i vostri canali social?"</value>
+</data>
+<data name  ="Domanda_7" xml:space="preserve">
+  <value> - Domanda : "Come faccio a mandare il CV?"</value>
+</data>
 </root>

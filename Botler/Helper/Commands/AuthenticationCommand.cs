@@ -40,7 +40,7 @@ namespace Botler.Model
             if(alreadyAuth)
             {
                 await ChangesAndSaveStateAsync();
-                await turn.SendActivityAsync(RandomResponses(AutenticazioneEffettuata));
+                await turn.SendActivityAsync(RandomResponses(AutenticazioneEffettuataResponse));
                 return;
             }
 

@@ -38,6 +38,7 @@ namespace Botler
             VisualizzaTempoStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             VisualizzaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             AutenticazioneDipedenteAccessors = UserState.CreateProperty<bool>("AutenticazioneDipedente");
+            QnaActiveAccessors  = UserState.CreateProperty<string>("QnAActive");
 
         }
 
@@ -60,6 +61,8 @@ namespace Botler
         public IStatePropertyAccessor<bool> AutenticazioneDipedenteAccessors { get; set; }
 
         public IStatePropertyAccessor<UserModel> UserModelAccessors { get; set; }
+
+        public IStatePropertyAccessor<string> QnaActiveAccessors { get; set; }
 
        public async Task SaveStateAsync(ITurnContext currentTurn)
         {
