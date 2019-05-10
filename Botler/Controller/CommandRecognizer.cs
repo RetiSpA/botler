@@ -32,7 +32,7 @@ namespace Botler.Controller
           }
 
             // We want to handle 1 command at time
-          if (listCommands.Count > 1 || listCommands.Count < 1) return false;
+          if (listCommands.Count != 1) return false;
 
           else
           {
