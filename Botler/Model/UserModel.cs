@@ -1,45 +1,51 @@
 ﻿using System;
 using Microsoft.Bot.Schema;
+using Microsoft.Graph;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Microsoft.Bot.Builder;
 
 namespace Botler.Dialogs.RisorseApi
 {
     public class UserModel
     {
-        public string nome { get; set; }
-
-        public string email { get; set; }
-
-        public int id_utente { get; set; }
-
-        public bool autenticato { get; set; } = false;
-
-        public TokenResponse token { get; set; }
-
-        public UserModel(int id_utente, string email)
+        public UserModel(TokenResponse token)
         {
-            this.id_utente = id_utente;
-            this.email = email;
-            this.nome = setNameFromEmail(email);
+             GraphUser = new GraphServiceClient(
+                    new DelegateAuthenticationProvider(
+                        requestMessage =>
+                        {
+                                // Append the access Token to the request.
+                                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", token.Token);
+
+                                // Get event times in the current time zone.
+                                requestMessage.Headers.Add("Prefer", "outlook.timezone=\"" + TimeZoneInfo.Local.Id + "\"");
+
+                            return Task.CompletedTask;
+                        }));
         }
 
-        public static string setNameFromEmail(string email)
+        public string Nome { get; set; }
+
+        public string Cognome { get; set; }
+
+        public string Email { get; set; }
+
+        public int Id_Utente { get; set; }
+
+        public GraphServiceClient GraphUser { get; set; }
+
+        public bool Autenticato { get; set; } = false;
+
+        public TokenResponse Token { get; set; }
+
+        public async Task SaveUserDatesAsync(BotlerAccessors accessors, ITurnContext turn)
         {
-            if (!string.IsNullOrEmpty(email))
-            {
-                var index = email.LastIndexOf('@');
-                if (index > 0)
-                {
-                    return email.Remove(index).Replace('.', ' ');
-                }
-                else
-                {
-                    return "name surname";
-                }
-            }
-            else
-            {
-                return "name surname";
-            }
+            var me = await GraphUser.Me.Request().GetAsync();
+            Nome = me.GivenName;
+            Cognome = me.Surname;
+            Autenticato = true;
+            
         }
     }
 }

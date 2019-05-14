@@ -26,64 +26,70 @@ namespace Botler.Dialogs.Scenari
 
         private readonly ITurnContext _turn;
 
+        private readonly DialogSet _scenarioDialogs;
+
         public ParkingScenario(BotlerAccessors accessors, ITurnContext turn)
         {
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             _turn = turn ?? throw new ArgumentNullException(nameof(turn));
 
             ILoggerFactory loggerFactory = new LoggerFactory();
-            ScenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
+            _scenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
 
-            ScenarioDialogs.Add(new Prenotazione(_accessors.PrenotazioneStateAccessor, loggerFactory));
-            ScenarioDialogs.Add(new CancellaPrenotazione(_accessors.CancellaPrenotazioneStateAccessor, loggerFactory));
-            ScenarioDialogs.Add(new VisualizzaTempo(_accessors.VisualizzaTempoStateAccessor, loggerFactory));
-            ScenarioDialogs.Add(new VisualizzaPrenotazione(_accessors.VisualizzaPrenotazioneStateAccessor, loggerFactory));
-        }
-
-        private DialogSet ScenarioDialogs;
-
-        public DialogSet GetDialogSet()
-        {
-            return ScenarioDialogs;
+            _scenarioDialogs.Add(new Prenotazione(_accessors.PrenotazioneStateAccessor, loggerFactory));
+            _scenarioDialogs.Add(new CancellaPrenotazione(_accessors.CancellaPrenotazioneStateAccessor, loggerFactory));
+            _scenarioDialogs.Add(new VisualizzaTempo(_accessors.VisualizzaTempoStateAccessor, loggerFactory));
+            _scenarioDialogs.Add(new VisualizzaPrenotazione(_accessors.VisualizzaPrenotazioneStateAccessor, loggerFactory));
         }
 
         public async Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult)
         {
-            DialogContext currentDialogContext = await ScenarioDialogs.CreateContextAsync(_turn);
+            DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
             var dialogResult = await currentDialogContext.ContinueDialogAsync();
-  
+
             switch (dialogResult.Status)
                 {
                     case DialogTurnStatus.Empty:
                     {
-                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Parking);
+                        await _accessors.SetCurrentScenarioAsync(_turn, Parking);
                         return await StartDialog(luisServiceResult);
                     }
 
                     case DialogTurnStatus.Waiting:
-                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Parking);
+                        await _accessors.SetCurrentScenarioAsync(_turn, Parking);
                         break;
 
                     case DialogTurnStatus.Complete:
                     {
-                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Default);
+                        await _accessors.SetCurrentScenarioAsync(_turn, Default);
                         return await currentDialogContext.EndDialogAsync();
                     }
 
                     default:
                     {
-                        await _accessors.ScenarioStateAccessors.SetAsync(_turn, Default);
+                        await _accessors.SetCurrentScenarioAsync(_turn, Default);
                         return await currentDialogContext.CancelAllDialogsAsync();
                     }
                 }
             return null;
         }
 
+        public bool NeedAuthentication()
+        {
+            return true;
+        }
+
+        public async  Task<DialogContext> GetDialogContextAsync()
+        {
+            DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
+            return currentDialogContext;
+        }
+
         private async Task<DialogTurnResult> StartDialog(LuisServiceResult luisServiceResult)
         {
-             var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
-             var score = luisServiceResult.TopScoringIntent.Item2; // score
-             DialogContext currentDialogContext = await ScenarioDialogs.CreateContextAsync(_turn);
+            var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
+            var score = luisServiceResult.TopScoringIntent.Item2; // score
+            DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
 
             // Controlla autenticazione
             DialogTurnResult dialogResult = null;
@@ -124,11 +130,6 @@ namespace Botler.Dialogs.Scenari
                 await _turn.SendActivityAsync(RandomResponses(NoneResponse));
                 return dialogResult;
             }
-        }
-
-        public bool NeedAuthentication()
-        {
-            return true;
         }
     }
 }

@@ -97,6 +97,16 @@ namespace Botler.Dialogs.Utility
         public static IList<string> DomandaResponse { get; } = GenerateResponsesFromName("Domanda");
 
         public static IList<string> QnAPublicResponse { get; } = GenerateResponsesFromName("QnAPublic");
+
+        public static IList<string> QnAResponse { get; } = GenerateResponsesFromName("QnA");
+
+        public static IList<string> LogoutEffettuatoResponse { get; } = GenerateResponsesFromName("LogoutEffettuato");
+
+        public static IList<string> LogoutImpossibileResponse { get; } = GenerateResponsesFromName("LogoutImpossibile");
+
+        public static IList<string> ContinuaQnAResponse { get; } = GenerateResponsesFromName("QnAContinua");
+
+        public static IList<string> AutenticazioneErroreResponse { get; } = GenerateResponsesFromName("AutenticazioneErrore");
     }
 
     [Serializable]
@@ -114,10 +124,11 @@ namespace Botler.Dialogs.Utility
 
         public const string News = "News";
 
+        public const string QnA = "QnA";
+
         public const string QnARiservata = "QnARiservata";
 
         public const string QnAPublic = "QnAPublic";
-
     }
 
     [Serializable]
@@ -132,9 +143,14 @@ namespace Botler.Dialogs.Utility
 
         public const string CommandAreaRiservata = "commandAreaRiservata";
 
+        public const string CommandQnA = "commandQnA";
+
         public const string CommandQnAPublic = "commandQnAPublic";
 
         public const string CommandQnARiservata = "commandQnARiservata";
 
+        public const string CommandLogout = "commandLogout";
+
+        public const string CommandExit = "commandExit";
     }
 }

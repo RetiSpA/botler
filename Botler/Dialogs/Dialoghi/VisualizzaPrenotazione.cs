@@ -70,7 +70,7 @@ namespace Botler.Dialogs.Dialoghi
                         if (resp)
                         {
 
-                            await context.SendActivityAsync( RandomResponses( PrenotazioneScadutaResponse));
+                            await context.SendActivityAsync(RandomResponses(PrenotazioneScadutaResponse));
                             Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
@@ -81,7 +81,7 @@ namespace Botler.Dialogs.Dialoghi
                         var prenotazioneNomeLotto = prenotazione.nomeLotto;
                         var prenotazioneIdPosto = prenotazione.id_posto;
 
-                        string randomRespons =  RandomResponses( VisualizzaPrenotazioneResponse);
+                        string randomRespons = RandomResponses(VisualizzaPrenotazioneResponse);
                         await context.SendActivityAsync(String.Format(@randomRespons, prenotazioneNomeLotto, prenotazioneIdPosto));
 
                         return await stepContext.EndDialogAsync();

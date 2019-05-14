@@ -37,16 +37,11 @@ namespace Botler.Dialogs.Scenari
 
         private readonly Autenticatore _autenticatore;
 
-        private DialogContext currentDialogContext;
-
         private IScenario currentScenario;
 
         private ITurnContext currentTurn;
 
         private LuisServiceResult luisServiceResult;
-
-        private CancellationToken cancellationToken;
-
 
         public ScenarioController(BotlerAccessors accessors, ITurnContext currentTurn, LuisServiceResult luisServiceResult, IScenario currentScenario)
         {

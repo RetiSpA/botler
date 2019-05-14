@@ -12,35 +12,37 @@ using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using Botler.Dialogs.RisorseApi;
+using Microsoft.Graph;
+using System.Net.Http.Headers;
 
 namespace Botler.Model
 {
     public class AuthenticationCommand : ICommand
     {
-        private ITurnContext turn;
+        private  readonly ITurnContext _turn;
 
-        private BotlerAccessors accessors;
+        private readonly  BotlerAccessors _accessors;
 
         private Autenticatore autenticatore;
 
         public AuthenticationCommand(ITurnContext turn, BotlerAccessors accessors)
         {
-            this.turn = turn ?? throw new ArgumentNullException(nameof(turn));
-            this.accessors = accessors ?? throw new ArgumentNullException(nameof(turn));
+            this._turn = turn ?? throw new ArgumentNullException(nameof(turn));
+            this._accessors = accessors ?? throw new ArgumentNullException(nameof(_accessors));
             autenticatore = new Autenticatore();
         }
 
         public async Task ExecuteCommandAsync()
         {
-            var message = turn.Activity.Text;
-            await accessors.ScenarioStateAccessors.SetAsync(turn, Autenticazione);
-            await accessors.SaveStateAsync(turn);
-            var alreadyAuth = await Autenticatore.UserAlreadyAuth(turn, accessors);
+            await InitAuthScenarioAsync();
+
+            var message = _turn.Activity.Text;
+            var alreadyAuth = await Autenticatore.UserAlreadyAuthAsync(_turn, _accessors);
 
             if(alreadyAuth)
             {
                 await ChangesAndSaveStateAsync();
-                await turn.SendActivityAsync(RandomResponses(AutenticazioneEffettuataResponse));
+                await ShowAreaRiservataAsync();
                 return;
             }
 
@@ -57,42 +59,61 @@ namespace Botler.Model
 
         private async Task FirstPhaseAuthAsync()
         {
-            await accessors.ScenarioStateAccessors.SetAsync(turn, Autenticazione);
-            Activity card = autenticatore.CreateOAuthCard(turn);
-            await turn.SendActivityAsync(card).ConfigureAwait(false);
+            await _accessors.SetCurrentScenarioAsync(_turn, Autenticazione);
+            Activity card = autenticatore.CreateOAuthCard(_turn);
+            await _turn.SendActivityAsync(card).ConfigureAwait(false);
         }
 
         private async Task SecondPhaseAuthAsync()
         {
-            var adapter = (BotFrameworkAdapter) turn.Adapter;
-            var message = turn.Activity.AsMessageActivity();
+            var adapter = (BotFrameworkAdapter) _turn.Adapter;
+            var message = _turn.Activity.AsMessageActivity();
             var response = string.Empty;
 
-            var tokenResponse = autenticatore.RecognizeTokenAsync(turn, adapter);
+            var tokenResponse = await autenticatore.RecognizeTokenAsync(_turn, adapter);
 
                 if (tokenResponse != null) // Autenticazione Succeded
                 {
                     // Changes the CurrentDialog
                     await ChangesAndSaveStateAsync();
 
-                    // Sends  a success response to the user
-                    await  turn.SendActivityAsync(RandomResponses(AutenticazioneSuccessoResponse));
 
-                    ICommand areaRiservata = CommandFactory.FactoryMethod(turn, accessors, CommandAreaRiservata);
-                    await  areaRiservata.ExecuteCommandAsync();
+                // Sends  a success response to the user
+                var randomResponse = RandomResponses(AutenticazioneSuccessoResponse);
+                UserModel User = new UserModel(tokenResponse);
+                await User.SaveUserDatesAsync(_accessors, _turn);
+               // await _accessors.UserModelAccessors.SetAsync(_turn, User); Error 
+               
+                await _turn.SendActivityAsync(String.Format(randomResponse, User.Nome, User.Cognome));
+                ICommand areaRiservata = CommandFactory.FactoryMethod(_turn, _accessors, CommandAreaRiservata);
+                await areaRiservata.ExecuteCommandAsync();
                 }
 
                 else
                 {
-                    await turn.SendActivityAsync(RandomResponses(AnomaliaResponse));
+                    await _turn.SendActivityAsync(RandomResponses(AutenticazioneErroreResponse));
                 }
         }
 
-       private async Task ChangesAndSaveStateAsync()
+        private async Task ChangesAndSaveStateAsync()
        {
-            await accessors.AutenticazioneDipedenteAccessors.SetAsync(turn, true);
-            await accessors.ScenarioStateAccessors.SetAsync(turn, Default);
-            await accessors.SaveStateAsync(turn);
+            await _accessors.AutenticazioneDipedenteAccessors.SetAsync(_turn, true);
+            await _accessors.SetCurrentScenarioAsync(_turn, Default);
+            await _accessors.SaveStateAsync(_turn);
+       }
+
+        private async Task InitAuthScenarioAsync()
+       {
+            await _accessors.SetCurrentScenarioAsync(_turn, Autenticazione);
+            await _accessors.SaveStateAsync(_turn);
+            await _accessors.QnaActiveAccessors.SetAsync(_turn, Default);
+       }
+
+        private async Task ShowAreaRiservataAsync()
+       {
+            await _turn.SendActivityAsync(RandomResponses(AutenticazioneEffettuataResponse));
+            ICommand commandAreaRiservata = CommandFactory.FactoryMethod(_turn, _accessors, CommandAreaRiservata);
+            await commandAreaRiservata.ExecuteCommandAsync();
        }
     }
 }

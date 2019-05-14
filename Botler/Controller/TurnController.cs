@@ -126,18 +126,8 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task StartMessageActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-
             // We want to get always a LUIS result first.
             LuisServiceResult luisServiceResult = await CreateLuisServiceResult(cancellationToken);
-
-            // QnA Service result, in case we find a question.
-            // QueryResult[] qnaResult = await GetQnAResult();
-
-            // if (qnaResult.Length > 0 )
-            // {
-            //     await SendQnAAnswerAsync(qnaResult, cancellationToken);
-            //     return;
-            // }
 
             var interruptionHandled = await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn);
             if(interruptionHandled)
@@ -160,6 +150,7 @@ namespace Botler.Controller
                 await SaveState();
                 return;
             }
+
             IScenario currentScenario = await ScenarioRecognizer.ExtractCurrentScenarioAsync(luisServiceResult, _accessors, currentTurn);
 
             scenarioController = new ScenarioController(_accessors, currentTurn, luisServiceResult, currentScenario);
@@ -167,16 +158,6 @@ namespace Botler.Controller
             await scenarioController.HandleScenarioDialogAsync();
 
             await SaveState();
-
-        }
-
-        private async Task SendQnAAnswerAsync(QueryResult[] qnaResult, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            foreach(QueryResult result in qnaResult)
-             {
-                var answer = result.Answer;
-                await currentTurn.SendActivityAsync(answer, cancellationToken: cancellationToken);
-             }
         }
 
         /// <summary>
@@ -194,37 +175,6 @@ namespace Botler.Controller
 
             return luisServiceResult;
 
-        }
-
-        /// <summary>
-        /// QnA Result
-        /// </summary>
-        /// <returns></returns>
-        private async Task<QueryResult[]> GetQnAResult()
-        {
-            return await _services.QnAServices[QnAPublicKey].GetAnswersAsync(currentTurn).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Continue the current dialog or send a none intent response
-        /// </summary>
-        /// <param name="luisServiceResult"></param>
-        /// <returns></returns>
-        private async Task<DialogTurnResult> ContinueCurrentDialogAsync(LuisServiceResult luisServiceResult)
-        {
-            // If no one has responded
-            if (!currentTurn.Responded)
-            {
-                var result = await scenarioController.HandleScenarioDialogAsync();
-
-                if(result is null) // None Intent returned
-                {
-                    await currentTurn.SendActivityAsync(RandomResponses(NoneResponse));
-                }
-
-                return result;
-            }
-            return null;
         }
 
         private async Task SaveState()

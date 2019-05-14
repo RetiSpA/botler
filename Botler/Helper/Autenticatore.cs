@@ -23,7 +23,9 @@ using Botler.Dialogs.Utility;
 using Botler;
 using Newtonsoft.Json.Linq;
 using Botler.Controller;
+using Microsoft.Graph;
 using static Botler.Dialogs.Utility.BotConst;
+using System.Net.Http.Headers;
 
 namespace Botler.Controller
 {
@@ -41,7 +43,7 @@ namespace Botler.Controller
         {
             var response = turn.Activity.CreateReply();
 
-            response.Attachments.Add(new Attachment
+            response.Attachments.Add(new Microsoft.Bot.Schema.Attachment
             {
                 ContentType = OAuthCard.ContentType,
                 Content = new OAuthCard
@@ -86,7 +88,6 @@ namespace Botler.Controller
                 var magicCode = magicCodeObject.GetValue("state")?.ToString();
 
                 var token = await adapter.GetUserTokenAsync(turnContext, ConnectionName, magicCode, cancellationToken).ConfigureAwait(false);
-
                 return token;
             }
             else if (turnContext.Activity.Type == ActivityTypes.Message)
@@ -100,12 +101,13 @@ namespace Botler.Controller
 
                     return token;
                 }
+
             }
 
             return null;
         }
 
-        public async static Task<bool> UserAlreadyAuth(ITurnContext turnContext, BotlerAccessors accessors)
+        public async static Task<bool> UserAlreadyAuthAsync(ITurnContext turnContext, BotlerAccessors accessors)
         {
             return await accessors.AutenticazioneDipedenteAccessors.GetAsync(turnContext, () => false);
         }

@@ -12,31 +12,31 @@ namespace Botler.Model
 {
     public class ParkingCommand : ICommand
     {
-        private ITurnContext turn;
+        private readonly ITurnContext _turn;
 
-        private BotlerAccessors accessors;
+        private readonly BotlerAccessors _accessors;
 
         public ParkingCommand(ITurnContext turn, BotlerAccessors accessors)
         {
-            this.turn = turn ?? throw new ArgumentNullException(nameof(turn));
-            this.accessors = accessors ?? throw new ArgumentNullException(nameof(turn));
+            this._turn = turn ?? throw new ArgumentNullException(nameof(turn));
+            this._accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
         }
 
         public async Task ExecuteCommandAsync()
         {
             ISendAttachment send = SendAttachmentFactory.FactoryMethod(Parking);
 
-            var alreadyAuth = await Autenticatore.UserAlreadyAuth(turn, accessors);
+            var alreadyAuth = await Autenticatore.UserAlreadyAuthAsync(_turn, _accessors);
 
             if(!alreadyAuth)
             {
-                await turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
+                await _turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
                 return;
             }
 
-            await accessors.ScenarioStateAccessors.SetAsync(turn, Parking);
-            await accessors.SaveStateAsync(turn);
-            await send.SendAttachmentAsync(turn);
+            await _accessors.SetCurrentScenarioAsync(_turn, Parking);
+            await _accessors.SaveStateAsync(_turn);
+            await send.SendAttachmentAsync(_turn);
         }
     }
 }

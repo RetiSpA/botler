@@ -20,7 +20,7 @@ namespace Botler.Dialogs.Scenari
 {
     public class AutenticazioneScenario : IScenario
     {
-        private DialogSet ScenarioDialogs;
+        private readonly DialogSet _scenarioDialogs;
 
         private readonly ITurnContext _turn;
 
@@ -28,21 +28,22 @@ namespace Botler.Dialogs.Scenari
 
         public AutenticazioneScenario(BotlerAccessors accessors, ITurnContext turn )
         {
-            ScenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
+            _scenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             _turn = turn ?? throw new ArgumentNullException(nameof(turn));
         }
 
-        public DialogSet GetDialogSet()
+        public async  Task<DialogContext> GetDialogContextAsync()
         {
-            return ScenarioDialogs;
+            DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
+            return currentDialogContext;
         }
 
         public async Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult)
         {
             ICommand commandAuth = CommandFactory.FactoryMethod(_turn, _accessors, CommandAuthentication);
             await commandAuth.ExecuteCommandAsync();
-            return await ScenarioDialogs.CreateContextAsync(_turn).Result.EndDialogAsync();
+            return await _scenarioDialogs.CreateContextAsync(_turn).Result.EndDialogAsync();
         }
 
         public bool NeedAuthentication()

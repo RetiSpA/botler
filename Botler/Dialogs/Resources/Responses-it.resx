@@ -304,13 +304,14 @@
     <value>{0} , {1} Ecco la tua prenotazione:)</value>
   </data>
   <data name="AutenticazioneSuccesso_1" xml:space="preserve">
-    <value>Sei stato autenticato con successo!</value>
+    <value>Sei stato autenticato con successo {0}!</value>
   </data>
   <data name="AutenticazioneSuccesso_2" xml:space="preserve">
-    <value>Autenticazione completata!</value>
+    <value>Autenticazione completata!
+    Ciao {0} {1}</value>
   </data>
   <data name="AutenticazioneSuccesso_3" xml:space="preserve">
-    <value>Login Effettuato, Benvenuto</value>
+    <value>Login Effettuato, Benvenuto {0} {1}</value>
   </data>
   <data name ="AutenticazioneNecessaria_1" xml:space="preserve">
     <value>Questa funzionalità è riservata ai dipedenti, autenticati per entrare nell'area riservata</value>
@@ -335,12 +336,33 @@
   - exit -> esce dalla convesazione attuale e inizia una nuova.
   - benvenuto -> visualizza menu principale.
   - area riservata -> visualizza il menu dedicato ai dipedenti Reti S.p.A.
+  - logout -> effettuata il logout.
   </value>
 </data>
 <data name ="QnAPublic_1" xml:space="preserve">
-  <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A. 
-  Posso rispondere alle domande di carattere genere sulla Azienda.
+  <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A.
+  Posso rispondere alle domande di carattere generale sulla Azienda.
+
+  Per uscire dal QnA usare il comand 'exit'.
+  Per una lista completa dei comandi usare 'help'.
+
+  
   Ecco qualche domanda di esempio, per aiutarti:
+  </value>
+</data>
+<data name ="QnA_1" xml:space="preserve">
+  <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A riservato ai Dipedenti.
+  Posso rispondere alle domande interne di Reti S.p.A.
+  Ecco qualche esempio, per aiutarti:
+  - Domande su rapportini e SiWeb ( Spese, rimborsi, malattie... )
+  - Organizzazione interna.
+  - Prenotazioni sala riunioni.
+  - Eventi Reti S.p.A
+  - Percorsi di formazione.
+
+
+  Per uscire dal QnA usare il comand 'exit'.
+  Per una lista completa dei comandi usare 'help'.
   </value>
 </data>
 <data name="Domanda_1" xml:space="preserve">
@@ -364,5 +386,32 @@
 </data>
 <data name  ="Domanda_7" xml:space="preserve">
   <value> - Domanda : "Come faccio a mandare il CV?"</value>
+</data>
+<data name = "LogoutEffettuato_1" xml:space="preserve">
+  <value> Logout effettuato con successo!</value>
+</data>
+<data name = "LogoutImpossibile_1" xml:space ="preserve">
+  <value> Effettuata il login prima :)</value>
+</data>
+<data name ="LogoutImpossibile_2" xml:space="preserve">
+  <value> Devi essere connesso per 'logout'</value>
+</data>
+<data name = "QnAContinua_1" xml:space="preserve">
+  <value> Vuoi chiedermi altro ? </value>
+</data>
+<data name = "QnAContinua_2" xml:space="preserve">
+  <value> Posso rispondere ad un altra domanda per te ?</value>
+</data>
+<data name = "AutenticazioneErrore_1" xml:space="preserve">
+  <value> Il MagicCode potrebbe essere errato riprova!
+  Ti prego di vedere la pagina appena aperta, se non è stata aperta esegui il comando 'login' di nuovo.</value>
+</data>
+<data name = "AutenticazioneErrore_2" xml:space="preserve">
+  <value> Non è questo il codice che ti ho mandato :)
+  Ti prego di vedere la pagina appena aperta, se non è stata aperta esegui il comando 'login' di nuovo.</value>
+</data>
+<data name = "AutenticazioneErrore_3" xml:space="preserve">
+  <value> Qualcosa non va nel codice!
+  Ti prego di vedere la pagina appena aperta, se non è stata aperta esegui il comando 'login' di nuovo.</value>
 </data>
 </root>

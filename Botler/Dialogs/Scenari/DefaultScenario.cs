@@ -25,26 +25,23 @@ namespace Botler.Dialogs.Scenari
 
         private readonly ITurnContext _turn;
 
+        private readonly DialogSet _scenarioDialogs;
+
         public DefaultScenario(BotlerAccessors accessors, ITurnContext turn)
         {
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             _turn = turn ?? throw new ArgumentNullException(nameof(turn));
 
-            ScenarioDialogs = new DialogSet(_accessors.DialogStateAccessor);
-        }
+            _scenarioDialogs = new DialogSet(_accessors.DialogStateAccessor);
 
-        private DialogSet ScenarioDialogs;
+        }        
 
         public Dialog GetDialogByID(string idDialog)
         {
-            return ScenarioDialogs.Find(nameof(idDialog));
+            return _scenarioDialogs.Find(nameof(idDialog));
         }
 
 
-        public DialogSet GetDialogSet()
-        {
-            return ScenarioDialogs;
-        }
 
         public async Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult)
         {
@@ -56,12 +53,18 @@ namespace Botler.Dialogs.Scenari
             {
                 await _turn.SendActivityAsync(RandomResponses(NoneResponse));
             }
-            return await ScenarioDialogs.CreateContextAsync(_turn).Result.EndDialogAsync();
+            return await _scenarioDialogs.CreateContextAsync(_turn).Result.EndDialogAsync();
         }
 
         public bool NeedAuthentication()
         {
             return false;
+        }
+
+        public async  Task<DialogContext> GetDialogContextAsync()
+        {
+           var dialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
+           return dialogContext;
         }
     }
 }

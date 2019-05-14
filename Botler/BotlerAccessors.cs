@@ -39,12 +39,15 @@ namespace Botler
             VisualizzaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             AutenticazioneDipedenteAccessors = UserState.CreateProperty<bool>("AutenticazioneDipedente");
             QnaActiveAccessors  = UserState.CreateProperty<string>("QnAActive");
+            UserModelAccessors = UserState.CreateProperty<UserModel>(nameof(UserModel));
 
         }
 
         public UserState UserState { get; set; }
 
         public ConversationState ConversationState { get; set; }
+
+         public IScenario ActiveScenario { get; set; }
 
         public IStatePropertyAccessor<PrenotazioneModel> PrenotazioneStateAccessor { get; set; }
 
@@ -64,7 +67,19 @@ namespace Botler
 
         public IStatePropertyAccessor<string> QnaActiveAccessors { get; set; }
 
-       public async Task SaveStateAsync(ITurnContext currentTurn)
+        public async Task SetCurrentScenarioAsync(ITurnContext turn, string scenario)
+        {
+            await ScenarioStateAccessors.SetAsync(turn, scenario);
+            ActiveScenario = ScenarioFactory.FactoryMethod(this, turn, scenario);
+        }
+
+        public async Task ResetScenarioAsync(ITurnContext turn)
+        {
+            await QnaActiveAccessors.SetAsync(turn, Default);
+            await ScenarioStateAccessors.SetAsync(turn, Default);
+        }
+
+        public async Task SaveStateAsync(ITurnContext currentTurn)
         {
             await SaveConvStateAsync(currentTurn);
             await SaveUserStateAsyn(currentTurn);

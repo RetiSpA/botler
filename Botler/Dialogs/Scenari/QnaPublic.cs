@@ -6,6 +6,11 @@ namespace Botler.Dialogs.Scenari
 {
     public class QnaPublic : IScenario
     {
+        public Task<DialogContext> GetDialogContextAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public DialogSet GetDialogSet()
         {
             throw new System.NotImplementedException();

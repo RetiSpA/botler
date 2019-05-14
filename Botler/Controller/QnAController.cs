@@ -2,8 +2,15 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
+using Botler.Helper.Commands;
+using Botler.Model;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.Scenari;
+using static Botler.Dialogs.Utility.Responses;
+using static Botler.Dialogs.Utility.ListsResponsesIT;
+using static Botler.Dialogs.Utility.Commands;
+
+
 namespace Botler.Controller
 {
     public class QnAController
@@ -11,7 +18,7 @@ namespace Botler.Controller
         public static async Task<bool> CheckQnAIsActive(BotlerAccessors accessors, ITurnContext turn)
         {
             var qna = await accessors.QnaActiveAccessors.GetAsync(turn, () => Default);
-            Console.WriteLine(qna.ToString());
+
             if(!qna.Equals(Default))
             {
                 return true;
@@ -22,7 +29,28 @@ namespace Botler.Controller
         public static async Task AnswerTurnUserQuestionAsync(ITurnContext turn, BotlerAccessors accessors, BotServices services)
         {
             QueryResult[] qnaResult = await GetQnAResult(turn, services, accessors);
+            var qnaKey = await accessors.QnaActiveAccessors.GetAsync(turn, () => Default);
+
+            await ShowQnAMessageAsync(qnaKey, turn, accessors);
+
             await SendQnAAnswerAsync(qnaResult, turn);
+            await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
+
+        }
+
+        private async static Task ShowQnAMessageAsync(string qnaKey, ITurnContext turn, BotlerAccessors accessors)
+        {
+            if(qnaKey.Equals(QnAKey))
+            {
+                ICommand commandQnA = CommandFactory.FactoryMethod(turn, accessors, CommandQnARiservata);
+                await commandQnA.ExecuteCommandAsync();
+            }
+
+            if(qnaKey.Equals(QnAPublicKey))
+            {
+                ICommand commandQnA = CommandFactory.FactoryMethod(turn, accessors, CommandQnAPublic);
+                await commandQnA.ExecuteCommandAsync();
+            }
 
         }
 

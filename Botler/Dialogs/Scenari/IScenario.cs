@@ -15,7 +15,7 @@ namespace Botler.Dialogs.Scenari
 {
     public interface IScenario
     {
-        DialogSet GetDialogSet();
+        Task<DialogContext> GetDialogContextAsync();
 
         Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult);
 

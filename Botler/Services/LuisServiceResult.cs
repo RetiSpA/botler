@@ -3,7 +3,7 @@ using Microsoft.Bot.Builder;
 
 namespace Botler.Services
 {
-    public class LuisServiceResult : IServiceCallResult
+    public class LuisServiceResult
     {
         public RecognizerResult LuisResult { get; set; }
 

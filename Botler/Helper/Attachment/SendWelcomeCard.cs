@@ -15,7 +15,7 @@ namespace Botler.Controller
             var heroCard = new HeroCard()
             {
                 Title = "Botler",
-                Subtitle = "Ciao sono Botler il ChatBot di Reti S.p.A, ecco qualche argomento per iniziare:",
+                Subtitle = "Ciao sono Botler il ChatBot di Reti S.p.A, ecco qualche argomento per iniziare:\nPer una lista di comandi rapidi disponibili, digitare 'help'",
                 Buttons = new List<CardAction> {
 
                     new CardAction(ActionTypes.OpenUrl, "Pagina principale del sito", value: "https://www.reti.it/"),

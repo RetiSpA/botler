@@ -3,24 +3,41 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Botler.Model;
 using Botler.Controller;
-using static Botler.Dialogs.Utility.Scenari;
 using Botler.Helper.Attachment;
+using static Botler.Dialogs.Utility.Scenari;
+using static Botler.Dialogs.Utility.ListsResponsesIT;
+using static Botler.Dialogs.Utility.Responses;
+
 
 namespace Botler.Helper.Commands
 {
     public class AreaRiservataCommand : ICommand
     {
-        private ITurnContext turn;
+        private readonly ITurnContext _turn;
 
-        public AreaRiservataCommand(ITurnContext turn)
+        private readonly BotlerAccessors _accessors;
+
+
+        public AreaRiservataCommand(ITurnContext turn, BotlerAccessors accessors)
         {
-            this.turn = turn ?? throw new ArgumentNullException(nameof(turn));
+            _turn = turn ?? throw new ArgumentNullException(nameof(turn));
+            _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
         }
 
         public async Task ExecuteCommandAsync()
         {
-           ISendAttachment send = SendAttachmentFactory.FactoryMethod(MenuDipedenti);
-           await send.SendAttachmentAsync(turn);
+           var alreadyAuth = await Autenticatore.UserAlreadyAuthAsync(_turn, _accessors);
+
+           if(alreadyAuth)
+            {
+                ISendAttachment send = SendAttachmentFactory.FactoryMethod(MenuDipedenti);
+                await send.SendAttachmentAsync(_turn);
+            }
+
+            else
+            {
+                await _turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
+            }
         }
     }
 }

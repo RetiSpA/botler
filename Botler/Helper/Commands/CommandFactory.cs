@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Botler.Model;
 using Microsoft.Bot.Builder;
@@ -8,7 +9,7 @@ namespace Botler.Helper.Commands
 {
     public class CommandFactory
     {
-        public static ICommand FactoryMethod(ITurnContext turn, BotlerAccessors accessors,string  entity )
+        public static ICommand FactoryMethod(ITurnContext turn, BotlerAccessors accessors, string  entity)
         {
             if(AuthCommandFound(entity))  return new AuthenticationCommand(turn, accessors);
 
@@ -16,9 +17,17 @@ namespace Botler.Helper.Commands
 
             if(WelcomeCommandFound(entity)) return new WelcomeCommand(turn);
 
-            if(AreaRiservataCommandFound(entity)) return new AreaRiservataCommand(turn);
+            if(AreaRiservataCommandFound(entity)) return new AreaRiservataCommand(turn, accessors);
+
+            if(QnACommandFound(entity)) return new QnACommand(accessors, turn);
 
             if(QnAPublicCommandFound(entity)) return new QnAPublicCommand(accessors, turn);
+
+            if(QnARiservataCommandFound(entity)) return new QnARiservataCommand(accessors, turn);
+
+            if(LogoutCommandFound(entity)) return new LogoutCommand(turn, accessors);
+
+            if(ExitCommandFound(entity)) return new ExitCommand(turn, accessors);
 
             return null;
         }
@@ -43,6 +52,11 @@ namespace Botler.Helper.Commands
           return ent.Equals(CommandAreaRiservata);
         }
 
+        private static bool QnACommandFound(string ent)
+        {
+            return ent.Equals(CommandQnA);
+        }
+
         private static bool QnAPublicCommandFound(string ent)
         {
             return ent.Equals(CommandQnAPublic);
@@ -51,6 +65,16 @@ namespace Botler.Helper.Commands
         private static bool QnARiservataCommandFound(string ent)
         {
             return ent.Equals(CommandQnARiservata);
+        }
+
+        private static bool ExitCommandFound(string ent)
+        {
+            return ent.Equals(CommandExit);
+        }
+
+        private static bool LogoutCommandFound(string ent)
+        {
+            return ent.Equals(CommandLogout);
         }
     }
 }

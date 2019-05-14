@@ -22,12 +22,11 @@ namespace Botler.Controller
 
             if(currentScenario is DefaultScenario)
             {
-
                 IScenario topIntentScenario = GetScenarioFromLuis(luisServiceResult, accessors, turn);
 
                 if(topIntentScenario.NeedAuthentication())
                 {
-                    var alreadyAuth = await Autenticatore.UserAlreadyAuth(turn, accessors);
+                    var alreadyAuth = await Autenticatore.UserAlreadyAuthAsync(turn, accessors);
 
                     if(alreadyAuth)
                     {
