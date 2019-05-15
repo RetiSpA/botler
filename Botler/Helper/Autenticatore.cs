@@ -71,8 +71,10 @@ namespace Botler.Controller
             return matched.Success;
         }
 
-        public async Task<TokenResponse> RecognizeTokenAsync(ITurnContext turnContext,  BotFrameworkAdapter adapter, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<TokenResponse> RecognizeTokenAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
+            var adapter = (BotFrameworkAdapter) turnContext.Adapter;
+
             if (IsTokenResponseEvent(turnContext))
             {
                 // The bot received the token directly
@@ -109,7 +111,25 @@ namespace Botler.Controller
 
         public async static Task<bool> UserAlreadyAuthAsync(ITurnContext turnContext, BotlerAccessors accessors)
         {
-            return await accessors.AutenticazioneDipedenteAccessors.GetAsync(turnContext, () => false);
+            // return await accessors.AutenticazioneDipedenteAccessors.GetAsync(turnContext, () => false);
+           UserModel user = await accessors.UserModelAccessors.GetAsync(turnContext, () => new UserModel());
+           bool authTimedOut = user.CheckAuthTimedOut();
+
+           if (authTimedOut)
+           {
+               await LogOutUserAsync(turnContext, accessors);
+               return false;
+           }
+           return user.Autenticato;
+        }
+
+        public async static Task LogOutUserAsync(ITurnContext turnContext, BotlerAccessors accessors)
+        {
+            var adapter = (BotFrameworkAdapter) turnContext.Adapter;
+            await adapter.SignOutUserAsync(turnContext, ConnectionName);
+
+            UserModel user = await accessors.UserModelAccessors.GetAsync(turnContext, () => new UserModel());
+            user.Autenticato = false;
         }
 
         private bool IsTokenResponseEvent(ITurnContext turnContext)

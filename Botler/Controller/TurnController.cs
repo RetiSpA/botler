@@ -129,6 +129,8 @@ namespace Botler.Controller
             // We want to get always a LUIS result first.
             LuisServiceResult luisServiceResult = await CreateLuisServiceResult(cancellationToken);
 
+            //await CheckUserAuthTimedOutAsync();
+
             var interruptionHandled = await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn);
             if(interruptionHandled)
             {
@@ -139,6 +141,7 @@ namespace Botler.Controller
             var commandExecuted = await CommandRecognizer.ExecutedCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn);
             if(commandExecuted)
             {
+                await _accessors.TurnOffQnAAsync(currentTurn);
                 await SaveState();
                 return;
             }
@@ -158,6 +161,17 @@ namespace Botler.Controller
             await scenarioController.HandleScenarioDialogAsync();
 
             await SaveState();
+        }
+
+        private async Task CheckUserAuthTimedOutAsync()
+        {
+            UserModel currentUser = await _accessors.UserModelAccessors.GetAsync(currentTurn, () => new UserModel());
+
+            if(currentUser.CheckAuthTimedOut())
+            {
+                ICommand commandLogout = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandLogout);
+                await commandLogout.ExecuteCommandAsync();
+            }
         }
 
         /// <summary>

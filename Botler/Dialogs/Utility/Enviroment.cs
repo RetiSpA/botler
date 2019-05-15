@@ -30,6 +30,7 @@ namespace Botler.Dialogs.Utility
         public const string InformazioniIntent = "Informazioni";
         public const string PossibilitàIntent = "Possibilità";
         public const string NoneIntent = "None";
+        public const string RisataIntent = "Risata";
     }
 
     /// <summary>
@@ -107,6 +108,8 @@ namespace Botler.Dialogs.Utility
         public static IList<string> ContinuaQnAResponse { get; } = GenerateResponsesFromName("QnAContinua");
 
         public static IList<string> AutenticazioneErroreResponse { get; } = GenerateResponsesFromName("AutenticazioneErrore");
+
+        public static IList<string> RisataResponse { get; } = GenerateResponsesFromName("Risata");
     }
 
     [Serializable]
@@ -152,5 +155,7 @@ namespace Botler.Dialogs.Utility
         public const string CommandLogout = "commandLogout";
 
         public const string CommandExit = "commandExit";
+
+        public const string CommandHelp = "commandHelp";
     }
 }

@@ -47,7 +47,7 @@ namespace Botler
 
         public ConversationState ConversationState { get; set; }
 
-         public IScenario ActiveScenario { get; set; }
+        public IScenario ActiveScenario { get; set; }
 
         public IStatePropertyAccessor<PrenotazioneModel> PrenotazioneStateAccessor { get; set; }
 
@@ -71,6 +71,11 @@ namespace Botler
         {
             await ScenarioStateAccessors.SetAsync(turn, scenario);
             ActiveScenario = ScenarioFactory.FactoryMethod(this, turn, scenario);
+        }
+
+        public async Task TurnOffQnAAsync(ITurnContext turn)
+        {
+            await QnaActiveAccessors.SetAsync(turn, Default);
         }
 
         public async Task ResetScenarioAsync(ITurnContext turn)

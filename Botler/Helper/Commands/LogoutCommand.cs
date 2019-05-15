@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Botler.Controller;
+using Botler.Dialogs.RisorseApi;
 using Botler.Model;
 using Microsoft.Bot.Builder;
 using static Botler.Dialogs.Utility.BotConst;
@@ -29,19 +30,17 @@ namespace Botler.Helper.Commands
             if(alreadyAuth)
             {
 
-            var adapter = (BotFrameworkAdapter)_turn.Adapter;
-            await adapter.SignOutUserAsync(_turn, ConnectionName);
-            await _accessors.AutenticazioneDipedenteAccessors.SetAsync(_turn, false);
+                await Autenticatore.LogOutUserAsync(_turn, _accessors);
 
-            if(_accessors.ActiveScenario != null)
-            {
-                 var dialogContext = await _accessors.ActiveScenario.GetDialogContextAsync();
-                 await dialogContext.CancelAllDialogsAsync();
-            }
+                if(_accessors.ActiveScenario != null)
+                {
+                    var dialogContext = await _accessors.ActiveScenario.GetDialogContextAsync();
+                    await dialogContext.CancelAllDialogsAsync();
+                }
 
-            await _accessors.ResetScenarioAsync(_turn);
+                await _accessors.ResetScenarioAsync(_turn);
 
-            await _turn.SendActivityAsync(RandomResponses(LogoutEffettuatoResponse));
+                await _turn.SendActivityAsync(RandomResponses(LogoutEffettuatoResponse));
             }
 
             else

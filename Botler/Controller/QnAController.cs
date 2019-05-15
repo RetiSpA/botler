@@ -51,22 +51,25 @@ namespace Botler.Controller
                 ICommand commandQnA = CommandFactory.FactoryMethod(turn, accessors, CommandQnAPublic);
                 await commandQnA.ExecuteCommandAsync();
             }
-
         }
 
         private static async Task SendQnAAnswerAsync(QueryResult[] qnaResult, ITurnContext turn)
         {
             foreach(QueryResult result in qnaResult)
              {
+                if(result.Score > 0.70)
+                {
+                // High Confidence Score
                 var answer = result.Answer;
                 await turn.SendActivityAsync(answer);
-             }
+                }
+            }
         }
 
         private static async Task<QueryResult[]> GetQnAResult(ITurnContext turn, BotServices services, BotlerAccessors accessors)
         {
             var currentQnA = await GetQnASelectedAsync(turn, accessors);
-            return await services.QnAServices[currentQnA].GetAnswersAsync(turn).ConfigureAwait(false);
+            return  await services.QnAServices[currentQnA].GetAnswersAsync(turn).ConfigureAwait(false);
         }
 
         private static async Task<string> GetQnASelectedAsync(ITurnContext turn, BotlerAccessors accessors)

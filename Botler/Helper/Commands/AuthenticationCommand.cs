@@ -66,11 +66,10 @@ namespace Botler.Model
 
         private async Task SecondPhaseAuthAsync()
         {
-            var adapter = (BotFrameworkAdapter) _turn.Adapter;
             var message = _turn.Activity.AsMessageActivity();
             var response = string.Empty;
 
-            var tokenResponse = await autenticatore.RecognizeTokenAsync(_turn, adapter);
+            var tokenResponse = await autenticatore.RecognizeTokenAsync(_turn);
 
                 if (tokenResponse != null) // Autenticazione Succeded
                 {
@@ -82,8 +81,8 @@ namespace Botler.Model
                 var randomResponse = RandomResponses(AutenticazioneSuccessoResponse);
                 UserModel User = new UserModel(tokenResponse);
                 await User.SaveUserDatesAsync(_accessors, _turn);
-               // await _accessors.UserModelAccessors.SetAsync(_turn, User); Error 
-               
+                await _accessors.UserModelAccessors.SetAsync(_turn, User); //Error 
+
                 await _turn.SendActivityAsync(String.Format(randomResponse, User.Nome, User.Cognome));
                 ICommand areaRiservata = CommandFactory.FactoryMethod(_turn, _accessors, CommandAreaRiservata);
                 await areaRiservata.ExecuteCommandAsync();

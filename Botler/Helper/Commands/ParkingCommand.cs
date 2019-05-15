@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Botler.Model;
 using Botler.Controller;
+using Botler.Helper.Attachment;
+using Botler.Helper.Commands;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
-using Botler.Helper.Attachment;
+using static Botler.Dialogs.Utility.Commands;
 
 namespace Botler.Model
 {
@@ -31,6 +33,10 @@ namespace Botler.Model
             if(!alreadyAuth)
             {
                 await _turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
+
+                ICommand authCommand = CommandFactory.FactoryMethod(_turn, _accessors, CommandAuthentication);
+                await authCommand.ExecuteCommandAsync();
+
                 return;
             }
 

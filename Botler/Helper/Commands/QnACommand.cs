@@ -29,18 +29,21 @@ namespace Botler.Helper.Commands
 
             if(alreadyAuth)
             {
-                await _accessors.QnaActiveAccessors.SetAsync(_turn, QnAKey);
-                ICommand commandQnARiservata = CommandFactory.FactoryMethod(_turn, _accessors, CommandQnARiservata);
-                await commandQnARiservata.ExecuteCommandAsync();
+               await ExecuteCommandQnAAsync(QnAKey, CommandQnARiservata);
             }
 
             else
             {
-                await _accessors.QnaActiveAccessors.SetAsync(_turn, QnAPublicKey);
-                ICommand commandQnAPublic = CommandFactory.FactoryMethod(_turn, _accessors, CommandQnAPublic);
-                await commandQnAPublic.ExecuteCommandAsync();
+               await ExecuteCommandQnAAsync(QnAPublicKey, CommandQnAPublic);
             }
 
+        }
+
+        private async Task ExecuteCommandQnAAsync(string qnaKey, string qnaCommand)
+        {
+            await _accessors.QnaActiveAccessors.SetAsync(_turn, qnaKey);
+            ICommand commandQna = CommandFactory.FactoryMethod(_turn, _accessors, qnaCommand);
+            await commandQna.ExecuteCommandAsync();
         }
     }
 }

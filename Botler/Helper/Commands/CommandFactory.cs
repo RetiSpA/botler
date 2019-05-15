@@ -29,7 +29,14 @@ namespace Botler.Helper.Commands
 
             if(ExitCommandFound(entity)) return new ExitCommand(turn, accessors);
 
+            if(HelpCommandFound(entity)) return new HelpCommand(turn);
+
             return null;
+        }
+
+        private static bool HelpCommandFound(string ent)
+        {
+            return ent.Equals(CommandHelp);
         }
 
         private static bool AuthCommandFound(string ent)

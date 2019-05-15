@@ -71,6 +71,11 @@ namespace Botler.Controller
                          // Handled the interrupt.
             }
 
+            if(topIntent.Equals(RisataIntent) && (score > 0.75))
+            {
+                    response = RandomResponses(RisataResponse);
+            }
+
                   if(response == string.Empty) return false;   // Did not handle
 
                   await turn.SendActivityAsync(response).ConfigureAwait(false);

@@ -66,7 +66,6 @@
                     text-decoration: none;
                 }
             </style>
-
             <p><a href="https://join.skype.com/bot/d027b06b-687b-4f3f-aabc-192364e8b8e3"><img alt="Add Bot to Skype"
                     height="38" width="142" src="https://secure.skypeassets.com/content/dam/scom/images/add-bot-button/add-to-skype-buttons02-36px.png" /></a></p>
 
@@ -77,26 +76,30 @@
             <div id="webchat" role="main"></div>
             <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
             <script>
+
               window.WebChat.renderWebChat({
                 directLine: window.WebChat.createDirectLine({ token: 'fTY02w2BYk0.cwA.HWA.AQLUTaP6cvBhZCa8ysE_zSTGQWOpLQiAIK2BqzUXY0c' }),
                 userID: 'YOUR_USER_ID',
                 username: 'Web Chat User',
                 locale: 'en-US',
-                botAvatarInitials: 'Bot',
-                userAvatarInitials: 'You'
+                
+                botAvatarInitials: 'BL',
+                userAvatarInitials: 'You',
+                styleOptions:
+                {
+                    rootHeight: '100%',
+                    rootWidth: '100%',
+                    bubbleBackground: 'whitesmoke',
+                    bubbleFromUserBackground: 'Whitesmoke',
+                    showSpokenText: true,
+                    botAvatarImage: 'avatar.jpg',
+                }
               }, document.getElementById('webchat'));
+             window.locale('#webchat > *').focus();
+             window.querySelector('#webchat > *').focus();
             </script>
 
-            <!--<p>Domande Utili</p>
-            <div id="menu">
-                <ul>
-                    <li>Prenota parcheggio</li>
-                    <li>Cancella prenotazione</li>
-                    <li>Visualizza prenotazione</li>
-                    <li>Tempo rimanente</li>
-                </ul>
-            </div>-->
-            <p id="linkReti"><a href="http://www.reti.it"> www.reti.it </a></p>
+            <pr id="linkReti"><a href="http://www.reti.it"> www.reti.it </a></pr>
         </div>
     </body>
 </html>

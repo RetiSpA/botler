@@ -51,7 +51,8 @@ namespace Botler.Dialogs.Scenari
 
             if(topIntent.Equals(NoneIntent) || score < 0.75)
             {
-                await _turn.SendActivityAsync(RandomResponses(NoneResponse));
+                await _turn.SendActivityAsync(RandomResponses(NoneResponse)).ConfigureAwait(true);
+                await _turn.SendActivityAsync(RandomResponses(PossibilitaResponse));
             }
             return await _scenarioDialogs.CreateContextAsync(_turn).Result.EndDialogAsync();
         }

@@ -136,31 +136,33 @@
     <value>Puoi avere solo un posto!</value>
   </data>
   <data name="DisponibilitaTerminata_3" xml:space="preserve">
-    <value>Ma quanti posti vuoi oh! Ne hai già uno!</value>
+    <value>Hai già un posto, è il tuo massimo di posti che puoi avere :)</value>
   </data>
   <data name="Informazione_1" xml:space="preserve">
-    <value>Sono Bot Reti! Sono qui per aiutarti a prenotare un parcheggio :)</value>
+    <value>Sono un ChatBot Reti! Chiedimi cosa fare :)</value>
   </data>
   <data name="Informazione_2" xml:space="preserve">
-    <value>Mi chiamo Botler! Gestisco una tua prenotazione, basta chiedere</value>
+    <value>Mi chiamo Botler! Cosa posso fare per te ?</value>
   </data>
   <data name="Informazione_3" xml:space="preserve">
-    <value>Sono Botler e il mio compito è guidarti nella prenotazione di un posteggio!</value>
+    <value>Sono Botler e il mio compito è darti una mano, dimmi in cosa!</value>
   </data>
   <data name="None_1" xml:space="preserve">
     <value>Non capisco ciò che mi stai dicendo, mi spiace.</value>
   </data>
   <data name="None_2" xml:space="preserve">
-    <value>Scusa? Non ti capisco mica...</value>
+    <value>Scusa? Non capisco.
+    Se ti servisse una mano ecco cosa posso fare:</value>
   </data>
   <data name="None_3" xml:space="preserve">
-    <value>Ma che hai detto?!?</value>
+    <value>Non ho capito, ma ecco cosa fare:</value>
   </data>
   <data name="None_4" xml:space="preserve">
-    <value>Boh! Non ci ho capito nulla..</value>
+    <value>Mi sa che quello non lo posso fare, ecco quello che offro:</value>
   </data>
   <data name="None_5" xml:space="preserve">
-    <value>Ok, Magari vuoi dirmi dell'altro, ti ascolto.</value>
+    <value>Ok, Magari vuoi dirmi dell'altro, ti ascolto.
+    Intanto ecco le mie possibili azioni: </value>
   </data>
   <data name="PrenotazioneEffettuata_1" xml:space="preserve">
     <value>Possiedi già una prenotazione!</value>
@@ -208,16 +210,13 @@
     <value>Come vuoi, scrivi se hai bisogno :)</value>
   </data>
   <data name="Presentazione_1" xml:space="preserve">
-    <value>Hey ciao!</value>
+    <value>Hey ciao! Sono Botler!</value>
   </data>
   <data name="Presentazione_2" xml:space="preserve">
-    <value>Wella!</value>
+    <value>Ciao Benvenuto, mi chiamo Botler!</value>
   </data>
   <data name="Presentazione_3" xml:space="preserve">
-    <value>We</value>
-  </data>
-  <data name="Presentazione_4" xml:space="preserve">
-    <value>Ciao bello!</value>
+    <value>Ciao, cosa posso fare te ? :)</value>
   </data>
   <data name="Ringraziamento_1" xml:space="preserve">
     <value>Ma figurati! Son qui per questo :)</value>
@@ -240,14 +239,29 @@
   <data name="SalutoNegativo_3" xml:space="preserve">
     <value>Assolutamente no, mai stato meglio!</value>
   </data>
+  <data name="SalutoNegativo_4" xml:space="preserve">
+    <value> Scusa se deludo le tue aspettative :( </value>
+  </data>
+  <data name="SalutoNegativo_5" xml:space="preserve">
+    <value> Infondo sono solo un semplice chatbot :) Non me la prendo! </value>
+  </data>
+  <data name="SalutoNegativo_6" xml:space="preserve">
+    <value> Anche se sei cattivo, io non mi offendo, continua a chiedere </value>
+  </data>
   <data name="SalutoPositivo_1" xml:space="preserve">
-    <value>Ricordati che io non posso star male! Nel caso ho qualche bug aha</value>
+    <value>Bene grazie mille :)</value>
   </data>
   <data name="SalutoPositivo_2" xml:space="preserve">
-    <value>Sto sempre bene! come nuovo di pacca!</value>
+    <value>Sto sempre bene!</value>
   </data>
   <data name="SalutoPositivo_3" xml:space="preserve">
     <value>Benissimo, mai sentito meglio!</value>
+  </data>
+  <data name="SalutoPositivo_4" xml:space="preserve">
+    <value> Ciao, tutto bene :) </value>
+  </data>
+  <data name="SalutoPositivo_5" xml:space="preserve">
+    <value> Alla stra-grandissima, grazie :D </value>
   </data>
   <data name="Saluto_1" xml:space="preserve">
     <value>Ciao Ciao! A presto</value>
@@ -313,45 +327,68 @@
   <data name="AutenticazioneSuccesso_3" xml:space="preserve">
     <value>Login Effettuato, Benvenuto {0} {1}</value>
   </data>
-  <data name ="AutenticazioneNecessaria_1" xml:space="preserve">
-    <value>Questa funzionalità è riservata ai dipedenti, autenticati per entrare nell'area riservata</value>
-   </data>
-  <data name = "AutenticazioneNecessaria_2" xml:space="preserve">
-    <value> Autenticati per accedera all'Area Riservata </value>
+  <data name="AutenticazioneNecessaria_1" xml:space="preserve">
+    <value>Questa funzionalità è riservata ai dipedenti, autenticati per entrare nell'area riservata
+    Oppure l' autenticazione potrebbe essere scaduta</value>
   </data>
-  <data name = "AutentacazioneEffettuata_1" xml:space ="preserve">
+  <data name="AutenticazioneNecessaria_2" xml:space="preserve">
+    <value> Sembra che tu voglia accedere ad una funzionalità dell'Area Riservata senza autenticazione.
+     Oppure l' autenticazione potrebbe essere scaduta</value>
+  </data>
+  <data name="AutenticazioneNecessaria_3" xml:space="preserve">
+    <value> Autenticati per accedera all'Area Riservata.
+    Oppure l' autenticazione potrebbe essere scaduta</value>
+  </data>
+  <data name="AutenticazioneNecessaria_4" xml:space="preserve">
+    <value> Mi spiace ma devi essere autenticato prima di poter procedere con questa funzionalità.
+    Oppure l' autenticazione potrebbe essere scaduta</value>
+  </data>
+  <data name="AutentacazioneEffettuata_1" xml:space="preserve">
     <value> Hai già effettuato l'accesso</value>
-   </data>
-  <data name = "AutentacaizoneEffettuata_2" xml:space ="preserve">
+  </data>
+  <data name="AutentacaizoneEffettuata_2" xml:space="preserve">
     <value> Sei già stato autenticato!</value>
   </data>
-<data name = "AutenticaizoneNecessaria_3" xml:space="preserve">
-  <value> Non c'è ne bisogno, sei già stato autorizzato :) </value>
-</data>
-<data name ="Possibilita_1" xml:space ="preserve">
-  <value> Ecco una lista di comandi utili per te:
-  - parcheggio -> visualizza il menu dedicato al parcheggio di un auto.
-  - login -> iniza la fase di autenticazione.
-  - help -> menu di aiuto, e possibilita.
-  - exit -> esce dalla convesazione attuale e inizia una nuova.
-  - benvenuto -> visualizza menu principale.
-  - area riservata -> visualizza il menu dedicato ai dipedenti Reti S.p.A.
-  - logout -> effettuata il logout.
+  <data name="AutenticaizoneNecessaria_3" xml:space="preserve">
+    <value> Non c'è ne bisogno, sei già stato autorizzato :) </value>
+  </data>
+  <data name="Possibilita_1" xml:space="preserve">
+    <value> Ecco una lista di comandi utili per te:
+  - parcheggio -&gt; visualizza il menu dedicato al parcheggio di un auto.
+  - login -&gt; iniza la fase di autenticazione.
+  - qna : per il faq e iniziare a chiedermi qualche domanda
+  - help -&gt; menu di aiuto, e possibilita.
+  - exit -&gt; esce dalla convesazione attuale e inizia una nuova.
+  - benvenuto -&gt; visualizza menu principale.
+  - area riservata -&gt; visualizza il menu dedicato ai dipedenti Reti S.p.A.
+  - logout -&gt; effettuata il logout.
   </value>
-</data>
-<data name ="QnAPublic_1" xml:space="preserve">
-  <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A.
+  </data>
+  <data name="Possibilita_2" xml:space="preserve">
+    <value> Ecco cosa posso fare per te:
+  - Rispondere a delle domande su Reti S.p.A.
+  - Indirizzarti su News,Blog e Sito di Reti S.p.A
+
+  Invece se sei un dipedente posso fare per te le seguenti azioni:
+
+  - Rispondere a domande interne a Reti S.p.A.
+  - Prenotarti un parcheggio nel nostro spazio aziendale.
+  - News interne di Reti (Magazine, News Aziendali, Eventi).
+</value>
+  </data>
+  <data name="QnAPublic_1" xml:space="preserve">
+    <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A.
   Posso rispondere alle domande di carattere generale sulla Azienda.
 
   Per uscire dal QnA usare il comand 'exit'.
   Per una lista completa dei comandi usare 'help'.
 
-  
+
   Ecco qualche domanda di esempio, per aiutarti:
   </value>
-</data>
-<data name ="QnA_1" xml:space="preserve">
-  <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A riservato ai Dipedenti.
+  </data>
+  <data name="QnA_1" xml:space="preserve">
+    <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A riservato ai Dipedenti.
   Posso rispondere alle domande interne di Reti S.p.A.
   Ecco qualche esempio, per aiutarti:
   - Domande su rapportini e SiWeb ( Spese, rimborsi, malattie... )
@@ -364,54 +401,66 @@
   Per uscire dal QnA usare il comand 'exit'.
   Per una lista completa dei comandi usare 'help'.
   </value>
-</data>
-<data name="Domanda_1" xml:space="preserve">
-  <value> - Domanda: "Chi siete?"</value>
-</data>
-<data name="Domanda_2" xml:space="preserve">
-  <value> - Domanda : "Dove siete?
+  </data>
+  <data name="Domanda_1" xml:space="preserve">
+    <value> - Domanda: "Chi siete?"</value>
+  </data>
+  <data name="Domanda_2" xml:space="preserve">
+    <value> - Domanda : "Dove siete?
   </value>
-</data>
-<data name="Domanda_3" xml:space="preserve">
-  <value> - Domanda : "Fate formazione?"</value>
-</data>
-<data name="Domanda_4" xml:space="preserve">
-  <value> - Domanda : "Di cosa vi occupate?"</value>
-</data>
-<data name="Domanda_5" xml:space="preserve">
-  <value> - Domanda : "Come faccio a contattarvi?"</value>
-</data>
-<data name = "Domanda_6" xml:space="preserve">
-  <value> - Domanda : "Quali sono i vostri canali social?"</value>
-</data>
-<data name  ="Domanda_7" xml:space="preserve">
-  <value> - Domanda : "Come faccio a mandare il CV?"</value>
-</data>
-<data name = "LogoutEffettuato_1" xml:space="preserve">
-  <value> Logout effettuato con successo!</value>
-</data>
-<data name = "LogoutImpossibile_1" xml:space ="preserve">
-  <value> Effettuata il login prima :)</value>
-</data>
-<data name ="LogoutImpossibile_2" xml:space="preserve">
-  <value> Devi essere connesso per 'logout'</value>
-</data>
-<data name = "QnAContinua_1" xml:space="preserve">
-  <value> Vuoi chiedermi altro ? </value>
-</data>
-<data name = "QnAContinua_2" xml:space="preserve">
-  <value> Posso rispondere ad un altra domanda per te ?</value>
-</data>
-<data name = "AutenticazioneErrore_1" xml:space="preserve">
-  <value> Il MagicCode potrebbe essere errato riprova!
+  </data>
+  <data name="Domanda_3" xml:space="preserve">
+    <value> - Domanda : "Fate formazione?"</value>
+  </data>
+  <data name="Domanda_4" xml:space="preserve">
+    <value> - Domanda : "Di cosa vi occupate?"</value>
+  </data>
+  <data name="Domanda_5" xml:space="preserve">
+    <value> - Domanda : "Come faccio a contattarvi?"</value>
+  </data>
+  <data name="Domanda_6" xml:space="preserve">
+    <value> - Domanda : "Quali sono i vostri canali social?"</value>
+  </data>
+  <data name="Domanda_7" xml:space="preserve">
+    <value> - Domanda : "Come faccio a mandare il CV?"</value>
+  </data>
+  <data name="LogoutEffettuato_1" xml:space="preserve">
+    <value> Logout effettuato con successo!</value>
+  </data>
+  <data name="LogoutImpossibile_1" xml:space="preserve">
+    <value> Effettuata il login prima :)</value>
+  </data>
+  <data name="LogoutImpossibile_2" xml:space="preserve">
+    <value> Devi essere connesso per 'logout'</value>
+  </data>
+  <data name="QnAContinua_1" xml:space="preserve">
+    <value> Vuoi chiedermi altro ? </value>
+  </data>
+  <data name="QnAContinua_2" xml:space="preserve">
+    <value> Posso rispondere ad un altra domanda per te ?</value>
+  </data>
+  <data name="AutenticazioneErrore_1" xml:space="preserve">
+    <value> Il MagicCode potrebbe essere errato, riprova!
   Ti prego di vedere la pagina appena aperta, se non è stata aperta esegui il comando 'login' di nuovo.</value>
-</data>
-<data name = "AutenticazioneErrore_2" xml:space="preserve">
-  <value> Non è questo il codice che ti ho mandato :)
+  </data>
+  <data name="AutenticazioneErrore_2" xml:space="preserve">
+    <value> Non è questo il codice che ti ho mandato :)
   Ti prego di vedere la pagina appena aperta, se non è stata aperta esegui il comando 'login' di nuovo.</value>
-</data>
-<data name = "AutenticazioneErrore_3" xml:space="preserve">
-  <value> Qualcosa non va nel codice!
+  </data>
+  <data name="AutenticazioneErrore_3" xml:space="preserve">
+    <value> Qualcosa non va nel codice!
   Ti prego di vedere la pagina appena aperta, se non è stata aperta esegui il comando 'login' di nuovo.</value>
-</data>
+  </data>
+  <data name="Risata_1" xml:space="preserve">
+    <value>hahaha :D</value>
+  </data>
+  <data name="Risata_2" xml:space="preserve">
+    <value>ehehe grazie :)</value>
+  </data>
+  <data name="Risata_3" xml:space="preserve">
+    <value>Sono contento di averti ridere</value>
+  </data>
+  <data name="Risata_4" xml:space="preserve">
+    <value>Mi piace far sorridere :D</value>
+  </data>
 </root>
