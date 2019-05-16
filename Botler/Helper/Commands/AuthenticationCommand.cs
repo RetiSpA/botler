@@ -14,6 +14,7 @@ using static Botler.Dialogs.Utility.ListsResponsesIT;
 using Botler.Dialogs.RisorseApi;
 using Microsoft.Graph;
 using System.Net.Http.Headers;
+using System.Collections.Generic;
 
 namespace Botler.Model
 {
@@ -45,7 +46,6 @@ namespace Botler.Model
                 await ShowAreaRiservataAsync();
                 return;
             }
-
             if(autenticatore.MagicCodeFound(message))
             {
                 await SecondPhaseAuthAsync();
@@ -59,6 +59,7 @@ namespace Botler.Model
 
         private async Task FirstPhaseAuthAsync()
         {
+            await _accessors.TurnOffQnAAsync(_turn);
             await _accessors.SetCurrentScenarioAsync(_turn, Autenticazione);
             Activity card = autenticatore.CreateOAuthCard(_turn);
             await _turn.SendActivityAsync(card).ConfigureAwait(false);
@@ -73,19 +74,23 @@ namespace Botler.Model
 
                 if (tokenResponse != null) // Autenticazione Succeded
                 {
-                    // Changes the CurrentDialog
-                    await ChangesAndSaveStateAsync();
+                    // Set in the authenticated user: memberID -> true
+                   // await _accessors.AddAuthenticatedUserAsync(_turn);
 
+                   // Create a user with MicrosoftGraphClient information
+                    UserModel user = new UserModel(tokenResponse);
+                    await user.SaveUserDataAsync( _accessors, _turn, true);
 
-                // Sends  a success response to the user
-                var randomResponse = RandomResponses(AutenticazioneSuccessoResponse);
-                UserModel User = new UserModel(tokenResponse);
-                await User.SaveUserDatesAsync(_accessors, _turn);
-                await _accessors.UserModelAccessors.SetAsync(_turn, User); //Error 
+                    // Saves user in the Storage
+                    await _accessors.AddUserToAccessorsListAync(user, _turn);
 
-                await _turn.SendActivityAsync(String.Format(randomResponse, User.Nome, User.Cognome));
-                ICommand areaRiservata = CommandFactory.FactoryMethod(_turn, _accessors, CommandAreaRiservata);
-                await areaRiservata.ExecuteCommandAsync();
+                    // Sends the operation succeded to the user
+                    var randomResponse = RandomResponses(AutenticazioneSuccessoResponse);
+                    await _turn.SendActivityAsync(String.Format(randomResponse, user.Nome, user.Cognome));
+
+                    // Shows the Area Riservata menu
+                    ICommand areaRiservata = CommandFactory.FactoryMethod(_turn, _accessors, CommandAreaRiservata);
+                    await areaRiservata.ExecuteCommandAsync();
                 }
 
                 else
@@ -96,7 +101,6 @@ namespace Botler.Model
 
         private async Task ChangesAndSaveStateAsync()
        {
-            await _accessors.AutenticazioneDipedenteAccessors.SetAsync(_turn, true);
             await _accessors.SetCurrentScenarioAsync(_turn, Default);
             await _accessors.SaveStateAsync(_turn);
        }

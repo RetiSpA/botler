@@ -37,9 +37,9 @@ namespace Botler
             CancellaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             VisualizzaTempoStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             VisualizzaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
-            AutenticazioneDipedenteAccessors = UserState.CreateProperty<bool>("AutenticazioneDipedente");
+            AutenticazioneDipedenteAccessors = UserState.CreateProperty<Dictionary<string,bool>>("AutenticazioneDipedente");
             QnaActiveAccessors  = UserState.CreateProperty<string>("QnAActive");
-            UserModelAccessors = UserState.CreateProperty<UserModel>(nameof(UserModel));
+            UserModelAccessors = UserState.CreateProperty<List<UserModel>>(nameof(UserModel));
 
         }
 
@@ -61,11 +61,44 @@ namespace Botler
 
         public IStatePropertyAccessor<string> ScenarioStateAccessors { get; set; }
 
-        public IStatePropertyAccessor<bool> AutenticazioneDipedenteAccessors { get; set; }
+        public IStatePropertyAccessor<Dictionary<string,bool>> AutenticazioneDipedenteAccessors { get; set; }
 
-        public IStatePropertyAccessor<UserModel> UserModelAccessors { get; set; }
+        public IStatePropertyAccessor<List<UserModel>> UserModelAccessors { get; set; }
+
+        public IStatePropertyAccessor<string> AuthTimeAccessors { get; set; }
 
         public IStatePropertyAccessor<string> QnaActiveAccessors { get; set; }
+
+        public IStatePropertyAccessor<string> ResourceFileSelectedAccessors { get; set; }
+
+        public async Task AddUserToAccessorsListAync(UserModel user, ITurnContext turn)
+        {
+            List<UserModel> list = await UserModelAccessors.GetAsync(turn, () => new List<UserModel>());
+            list.Add(user);
+            await UserModelAccessors.SetAsync(turn, list);
+        }
+
+        public async Task AddAuthenticatedUserAsync( ITurnContext turn)
+        {
+            string memberID = turn.Activity.From.Id;
+            Dictionary<string,bool> map = await AutenticazioneDipedenteAccessors.GetAsync(turn, () => new Dictionary<string,bool>());
+            map.Add(memberID, true);
+            await AutenticazioneDipedenteAccessors.SetAsync(turn, map);
+        }
+
+        public async Task<UserModel> GetAuthenticatedMemberAsyc(ITurnContext turn)
+        {
+            List<UserModel> list = await UserModelAccessors.GetAsync(turn, () => new List<UserModel>());
+            string memberID = turn.Activity.From.Id;
+            foreach(UserModel user in list)
+            {
+                if(user.Id_Utente.Equals(memberID))
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
 
         public async Task SetCurrentScenarioAsync(ITurnContext turn, string scenario)
         {

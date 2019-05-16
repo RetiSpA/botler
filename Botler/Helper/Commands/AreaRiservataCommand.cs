@@ -32,6 +32,7 @@ namespace Botler.Helper.Commands
             {
                 ISendAttachment send = SendAttachmentFactory.FactoryMethod(MenuDipedenti);
                 await send.SendAttachmentAsync(_turn);
+                await _accessors.TurnOffQnAAsync(_turn);
             }
 
             else

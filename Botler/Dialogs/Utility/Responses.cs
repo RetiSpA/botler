@@ -15,13 +15,15 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using static Botler.Dialogs.Utility.BotConst;
 
 namespace Botler.Dialogs.Utility
 {
-    public static class Responses
+    public  class Responses
     {
-        private static ResourceSet _resourseSet = new ResourceManager("Botler.Dialogs.Resources.Responses-it", Assembly.GetExecutingAssembly())
+        public static ResourceSet _resourseSet = new ResourceManager("Botler.Dialogs.Resources.Responses-it", Assembly.GetExecutingAssembly())
         .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+        public static string ResourceFileSelected { get; set; } = "Botler.Dialogs.Resources.Responses-it";
 
         /// <summary>
         ///  Prende in input un array precedentemente inizializzato
@@ -45,6 +47,8 @@ namespace Botler.Dialogs.Utility
         public static IList<string> GenerateResponsesFromName(string name)
         {
             IList<string> responses = new List<string>();
+             ResourceSet _resourseSet = new ResourceManager(ResourceFileSelected, Assembly.GetExecutingAssembly())
+                                        .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
             string regexPattern = @name+"_\\d*";
             Regex regex = new Regex(regexPattern);
@@ -59,12 +63,8 @@ namespace Botler.Dialogs.Utility
                 {
                     responses.Add((string)resource);
                 }
-
             }
-
             return responses;
-         }
-
+        }
     }
-
 }

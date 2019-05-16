@@ -15,63 +15,63 @@ namespace Botler.Controller
             var score = luisServiceResult.TopScoringIntent.Item2; // score
             string response = string.Empty;
 
-            if (topIntent.Equals(PresentazioneIntent) && (score > 0.75))
+            if (topIntent.Equals(PresentazioneIntent) && (score >= 0.75))
             {
                  response = RandomResponses(PresentazioneResponse);
 
                          // Handled the interrupt.
             }
 
-            if (topIntent.Equals(GoodbyeIntent) && (score > 0.75))
+            if (topIntent.Equals(GoodbyeIntent) && (score >= 0.75))
             {
                  response= RandomResponses(SalutoResponse);
 
                          // Handled the interrupt.
             }
 
-            if (topIntent.Equals(InformazioniIntent) && (score > 0.75))
+            if (topIntent.Equals(InformazioniIntent) && (score >= 0.75))
             {
                  response = RandomResponses(InformazioneResponse);
 
                          // Handled the interrupt.
             }
 
-            if (topIntent.Equals(RingraziamentiIntent) && (score > 0.75))
+            if (topIntent.Equals(RingraziamentiIntent) && (score >= 0.75))
             {
                  response = RandomResponses(RingraziamentoResponse);
 
                          // Handled the interrupt.
             }
 
-            if (topIntent.Equals(SalutePositivoIntent) && (score > 0.75))
+            if (topIntent.Equals(SalutePositivoIntent) && (score >= 0.75))
             {
                  response = RandomResponses(SalutoPositivoResponse);
 
                          // Handled the interrupt.
             }
 
-            if (topIntent.Equals(SaluteNegativoIntent) && (score > 0.75))
+            if (topIntent.Equals(SaluteNegativoIntent) && (score >= 0.75))
             {
                  response = RandomResponses(SalutoNegativoResponse);
 
                          // Handled the interrupt.
             }
 
-            if (topIntent.Equals(AnomaliaIntent) && (score > 0.75))
+            if (topIntent.Equals(AnomaliaIntent) && (score >= 0.75))
             {
                  response = RandomResponses(AnomaliaResponse);
 
                          // Handled the interrupt.
             }
 
-            if (topIntent.Equals(PossibilitàIntent) && (score > 0.75))
+            if (topIntent.Equals(PossibilitàIntent) && (score >= 0.75))
             {
                  response = RandomResponses(PossibilitaResponse);
 
                          // Handled the interrupt.
             }
 
-            if(topIntent.Equals(RisataIntent) && (score > 0.75))
+            if(topIntent.Equals(RisataIntent) && (score >= 0.75))
             {
                     response = RandomResponses(RisataResponse);
             }

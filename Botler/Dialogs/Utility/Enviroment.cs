@@ -43,6 +43,8 @@ namespace Botler.Dialogs.Utility
         public static string LuisConfiguration = "basic-bot-LUIS";
         public static string QnAPublicKey = "botler-qna-pubblica";
         public static string QnAKey = "botler-qna";
+        public const string ResourcesIT = "Botler.Dialogs.Resources.Responses-it";
+        public const string ResourceEN = "Botler.Dialogs.Resources.Responses-en";
 
     }
 
@@ -110,6 +112,8 @@ namespace Botler.Dialogs.Utility
         public static IList<string> AutenticazioneErroreResponse { get; } = GenerateResponsesFromName("AutenticazioneErrore");
 
         public static IList<string> RisataResponse { get; } = GenerateResponsesFromName("Risata");
+
+        public static IList<string> ComandiResponse { get; } = GenerateResponsesFromName("ListaComandi");
     }
 
     [Serializable]

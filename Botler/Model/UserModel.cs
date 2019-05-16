@@ -36,34 +36,36 @@ namespace Botler.Dialogs.RisorseApi
 
         public string Email { get; set; }
 
-        public int Id_Utente { get; set; }
+        public string Id_Utente { get; set; }
 
         [JsonIgnore]
         [IgnoreDataMember]
         public GraphServiceClient GraphUser { get; set; }
 
-        public bool Autenticato { get; set; } = false;
+        public bool Autenticato { get; set; }
 
         public TokenResponse Token { get; set; }
 
-        public DateTime AuthTime { get; private set; }
+        public DateTime AuthTime { get; set; }
 
-        private const double authTimeOut = 30; // in minutes
+        private const double authTimeOut = 30; // minutes
 
-        public async Task SaveUserDatesAsync(BotlerAccessors accessors, ITurnContext turn)
+        public async Task SaveUserDataAsync(BotlerAccessors accessors, ITurnContext turn, bool auth)
         {
             var me = await GraphUser.Me.Request().GetAsync();
             Nome = me.GivenName;
             Cognome = me.Surname;
-            Autenticato = true;
+            Email = Nome+"."+Cognome+"@test.reti.it";
+            Id_Utente = turn.Activity.From.Id;
+            Autenticato = auth;
             AuthTime = DateTime.Now;
         }
 
-        public  bool  CheckAuthTimedOut()
+        public bool CheckAuthTimedOut(ITurnContext turn, BotlerAccessors accessors)
         {
             if(Autenticato)
             {
-                if((DateTime.Now.Minute - AuthTime.Minute) >= authTimeOut)
+                if(DateTime.Compare(DateTime.Now, AuthTime.Add(TimeSpan.FromMinutes(authTimeOut)))>0)
                 {
                     return true;
                 }

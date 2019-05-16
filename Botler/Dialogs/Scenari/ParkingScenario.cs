@@ -91,10 +91,9 @@ namespace Botler.Dialogs.Scenari
             var score = luisServiceResult.TopScoringIntent.Item2; // score
             DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
 
-            // Controlla autenticazione
             DialogTurnResult dialogResult = null;
 
-            if(topIntent.Equals(PrenotazioneIntent) && score > 0.75)
+            if(topIntent.Equals(PrenotazioneIntent) && score >= 0.75)
             {
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(Prenotazione));
 
@@ -102,7 +101,7 @@ namespace Botler.Dialogs.Scenari
 
             }
 
-            if(topIntent.Equals(TempoRimanentePrenotazioneIntent) && score > 0.75)
+            if(topIntent.Equals(TempoRimanentePrenotazioneIntent) && score >= 0.75)
             {
 
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaTempo));
@@ -110,7 +109,7 @@ namespace Botler.Dialogs.Scenari
                 return dialogResult;
             }
 
-            if(topIntent.Equals(CancellaPrenotazioneIntent) && score > 0.75)
+            if(topIntent.Equals(CancellaPrenotazioneIntent) && score >= 0.75)
             {
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(CancellaPrenotazione));
 
@@ -118,7 +117,7 @@ namespace Botler.Dialogs.Scenari
 
             }
 
-            if(topIntent.Equals(VerificaPrenotazioneIntent) && score > 0.75)
+            if(topIntent.Equals(VerificaPrenotazioneIntent) && score >= 0.75)
             {
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaPrenotazione));
 

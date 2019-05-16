@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Resources;
@@ -100,7 +101,6 @@ namespace Botler.Controller
                 if (matched.Success)
                 {
                     TokenResponse token = await adapter.GetUserTokenAsync(turnContext, ConnectionName, matched.Value, cancellationToken).ConfigureAwait(false);
-
                     return token;
                 }
 
@@ -111,25 +111,45 @@ namespace Botler.Controller
 
         public async static Task<bool> UserAlreadyAuthAsync(ITurnContext turnContext, BotlerAccessors accessors)
         {
-            // return await accessors.AutenticazioneDipedenteAccessors.GetAsync(turnContext, () => false);
-           UserModel user = await accessors.UserModelAccessors.GetAsync(turnContext, () => new UserModel());
-           bool authTimedOut = user.CheckAuthTimedOut();
+            UserModel userAuthenticated = await accessors.GetAuthenticatedMemberAsyc(turnContext);
 
-           if (authTimedOut)
-           {
-               await LogOutUserAsync(turnContext, accessors);
-               return false;
-           }
-           return user.Autenticato;
+            if(userAuthenticated != null)
+            {
+                bool authTimedOut = userAuthenticated.CheckAuthTimedOut(turnContext,accessors);
+
+                if(authTimedOut)
+                {
+                   await LogOutUserAsync(turnContext, accessors);
+                   return false;
+                }
+
+                else
+                {
+                    return userAuthenticated.Autenticato;
+                }
+            }
+
+            else
+            {
+                return false;
+            }
         }
 
         public async static Task LogOutUserAsync(ITurnContext turnContext, BotlerAccessors accessors)
         {
             var adapter = (BotFrameworkAdapter) turnContext.Adapter;
             await adapter.SignOutUserAsync(turnContext, ConnectionName);
-
-            UserModel user = await accessors.UserModelAccessors.GetAsync(turnContext, () => new UserModel());
-            user.Autenticato = false;
+            string memberID = turnContext.Activity.From.Id;
+            List<UserModel> userList = await accessors.UserModelAccessors.GetAsync(turnContext, () => new List<UserModel>());
+            foreach(UserModel user in userList)
+            {
+                if(user.Id_Utente.Equals(memberID))
+                {
+                    user.Autenticato = false;
+                }
+            }
+            await accessors.UserModelAccessors.SetAsync(turnContext, userList);
+            await accessors.SaveStateAsync(turnContext);
         }
 
         private bool IsTokenResponseEvent(ITurnContext turnContext)

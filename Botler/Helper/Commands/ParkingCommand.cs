@@ -36,7 +36,7 @@ namespace Botler.Model
 
                 ICommand authCommand = CommandFactory.FactoryMethod(_turn, _accessors, CommandAuthentication);
                 await authCommand.ExecuteCommandAsync();
-
+                await _accessors.TurnOffQnAAsync(_turn);
                 return;
             }
 

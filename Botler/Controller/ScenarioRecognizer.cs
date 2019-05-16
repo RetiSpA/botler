@@ -69,7 +69,7 @@ namespace Botler.Controller
                            topIntent.Equals(CancellaPrenotazioneIntent) ||
                            topIntent.Equals(VerificaPrenotazioneIntent) ||
                            topIntent.Equals(TempoRimanentePrenotazioneIntent))
-                           && (score > 0.75);
+                           && (score >= 0.75);
         }
 
         private static async Task< IScenario>  GetScenarioFromBotStateAsync(BotlerAccessors accessors, ITurnContext turn)

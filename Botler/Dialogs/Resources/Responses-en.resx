@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -210,13 +210,13 @@
     <value>Come vuoi, scrivi se hai bisogno :)</value>
   </data>
   <data name="Presentazione_1" xml:space="preserve">
-    <value>Hey ciao! Sono Botler!</value>
+    <value>Hello! My name is Botler!</value>
   </data>
   <data name="Presentazione_2" xml:space="preserve">
-    <value>Ciao Benvenuto, mi chiamo Botler!</value>
+    <value>Welcome, I'm Botler</value>
   </data>
   <data name="Presentazione_3" xml:space="preserve">
-    <value>Ciao, cosa posso fare te ? :)</value>
+    <value>Hi, what can i do for you</value>
   </data>
   <data name="Ringraziamento_1" xml:space="preserve">
     <value>Ma figurati! Son qui per questo :)</value>
@@ -336,7 +336,8 @@
      Oppure l' autenticazione potrebbe essere scaduta</value>
   </data>
   <data name="AutenticazioneNecessaria_3" xml:space="preserve">
-    <value> C'è bisogno di autenticarsi per procedere con questa funzionalità.</value>
+    <value> Autenticati per accedera all'Area Riservata.
+    Oppure l' autenticazione potrebbe essere scaduta</value>
   </data>
   <data name="AutenticazioneNecessaria_4" xml:space="preserve">
     <value> Mi spiace ma devi essere autenticato prima di poter procedere con questa funzionalità.
@@ -348,18 +349,20 @@
   <data name="AutentacazioneEffettuata_2" xml:space="preserve">
     <value> Sei già stato autenticato!</value>
   </data>
+  <data name="AutenticazioneNecessaria_3" xml:space="preserve">
+    <value> Non c'è ne bisogno, sei già stato autorizzato :) </value>
+  </data>
   <data name="Possibilita_1" xml:space="preserve">
-    <value> 
-    Questo è quello che posso offrirti come servizio:
-    - Rispondere a delle domande su Reti S.p.A.
-    - Indirizzarti su Blog, Sito e Contatti di Reti S.p.A.
-
-    Se sei un dipedenti Reti:
-
-    - Prenotarti un parcheggio.
-    - Rispondere a domande più specifiche che riguardando gli impiegati di Reti S.p.A
-    - News Interne, Magazine ed Eventi (work in progress)
-    </value>
+    <value> Ecco una lista di comandi utili per te:
+  - parcheggio -&gt; visualizza il menu dedicato al parcheggio di un auto.
+  - login -&gt; iniza la fase di autenticazione.
+  - qna : per il faq e iniziare a chiedermi qualche domanda
+  - help -&gt; menu di aiuto, e possibilita.
+  - exit -&gt; esce dalla convesazione attuale e inizia una nuova.
+  - benvenuto -&gt; visualizza menu principale.
+  - area riservata -&gt; visualizza il menu dedicato ai dipedenti Reti S.p.A.
+  - logout -&gt; effettuata il logout.
+  </value>
   </data>
   <data name="Possibilita_2" xml:space="preserve">
     <value> Ecco cosa posso fare per te:
@@ -371,19 +374,8 @@
   - Rispondere a domande interne a Reti S.p.A.
   - Prenotarti un parcheggio nel nostro spazio aziendale.
   - News interne di Reti (Magazine, News Aziendali, Eventi).
-  </value>
-</data>
-<data name="ListaComandi_1" xml:space="preserve">
-  <value> Ecco una lista di comandi utili per te:
-  - parcheggio -&gt; visualizza il menu dedicato al parcheggio di un auto.
-  - login -&gt; iniza la fase di autenticazione.
-  - qna : per il faq e iniziare a chiedermi qualche domanda
-  - help -&gt; menu di aiuto, e possibilita.
-  - exit -&gt; esce dalla convesazione attuale e inizia una nuova.
-  - benvenuto -&gt; visualizza menu principale.
-  - area riservata -&gt; visualizza il menu dedicato ai dipedenti Reti S.p.A.
-  - logout -&gt; effettuata il logout.</value>
-</data>
+</value>
+  </data>
   <data name="QnAPublic_1" xml:space="preserve">
     <value> Benvenuto nel F.A.Q e QnA di Reti S.p.A.
   Posso rispondere alle domande di carattere generale sulla Azienda.

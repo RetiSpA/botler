@@ -103,8 +103,8 @@ namespace Botler.Controller
         private async Task StartConversationUpdateActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (currentActivity.MembersAdded.Any())
+            {
                 {
-                    // Iterate over all new members added to the conversation.
                     foreach (var member in currentActivity.MembersAdded)
                     {
                         if (member.Id != currentActivity.Recipient.Id)
@@ -114,6 +114,7 @@ namespace Botler.Controller
                         }
                     }
                 }
+            }
         }
 
         /// <summary>
@@ -141,7 +142,6 @@ namespace Botler.Controller
             var commandExecuted = await CommandRecognizer.ExecutedCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn);
             if(commandExecuted)
             {
-                await _accessors.TurnOffQnAAsync(currentTurn);
                 await SaveState();
                 return;
             }
@@ -163,16 +163,16 @@ namespace Botler.Controller
             await SaveState();
         }
 
-        private async Task CheckUserAuthTimedOutAsync()
-        {
-            UserModel currentUser = await _accessors.UserModelAccessors.GetAsync(currentTurn, () => new UserModel());
+        // private async Task CheckUserAuthTimedOutAsync()
+        // {
+        //     UserModel currentUser = await _accessors.UserModelAccessors.GetAsync(currentTurn, () => new UserModel());
 
-            if(currentUser.CheckAuthTimedOut())
-            {
-                ICommand commandLogout = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandLogout);
-                await commandLogout.ExecuteCommandAsync();
-            }
-        }
+        //     if(currentUser.CheckAuthTimedOut())
+        //     {
+        //         ICommand commandLogout = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandLogout);
+        //         await commandLogout.ExecuteCommandAsync();
+        //     }
+        // }
 
         /// <summary>
         /// Create a Data structure that contains the luis result from the turn

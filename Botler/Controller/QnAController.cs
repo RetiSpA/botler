@@ -35,7 +35,6 @@ namespace Botler.Controller
 
             await SendQnAAnswerAsync(qnaResult, turn);
             await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
-
         }
 
         private async static Task ShowQnAMessageAsync(string qnaKey, ITurnContext turn, BotlerAccessors accessors)
@@ -57,7 +56,7 @@ namespace Botler.Controller
         {
             foreach(QueryResult result in qnaResult)
              {
-                if(result.Score > 0.70)
+                if(result.Score >= 0.70)
                 {
                 // High Confidence Score
                 var answer = result.Answer;

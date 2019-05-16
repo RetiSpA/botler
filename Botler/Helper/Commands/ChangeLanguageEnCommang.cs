@@ -9,19 +9,23 @@ using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.Commands;
 
+
 namespace Botler.Helper.Commands
 {
-    public class HelpCommand : ICommand
+    public class ChangeLanguageEnCommang : ICommand
     {
         private readonly ITurnContext _turn;
 
-        public HelpCommand(ITurnContext turn)
+        private readonly BotlerAccessors _accessors;
+
+        public ChangeLanguageEnCommang(ITurnContext turn, BotlerAccessors accessors)
         {
             _turn = turn ?? throw new ArgumentNullException(nameof(turn));
+            _accessors = accessors  ?? throw new ArgumentNullException(nameof(accessors));
         }
         public async Task ExecuteCommandAsync()
         {
-            await _turn.SendActivityAsync(RandomResponses(ComandiResponse));
+            await _accessors.ResourceFileSelectedAccessors.SetAsync(_turn, ResourceEN);
         }
     }
 }

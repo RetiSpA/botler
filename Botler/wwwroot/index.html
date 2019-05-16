@@ -3,7 +3,7 @@
     <!-- <link rel="stylesheet" href="startPageStyle.css"> -->
     <head>
         <title>Botler - WebChat -</title>
-        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body style="font-family:'Segoe UI'" , background="WorldBackground.png">
         <div class="testo">
@@ -44,7 +44,7 @@
                     background-color: whitesmokes;
                     min-width: 400px;
                     min-height: 500px;
-                    height: 50%;
+                    height: 100%;
                 }
 
                 ul li {
@@ -79,12 +79,10 @@
 
               window.WebChat.renderWebChat({
                 directLine: window.WebChat.createDirectLine({ token: 'fTY02w2BYk0.cwA.HWA.AQLUTaP6cvBhZCa8ysE_zSTGQWOpLQiAIK2BqzUXY0c' }),
-                userID: 'YOUR_USER_ID',
                 username: 'Web Chat User',
                 locale: 'en-US',
-                
                 botAvatarInitials: 'BL',
-                userAvatarInitials: 'You',
+                userAvatarInitials: 'ME',
                 styleOptions:
                 {
                     rootHeight: '100%',
@@ -93,6 +91,7 @@
                     bubbleFromUserBackground: 'Whitesmoke',
                     showSpokenText: true,
                     botAvatarImage: 'avatar.jpg',
+                    avatarSize: 60
                 }
               }, document.getElementById('webchat'));
              window.locale('#webchat > *').focus();
