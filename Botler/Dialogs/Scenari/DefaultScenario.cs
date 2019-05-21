@@ -33,8 +33,7 @@ namespace Botler.Dialogs.Scenari
             _turn = turn ?? throw new ArgumentNullException(nameof(turn));
 
             _scenarioDialogs = new DialogSet(_accessors.DialogStateAccessor);
-
-        }        
+        }
 
         public Dialog GetDialogByID(string idDialog)
         {

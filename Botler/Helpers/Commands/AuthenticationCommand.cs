@@ -3,6 +3,10 @@ using Botler.Model;
 using Botler.Controller;
 using Botler.Helper.Commands;
 using Botler.Dialogs;
+using Botler.Dialogs.RisorseApi;
+using Microsoft.Graph;
+using System.Net.Http.Headers;
+using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
@@ -11,10 +15,8 @@ using static Botler.Dialogs.Utility.Commands;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
-using Botler.Dialogs.RisorseApi;
-using Microsoft.Graph;
-using System.Net.Http.Headers;
-using System.Collections.Generic;
+using static Botler.Dialogs.Utility.BotConst;
+
 
 namespace Botler.Model
 {
@@ -87,6 +89,11 @@ namespace Botler.Model
                     // Sends the operation succeded to the user
                     var randomResponse = RandomResponses(AutenticazioneSuccessoResponse);
                     await _turn.SendActivityAsync(String.Format(randomResponse, user.Nome, user.Cognome));
+
+                    // Now the user can use the Private QnA
+                    await _accessors.QnaActiveAccessors.SetAsync(_turn, QnAKey);
+
+                    await _accessors.SaveStateAsync(_turn);
 
                     // Shows the Area Riservata menu
                     ICommand areaRiservata = CommandFactory.FactoryMethod(_turn, _accessors, CommandAreaRiservata);

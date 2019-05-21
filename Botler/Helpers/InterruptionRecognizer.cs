@@ -76,10 +76,10 @@ namespace Botler.Controller
                     response = RandomResponses(RisataResponse);
             }
 
-                  if(response == string.Empty) return false;   // Did not handle
+            if(response == string.Empty) return false;   // Did not handle
 
-                  await turn.SendActivityAsync(response).ConfigureAwait(false);
-                  return true;
+            await turn.SendActivityAsync(response).ConfigureAwait(false);
+            return true;
         }
     }
 }

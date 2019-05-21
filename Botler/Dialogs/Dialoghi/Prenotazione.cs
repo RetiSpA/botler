@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +21,10 @@ namespace Botler.Dialogs.Dialoghi
 
 
         // Inizializza una nuova istanza della classe Prenotazione.
-        public Prenotazione(IStatePropertyAccessor<PrenotazioneModel> userProfileStateAccessor, ILoggerFactory loggerFactory)
+        public Prenotazione(BotlerAccessors accessors, ILoggerFactory loggerFactory)
             : base(nameof(Prenotazione))
         {
-            UserProfileAccessor = userProfileStateAccessor ?? throw new ArgumentNullException(nameof(userProfileStateAccessor));
+            UserProfileAccessor = accessors.PrenotazioneStateAccessor ?? throw new ArgumentNullException(nameof(accessors.PrenotazioneStateAccessor));
             // Add control flow dialogs
             var waterfallSteps = new WaterfallStep[]
             {
@@ -120,16 +120,6 @@ namespace Botler.Dialogs.Dialoghi
                                     return await stepContext.EndDialogAsync();
                                 }
                             }
-                            //else
-                            //{
-                            //    string[] responses = { "Tutti i posti sono occupati!",
-                            //        "Non ci sono più posti!",
-                            //        "Vuoi prenotare un posto eh?! Beh son finiti!", };  //rispsote possibili
-                            //    Random rnd = new Random(); //crea new Random class
-                            //    int i = rnd.Next(0, responses.Length);
-                            //    await context.SendActivityAsync(responses[i]); //genera una risposta random
-                            //    return await stepContext.EndDialogAsync();
-                            //}
                         }
                     }
 
@@ -137,13 +127,13 @@ namespace Botler.Dialogs.Dialoghi
                 }
                 catch
                 {
-                    await context.SendActivityAsync( RandomResponses( PrenotazioneSessioneScadutaResponse));
+                    await context.SendActivityAsync(RandomResponses(PrenotazioneSessioneScadutaResponse));
                     return await stepContext.EndDialogAsync();
                 }
             }
             else
             {
-                await context.SendActivityAsync( RandomResponses( PrenotazioneSceltaNoResponse));
+                await context.SendActivityAsync(RandomResponses(PrenotazioneSceltaNoResponse));
                 return await stepContext.EndDialogAsync();
             }
         }

@@ -10,10 +10,6 @@ using static Botler.Dialogs.Utility.Responses;
 
 namespace Botler.Dialogs.Utility
 {
-
-    /// <summary>
-    /// All supported LUIS Intent
-    /// </summary>
     [Serializable]
     public static class LuisIntent
     {
@@ -33,9 +29,6 @@ namespace Botler.Dialogs.Utility
         public const string RisataIntent = "Risata";
     }
 
-    /// <summary>
-    /// Const string needed for bot setup
-    /// </summary>
     [Serializable]
     public static class BotConst
     {
@@ -139,7 +132,6 @@ namespace Botler.Dialogs.Utility
     }
 
     [Serializable]
-
     public static class Commands
     {
         public const string CommandWelcome = "commandWelcome";

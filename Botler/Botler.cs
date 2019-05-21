@@ -42,8 +42,6 @@ namespace Botler
         public static Boolean prenotazione = false;
         public static string email;
         public static string password;
-        public static Boolean procedure = false;
-        public static int BotId = 8;
 
         /// <summary>
         /// Key in the bot config (.bot file) for the LUIS instance.

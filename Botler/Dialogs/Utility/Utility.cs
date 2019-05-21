@@ -66,6 +66,7 @@ namespace Botler.Dialogs.Utility
                 System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
                 var uri = new Uri(string.Format(Utility.uriParcheggioAutoassegnato(id_lotto, bot_id)));
                 var response = await client.PutAsync(uri, null);
+
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -94,24 +95,22 @@ namespace Botler.Dialogs.Utility
                 System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
                 var uri = new Uri(string.Format(Utility.uriPrenotaPosteggio(bot_id, id_lotto, id_posteggio)));
                 var response = await client.PutAsync(uri, null);
+
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     return JsonConvert.DeserializeObject<PrenotazioneModel>(content);
-
                 }
                 else
                 {
                     return null;
                 }
-
             }
 
             catch
             {
                 return null;
             }
-
         }
 
         // Chiamata effettiva per le API.
@@ -128,6 +127,7 @@ namespace Botler.Dialogs.Utility
                 System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
                 var uri = new Uri(string.Format(Utility.uriCancellaPrenotazione(bot_id, lotto_id, id_posto)));
                 var response = await client.PutAsync(uri, null);
+
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -178,7 +178,6 @@ namespace Botler.Dialogs.Utility
         {
             return "http://retismartparking.azurewebsites.net/api/prenotazione/utente/" + id_utente;
         }
-
     }
 
 }

@@ -42,9 +42,13 @@
                 }
                 #webchat{
                     background-color: whitesmokes;
-                    min-width: 400px;
-                    min-height: 500px;
-                    height: 100%;
+                    position: absolute;
+                    top: 55%;
+                    left: 50%;
+                    margin-top: -50px;
+                    margin-left: -450px;
+                    width: 50%;
+                    height: 80%;
                 }
 
                 ul li {
@@ -76,7 +80,6 @@
             <div id="webchat" role="main"></div>
             <script src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
             <script>
-
               window.WebChat.renderWebChat({
                 directLine: window.WebChat.createDirectLine({ token: 'fTY02w2BYk0.cwA.HWA.AQLUTaP6cvBhZCa8ysE_zSTGQWOpLQiAIK2BqzUXY0c' }),
                 username: 'Web Chat User',
@@ -94,11 +97,8 @@
                     avatarSize: 60
                 }
               }, document.getElementById('webchat'));
-             window.locale('#webchat > *').focus();
              window.querySelector('#webchat > *').focus();
             </script>
-
-            <pr id="linkReti"><a href="http://www.reti.it"> www.reti.it </a></pr>
         </div>
     </body>
 </html>

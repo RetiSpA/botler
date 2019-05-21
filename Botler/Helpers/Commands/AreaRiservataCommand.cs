@@ -17,7 +17,6 @@ namespace Botler.Helper.Commands
 
         private readonly BotlerAccessors _accessors;
 
-
         public AreaRiservataCommand(ITurnContext turn, BotlerAccessors accessors)
         {
             _turn = turn ?? throw new ArgumentNullException(nameof(turn));

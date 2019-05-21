@@ -36,7 +36,7 @@ namespace Botler.Dialogs.Scenari
             ILoggerFactory loggerFactory = new LoggerFactory();
             _scenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
 
-            _scenarioDialogs.Add(new Prenotazione(_accessors.PrenotazioneStateAccessor, loggerFactory));
+            _scenarioDialogs.Add(new Prenotazione(_accessors, loggerFactory));
             _scenarioDialogs.Add(new CancellaPrenotazione(_accessors.CancellaPrenotazioneStateAccessor, loggerFactory));
             _scenarioDialogs.Add(new VisualizzaTempo(_accessors.VisualizzaTempoStateAccessor, loggerFactory));
             _scenarioDialogs.Add(new VisualizzaPrenotazione(_accessors.VisualizzaPrenotazioneStateAccessor, loggerFactory));

@@ -349,16 +349,15 @@
     <value> Sei già stato autenticato!</value>
   </data>
   <data name="Possibilita_1" xml:space="preserve">
-    <value> 
-    Questo è quello che posso offrirti come servizio:
-    - Rispondere a delle domande su Reti S.p.A.
-    - Indirizzarti su Blog, Sito e Contatti di Reti S.p.A.
+    <value> Questo è quello che posso offrirti come servizio:
+  - Rispondere a delle domande su Reti S.p.A.
+  - Indirizzarti su Blog, Sito e Contatti di Reti S.p.A.
 
     Se sei un dipedenti Reti:
-
-    - Prenotarti un parcheggio.
-    - Rispondere a domande più specifiche che riguardando gli impiegati di Reti S.p.A
-    - News Interne, Magazine ed Eventi (work in progress)
+  
+  - Prenotarti un parcheggio.
+  - Rispondere a domande più specifiche che riguardando gli impiegat
+    di Reti S.p.A
     </value>
   </data>
   <data name="Possibilita_2" xml:space="preserve">

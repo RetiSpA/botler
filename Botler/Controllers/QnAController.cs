@@ -26,15 +26,28 @@ namespace Botler.Controller
             return false;
         }
 
-        public static async Task AnswerTurnUserQuestionAsync(ITurnContext turn, BotlerAccessors accessors, BotServices services)
+        public static async Task<bool> AnsweredTurnUserQuestionAsync(ITurnContext turn, BotlerAccessors accessors, BotServices services)
         {
-            QueryResult[] qnaResult = await GetQnAResult(turn, services, accessors);
-            var qnaKey = await accessors.QnaActiveAccessors.GetAsync(turn, () => Default);
+            string qnaKey = await Autenticatore.GetQnAKeyFromAuthUser(turn, accessors);
+            QueryResult[] qnaResult = await GetQnAResult(turn, services, qnaKey);
+            string yesOrNo = turn.Activity.Text;
 
-            await ShowQnAMessageAsync(qnaKey, turn, accessors);
+            if((yesOrNo.Equals("si") || yesOrNo.Equals("no")))
+            {
+                return false;
+            }
 
-            await SendQnAAnswerAsync(qnaResult, turn);
-            await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
+            if(qnaResult.Length > 0)
+            {
+                if(qnaResult[0].Score > 0.90)
+                {
+                await ShowQnAMessageAsync(qnaKey, turn, accessors);
+                await SendQnAAnswerAsync(qnaResult, turn);
+                await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
+                return true;
+                }
+            }
+            return false;
         }
 
         private async static Task ShowQnAMessageAsync(string qnaKey, ITurnContext turn, BotlerAccessors accessors)
@@ -56,24 +69,23 @@ namespace Botler.Controller
         {
             foreach(QueryResult result in qnaResult)
              {
-                if(result.Score >= 0.70)
+                 // High Confidence Score
+                if(result.Score >= 0.90)
                 {
-                // High Confidence Score
                 var answer = result.Answer;
                 await turn.SendActivityAsync(answer);
                 }
             }
         }
 
-        private static async Task<QueryResult[]> GetQnAResult(ITurnContext turn, BotServices services, BotlerAccessors accessors)
+        private static async Task<QueryResult[]> GetQnAResult(ITurnContext turn, BotServices services, string qnaKey)
         {
-            var currentQnA = await GetQnASelectedAsync(turn, accessors);
-            return  await services.QnAServices[currentQnA].GetAnswersAsync(turn).ConfigureAwait(false);
+            return await services.QnAServices[qnaKey].GetAnswersAsync(turn).ConfigureAwait(false);
         }
 
         private static async Task<string> GetQnASelectedAsync(ITurnContext turn, BotlerAccessors accessors)
         {
-            return await accessors.QnaActiveAccessors.GetAsync(turn, () => Default);
+            return await accessors.QnaActiveAccessors.GetAsync(turn, () => QnAPublicKey);
         }
     }
 }

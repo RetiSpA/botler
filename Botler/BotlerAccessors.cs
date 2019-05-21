@@ -21,6 +21,7 @@ using Botler.Dialogs.Utility;
 using Botler;
 using Botler.Dialogs.Scenari;
 using static Botler.Dialogs.Utility.Scenari;
+using Botler.Controller;
 
 namespace Botler
 {
@@ -78,15 +79,7 @@ namespace Botler
             await UserModelAccessors.SetAsync(turn, list);
         }
 
-        public async Task AddAuthenticatedUserAsync( ITurnContext turn)
-        {
-            string memberID = turn.Activity.From.Id;
-            Dictionary<string,bool> map = await AutenticazioneDipedenteAccessors.GetAsync(turn, () => new Dictionary<string,bool>());
-            map.Add(memberID, true);
-            await AutenticazioneDipedenteAccessors.SetAsync(turn, map);
-        }
-
-        public async Task<UserModel> GetAuthenticatedMemberAsyc(ITurnContext turn)
+        public async Task<UserModel> GetAuthenticatedMemberAsync(ITurnContext turn)
         {
             List<UserModel> list = await UserModelAccessors.GetAsync(turn, () => new List<UserModel>());
             string memberID = turn.Activity.From.Id;

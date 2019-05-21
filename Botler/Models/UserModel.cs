@@ -8,12 +8,17 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Botler.Model;
 using Botler.Helper.Commands;
+using static Botler.Dialogs.Utility.BotConst;
 
 namespace Botler.Dialogs.RisorseApi
 {
     public class UserModel
     {
-        public UserModel(){}
+
+        private const double authTimeOut = 30; // minutes
+
+        public UserModel() { }
+
         public UserModel(TokenResponse token)
         {
              GraphUser = new GraphServiceClient(
@@ -48,24 +53,25 @@ namespace Botler.Dialogs.RisorseApi
 
         public DateTime AuthTime { get; set; }
 
-        private const double authTimeOut = 30; // minutes
+        public string QnAKeyActive { get; set; }
 
         public async Task SaveUserDataAsync(BotlerAccessors accessors, ITurnContext turn, bool auth)
         {
             var me = await GraphUser.Me.Request().GetAsync();
             Nome = me.GivenName;
             Cognome = me.Surname;
-            Email = Nome+"."+Cognome+"@test.reti.it";
+            Email = Nome + "." + Cognome + "@test.reti.it";
             Id_Utente = turn.Activity.From.Id;
             Autenticato = auth;
             AuthTime = DateTime.Now;
+            QnAKeyActive = QnAKey;
         }
 
         public bool CheckAuthTimedOut(ITurnContext turn, BotlerAccessors accessors)
         {
-            if(Autenticato)
+            if (Autenticato)
             {
-                if(DateTime.Compare(DateTime.Now, AuthTime.Add(TimeSpan.FromMinutes(authTimeOut)))>0)
+                if (DateTime.Compare(DateTime.Now, AuthTime.Add(TimeSpan.FromMinutes(authTimeOut)))>0)
                 {
                     return true;
                 }

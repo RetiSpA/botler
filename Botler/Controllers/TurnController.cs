@@ -51,8 +51,6 @@ namespace Botler.Controller
 
         private ITurnContext currentTurn;
 
-        private  ScenarioController scenarioController;
-
         public TurnController(BotlerAccessors accessors, BotServices services)
         {
             ILoggerFactory loggerFactory = new LoggerFactory();
@@ -121,7 +119,9 @@ namespace Botler.Controller
         /// Manages the message coming from the channel
         /// 1) Get the result from bot's service
         /// 2) Handle a conversation flow interruption
-        /// 3) Continue o start a dialog
+        /// 3) Recognize and execute a command
+        /// 4) If any QnA is active get the answer from QnAMaker service
+        /// 5) Continue o start a dialog
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -130,49 +130,34 @@ namespace Botler.Controller
             // We want to get always a LUIS result first.
             LuisServiceResult luisServiceResult = await CreateLuisServiceResult(cancellationToken);
 
-            //await CheckUserAuthTimedOutAsync();
-
             var interruptionHandled = await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn);
             if(interruptionHandled)
             {
-                await SaveState();
+                await _accessors.SaveStateAsync(currentTurn);
                 return;
             }
 
             var commandExecuted = await CommandRecognizer.ExecutedCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn);
             if(commandExecuted)
             {
-                await SaveState();
+                await _accessors.SaveStateAsync(currentTurn);
                 return;
             }
 
-            var qnaActive = await QnAController.CheckQnAIsActive(_accessors, currentTurn);
-            if(qnaActive)
+            // var qnaActive = await QnAController.CheckQnAIsActive(_accessors, currentTurn);
+            // if(qnaActive)
+            // {
+            // If the user asks a question, if is in our QnA, we send the answer
+            if(await QnAController.AnsweredTurnUserQuestionAsync(currentTurn, _accessors, _services))
             {
-                await QnAController.AnswerTurnUserQuestionAsync(currentTurn, _accessors, _services);
-                await SaveState();
+                await _accessors.SaveStateAsync(currentTurn);
                 return;
             }
+            //     return;
+            // }
 
-            IScenario currentScenario = await ScenarioRecognizer.ExtractCurrentScenarioAsync(luisServiceResult, _accessors, currentTurn);
-
-            scenarioController = new ScenarioController(_accessors, currentTurn, luisServiceResult, currentScenario);
-
-            await scenarioController.HandleScenarioDialogAsync();
-
-            await SaveState();
+            await StartScenarioDialogAsync(luisServiceResult);
         }
-
-        // private async Task CheckUserAuthTimedOutAsync()
-        // {
-        //     UserModel currentUser = await _accessors.UserModelAccessors.GetAsync(currentTurn, () => new UserModel());
-
-        //     if(currentUser.CheckAuthTimedOut())
-        //     {
-        //         ICommand commandLogout = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandLogout);
-        //         await commandLogout.ExecuteCommandAsync();
-        //     }
-        // }
 
         /// <summary>
         /// Create a Data structure that contains the luis result from the turn
@@ -188,14 +173,15 @@ namespace Botler.Controller
             luisServiceResult.TopScoringIntent = luisServiceResult.LuisResult?.GetTopScoringIntent().ToTuple<string,double>();
 
             return luisServiceResult;
-
         }
 
-        private async Task SaveState()
+        private async Task StartScenarioDialogAsync(LuisServiceResult luisServiceResult)
         {
-            await _accessors.SaveConvStateAsync(currentTurn);
-            await _accessors.SaveUserStateAsyn(currentTurn);
-        }
+            IScenario currentScenario = await ScenarioRecognizer.ExtractCurrentScenarioAsync(luisServiceResult, _accessors, currentTurn);
 
+            await currentScenario.HandleDialogResultStatusAsync(luisServiceResult);
+
+            await _accessors.SaveStateAsync(currentTurn);
+        }
     }
 }

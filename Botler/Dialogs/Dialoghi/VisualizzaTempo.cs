@@ -70,7 +70,7 @@ namespace Botler.Dialogs.Dialoghi
                         var resp = await Utility.Utility.cancellaPrenotazione(prenotazione.id_posto);
                         if (resp)
                         {
-                            await context.SendActivityAsync( RandomResponses( PrenotazioneScadutaResponse)); //genera una risposta random
+                            await context.SendActivityAsync(RandomResponses( PrenotazioneScadutaResponse)); //genera una risposta random
                             Botler.prenotazione = false;
 
                             return await stepContext.EndDialogAsync();
@@ -104,7 +104,7 @@ namespace Botler.Dialogs.Dialoghi
                 }
                 else
                 {
-                    await context.SendActivityAsync( RandomResponses( PrenotazioneNonTrovataResponse));
+                    await context.SendActivityAsync(RandomResponses(PrenotazioneNonTrovataResponse));
                     return await stepContext.EndDialogAsync();
                 }
             }

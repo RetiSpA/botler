@@ -1,5 +1,4 @@
 
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,12 +17,13 @@ namespace Botler.Controller
         public static async Task<bool>  ExecutedCommandFromLuisResultAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
           var entities = luisServiceResult.LuisResult.Entities;
+
           IList<ICommand> listCommands = new List<ICommand>();
           ICommand command = null;
 
           foreach(var ent in entities)
           {
-            command  = CommandFactory.FactoryMethod(turn, accessors, ent.Key);
+            command = CommandFactory.FactoryMethod(turn, accessors, ent.Key);
 
             if(command != null)
             {

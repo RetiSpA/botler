@@ -49,15 +49,12 @@ namespace Botler.Controller
 
         private static  IScenario GetScenarioFromLuis(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
-             //bool  autenticazioneScenario = isAnAuthIntent(luisServiceResult);
-
             if(isAParkingIntent(luisServiceResult))
             {
                 return ScenarioFactory.FactoryMethod(accessors, turn, Parking);
             }
 
             return ScenarioFactory.FactoryMethod(accessors, turn, Default);
-
         }
 
         private static bool  isAParkingIntent(LuisServiceResult luisServiceResult)
@@ -65,34 +62,18 @@ namespace Botler.Controller
             var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
             var score = luisServiceResult.TopScoringIntent.Item2; // score
 
-            return ( topIntent.Equals(PrenotazioneIntent) ||
-                           topIntent.Equals(CancellaPrenotazioneIntent) ||
-                           topIntent.Equals(VerificaPrenotazioneIntent) ||
-                           topIntent.Equals(TempoRimanentePrenotazioneIntent))
-                           && (score >= 0.75);
+            return (topIntent.Equals(PrenotazioneIntent) ||
+                    topIntent.Equals(CancellaPrenotazioneIntent) ||
+                    topIntent.Equals(VerificaPrenotazioneIntent) ||
+                    topIntent.Equals(TempoRimanentePrenotazioneIntent))
+                    && (score >= 0.75);
         }
 
         private static async Task< IScenario>  GetScenarioFromBotStateAsync(BotlerAccessors accessors, ITurnContext turn)
         {
-            string scenarioID = await  accessors.ScenarioStateAccessors.GetAsync(turn, () => new string(Default));
+            string scenarioID = await accessors.ScenarioStateAccessors.GetAsync(turn, () => new string(Default));
 
-           if (scenarioID.Equals(Default))
-            {
-                return ScenarioFactory.FactoryMethod(accessors, turn, Default);;
-            }
-
-            if (scenarioID.Equals(Parking))
-            {
-                return ScenarioFactory.FactoryMethod(accessors, turn, Parking);
-            }
-
-            if(scenarioID.Equals(Autenticazione))
-            {
-                return ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione);
-            }
-
-            return ScenarioFactory.FactoryMethod(accessors, turn, Default);
-
+            return ScenarioFactory.FactoryMethod(accessors, turn, scenarioID);
         }
     }
 }
