@@ -79,7 +79,7 @@ namespace Botler
                         }
 
                     case ServiceTypes.Generic:
-                    {   
+                    {
                         // Usiamo il tipo Generic nel file .bot per conservare le informaizoni necessarie
                         // per usare un servizio di tipo QnAMaker
                         var generic = (GenericService)service;
@@ -93,28 +93,7 @@ namespace Botler
                         qnaRiservata.Hostname =  generic.Url;                        //"https://botler-qna.azurewebsites.net";
                         qnaRiservata.Name = generic.Name;                            // "botler-qna";
 
-
-                            // if (qnaRiservata == null)
-                            // {
-                            //     throw new InvalidOperationException("The QnA service is not configured correctly in your '.bot' file.");
-                            // }
-
-                            // if (string.IsNullOrWhiteSpace(qnaRiservata.KbId))
-                            // {
-                            //     throw new InvalidOperationException("The QnA KnowledgeBaseId ('kbId') is required to run this sample. Please update your '.bot' file.");
-                            // }
-
-                            // if (string.IsNullOrWhiteSpace(qnaRiservata.EndpointKey))
-                            // {
-                            //     throw new InvalidOperationException("The QnA EndpointKey ('endpointKey') is required to run this sample. Please update your '.bot' file.");
-                            // }
-
-                            // if (string.IsNullOrWhiteSpace(qnaRiservata.Hostname))
-                            // {
-                            //     throw new InvalidOperationException("The QnA Host ('hostname') is required to run this sample. Please update your '.bot' file.");
-                            // }
-
-                         var qnaEndpoint = new QnAMakerEndpoint()
+                        var qnaEndpoint = new QnAMakerEndpoint()
                             {
                                 KnowledgeBaseId = qnaRiservata.KbId,
                                 EndpointKey = qnaRiservata.EndpointKey,

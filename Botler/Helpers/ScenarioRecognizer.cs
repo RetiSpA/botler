@@ -1,79 +1,138 @@
+
+using Botler.Dialogs.Scenari;
+using Botler.Middleware.Services;
+using Botler.Models;
+using Botler.Controllers;
+using Botler.Builders;
+using Microsoft.Bot.Builder;
 using System;
 using System.Threading.Tasks;
-using Botler.Dialogs.Scenari;
-using Microsoft.Bot.Builder;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.Scenari;
-using Botler.Services;
+using static Botler.Dialogs.Utility.IntentsSets;
+using static Botler.Dialogs.Utility.Commands;
+
+using Botler.Commands;
+using Botler.Helpers;
 
 namespace Botler.Controller
 {
-    public class ScenarioRecognizer
+    /// <summary>
+    /// This is class is useful to return the actual turn's scenario, with luis intents (LEGGE ed INTERPRETA IL TURNO ATTUALE)
+    /// </summary>
+    public static class ScenarioRecognizer
     {
-        public static async Task<IScenario>  ExtractCurrentScenarioAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
+        /// <summary>
+        /// With LUIS intents finds the most accurate turn's scenario
+        /// </summary>
+        /// <param name="luisServiceResult">LuisResult from this turn</param>
+        /// <param name="accessors"></param>
+        /// <param name="turn">Currenct instance of ITurnContext</param>
+        /// <returns></returns>
+        public static async Task<IScenario> ExtractCurrentScenarioAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
-            var topIntent = luisServiceResult.TopScoringIntent.Item1; // Intent
-            var score = luisServiceResult.TopScoringIntent.Item2; // Score
+            IScenario topIntentScenario = GetScenarioFromLuis(luisServiceResult, accessors, turn);
 
-            IScenario currentScenario = await GetScenarioFromBotStateAsync(accessors, turn);
-
-            if(currentScenario is DefaultScenario)
+            // Reads the conversation history to find the last useful scenario and understant the context
+            if (topIntentScenario.ScenarioID.Equals(Default))
             {
-                IScenario topIntentScenario = GetScenarioFromLuis(luisServiceResult, accessors, turn);
+                topIntentScenario = await BotStateContextController.CheckBotState(topIntentScenario, accessors, turn, luisServiceResult);
+            }
 
-                if(topIntentScenario.NeedAuthentication())
+            if (topIntentScenario.NeedAuthentication)
+            {
+                var alreadyAuth = await AuthenticationHelper.UserAlreadyAuthAsync(turn, accessors);
+
+                if (!alreadyAuth)
                 {
-                    var alreadyAuth = await Autenticatore.UserAlreadyAuthAsync(turn, accessors);
-
-                    if(alreadyAuth)
-                    {
-                        return topIntentScenario;
-                    }
-
-                    else
-                    {
-                        await turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
-                        return ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione);
-                    }
-
+                    return topIntentScenario;
                 }
-                return topIntentScenario;
-            }
+                else
+                {
+                    // TODO: Questi li deve fare qualche altro (oggetto)
+                    await turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
+                    topIntentScenario = ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
+                }
 
-            //return currentScenario.GetType() == topIntentScenario.GetType()  ?  currentScenario : throw new Exception();
-            return currentScenario;
+            }
+            return topIntentScenario;
         }
 
-        private static  IScenario GetScenarioFromLuis(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
+        private static IScenario GetScenarioFromLuis(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
-            if(isAParkingIntent(luisServiceResult))
+            Intent intent = luisServiceResult.TopIntent;
+
+            if (isAParkingIntent(luisServiceResult))
             {
-                return ScenarioFactory.FactoryMethod(accessors, turn, Parking);
+                return ScenarioFactory.FactoryMethod(accessors, turn, Parking, intent);
             }
 
-            return ScenarioFactory.FactoryMethod(accessors, turn, Default);
+            if (isAOutlookIntent(luisServiceResult))
+            {
+                if (intent.EntitiesCollected.Count < intent.EntityLowerBound)
+                {
+                  return ScenarioFactory.FactoryMethod(accessors, turn, OutlookDescription, intent);
+                }
+                else // * Possiamo cominciare un azione di questo scenario, si potranno chiedere ulteriori informazioni all'utente.
+                {
+                    return ScenarioFactory.FactoryMethod(accessors, turn, Outlook, intent);
+                }
+            }
+
+            if (isAnAuthIntent(luisServiceResult))
+            {
+                return ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
+            }
+
+            if (isASupportIntent(luisServiceResult))
+            {
+                if (intent.EntitiesCollected.Count < intent.EntityLowerBound)
+                {
+                    return ScenarioFactory.FactoryMethod(accessors, turn, SupportoDescription, intent);
+                }
+                else
+                {
+                    return ScenarioFactory.FactoryMethod(accessors, turn, Supporto, intent);
+                }
+            }
+
+            return ScenarioFactory.FactoryMethod(accessors, turn, Default, intent);
         }
 
-        private static bool  isAParkingIntent(LuisServiceResult luisServiceResult)
+        private static bool isAParkingIntent(LuisServiceResult luisServiceResult)
         {
             var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
             var score = luisServiceResult.TopScoringIntent.Item2; // score
 
-            return (topIntent.Equals(PrenotazioneIntent) ||
-                    topIntent.Equals(CancellaPrenotazioneIntent) ||
-                    topIntent.Equals(VerificaPrenotazioneIntent) ||
-                    topIntent.Equals(TempoRimanentePrenotazioneIntent))
-                    && (score >= 0.75);
+            return (ParkingIntents.Contains(topIntent) && (score >= 0.75));
         }
 
-        private static async Task< IScenario>  GetScenarioFromBotStateAsync(BotlerAccessors accessors, ITurnContext turn)
+        private static bool isAOutlookIntent(LuisServiceResult luisServiceResult)
         {
-            string scenarioID = await accessors.ScenarioStateAccessors.GetAsync(turn, () => new string(Default));
+            var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
+            var score = luisServiceResult.TopScoringIntent.Item2; // score
 
-            return ScenarioFactory.FactoryMethod(accessors, turn, scenarioID);
+            return (OutlookIntents.Contains(topIntent) && (score >= 0.75));
         }
+
+        private static bool isAnAuthIntent(LuisServiceResult luisServiceResult)
+        {
+            var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
+            var score = luisServiceResult.TopScoringIntent.Item2; // score
+
+            return (topIntent.Equals(AutenticazioneIntent) && (score >= 0.75));
+        }
+
+        private static bool isASupportIntent(LuisServiceResult luisServiceResult)
+        {
+            var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
+            var score = luisServiceResult.TopScoringIntent.Item2; // score
+
+            return (topIntent.Equals(RichiestaSupportoIntent) && (score >= 0.75));
+        }
+
     }
 }

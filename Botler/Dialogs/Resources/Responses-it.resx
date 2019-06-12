@@ -376,7 +376,7 @@
   <value> Ecco una lista di comandi utili per te:
   - parcheggio -&gt; visualizza il menu dedicato al parcheggio di un auto.
   - login -&gt; iniza la fase di autenticazione.
-  - qna : per il faq e iniziare a chiedermi qualche domanda
+  - qna -> per il faq e iniziare a chiedermi qualche domanda
   - help -&gt; menu di aiuto, e possibilita.
   - exit -&gt; esce dalla convesazione attuale e inizia una nuova.
   - benvenuto -&gt; visualizza menu principale.
@@ -438,7 +438,7 @@
     <value> Effettuata il login prima :)</value>
   </data>
   <data name="LogoutImpossibile_2" xml:space="preserve">
-    <value> Devi essere connesso per 'logout'</value>
+    <value> Devi essere connesso per effettuare il 'logout'</value>
   </data>
   <data name="QnAContinua_1" xml:space="preserve">
     <value> Vuoi chiedermi altro ? </value>
@@ -470,4 +470,40 @@
   <data name="Risata_4" xml:space="preserve">
     <value>Mi piace far sorridere :D</value>
   </data>
+  <data name = "MailGenericaRicevuta_1" xml:space ="preserve">
+    <value> Soggetto {0}
+    Anteprima {1}
+    </value>
+  </data>
+<data name = "MailGenericaInviata_1" xml:space = "preserve">
+  <value> Hai inviato questo mail:
+  Con Soggetto {0}
+  Ed ecco un Anteprima del Body {1}
+  </value>
+</data>
+<data name = "PrimoAppuntamento_1" xml:space = "preserve">
+  <value>Come primo appuntamento oggi hai
+  {0}
+  {1}
+  Dalle ore {2}  alle ore {3}.
+  In {4}
+  </value>
+</data>
+<data name = "AppuntamentoGenerico_1" xml:space = "preserve">
+  <value>- {0}
+  {1}
+  Dalle ore {2}  alle ore {3}.
+  In {4}
+  </value>
+</data>
+<data name = "GiornoLibero_1" xml:space="preserve">
+  <value> Che fortuna oggi hai il giorno libero! </value>
+</data>
+<data name = "GiornoLibero_2" xml:space="preserve">
+<value> Pare che hai la giornata libera :) </value>
+</data>
+<data name = "GiornoLibero_3" xml:space="preserve">
+  <value> Non hai appuntamenti fissati per la giornata </value>
+</data>
+
 </root>

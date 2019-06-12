@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using Botler.Model;
-using Botler.Helper.Commands;
+using Botler.Models;
+using Botler.Commands;
 using static Botler.Dialogs.Utility.BotConst;
 
 namespace Botler.Dialogs.RisorseApi
@@ -60,7 +60,7 @@ namespace Botler.Dialogs.RisorseApi
             var me = await GraphUser.Me.Request().GetAsync();
             Nome = me.GivenName;
             Cognome = me.Surname;
-            Email = Nome + "." + Cognome + "@test.reti.it";
+            Email = Nome + "." + Cognome + "@reti.it";
             Id_Utente = turn.Activity.From.Id;
             Autenticato = auth;
             AuthTime = DateTime.Now;
@@ -71,7 +71,7 @@ namespace Botler.Dialogs.RisorseApi
         {
             if (Autenticato)
             {
-                if (DateTime.Compare(DateTime.Now, AuthTime.Add(TimeSpan.FromMinutes(authTimeOut)))>0)
+                if (DateTime.Compare(DateTime.Now, AuthTime.Add(TimeSpan.FromMinutes(authTimeOut))) > 0)
                 {
                     return true;
                 }

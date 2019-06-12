@@ -18,6 +18,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Bot.Builder.Azure;
+using Botler.Middleware.Services;
+using System.Configuration;
 //using BotAuth.AADv2;
 
 
@@ -96,6 +99,14 @@ namespace Botler
             // is restarted, everything stored in memory will be gone.
             IStorage dataStore = new MemoryStorage();
 
+            // CosmosDbStorage cosmoStorage = new CosmosDbStorage(new CosmosDbStorageOptions
+            // {
+            //     AuthKey = "m5cSuH779tHFemm1ylCdFrBU5Zp2EVxMp7KUXFlR8sjuIQTTmRo4JV47opACvbcsNK2goWzRkpz8HfIjMLCJQw==",
+            //     CollectionId = "context-botler-db",
+            //     CosmosDBEndpoint = new Uri("https://context-botler-db.documents.azure.com:443/"),
+            //     DatabaseId = "botler-states",
+            // });
+
             // Create and add conversation state.
             var conversationState = new ConversationState(dataStore);
             services.AddSingleton(conversationState);
@@ -114,6 +125,9 @@ namespace Botler
                 };
             });
 
+            // string connectionString = ConfigurationManager.ConnectionStrings["MongoDBConnection"].ConnectionString;
+           // string connectionString = "mongodb://context-botler-db:m5cSuH779tHFemm1ylCdFrBU5Zp2EVxMp7KUXFlR8sjuIQTTmRo4JV47opACvbcsNK2goWzRkpz8HfIjMLCJQw==@context-botler-db.documents.azure.com:10255/?ssl=true&replicaSet=globaldb";
+            services.AddSingleton<MongoDBService>(sp => new MongoDBService());
             // Create and add responses
 
             services.AddBot<Botler>(options =>
@@ -126,7 +140,7 @@ namespace Botler
                 options.OnTurnError = async (context, exception) =>
                 {
                     logger.LogError($"Exception caught : {exception}");
-                    await context.SendActivityAsync("Sorry, it looks like something went wrong.");
+                    await context.SendActivityAsync("Scusami, ma qualcosa non è andato a buon fine.");
                 };
             });
         }

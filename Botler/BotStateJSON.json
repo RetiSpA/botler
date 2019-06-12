@@ -1,0 +1,32 @@
+{
+"_id" : ObjectId("5cf7dc91865a1236c06de3e0"),
+	"Scenario" : null,
+	"scenarioID" : "Default",
+	"TopIntent" : {
+		"Name" : "Prenota",
+		"Score" : 0.5,
+		"NeedEntities" : true,
+		"ScenarioID" : "Default",
+		"EntityLimit" : 3,
+		"EntityLowerBound" : 2,
+		"EntitiesToCollect" : [
+			{
+				"Type" : "number",
+				"Text" : null
+			},
+			{
+				"Type" : "datetime",
+				"Text" : null
+			},
+			{
+				"Type" : "mailUnread",
+				"Text" : null
+			}
+		],
+		"EntitiesCollected" : null
+	},
+	"Entities" : null,
+	"Conversation_ID" : "abcdfeg1234567",
+	"Turn" : 2,
+	"UserQuery" : "prenotami qualcosa"
+}

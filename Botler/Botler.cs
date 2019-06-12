@@ -27,6 +27,7 @@ using Botler;
 using Newtonsoft.Json.Linq;
 using Botler.Controller;
 using static Botler.Dialogs.Utility.BotConst;
+using Botler.Middleware.Services;
 
 namespace Botler
 {
@@ -57,7 +58,7 @@ namespace Botler
         /// </summary>
         /// <param name="botServices">Bot services.</param>
         /// <param name="accessors">Bot State Accessors.</param>
-        public Botler(BotServices services, BotlerAccessors accessors, ILoggerFactory loggerFactory)
+        public Botler(BotServices services, BotlerAccessors accessors, ILoggerFactory loggerFactory, MongoDBService mongoDbService)
         {
             _services = services ?? throw new ArgumentNullException(nameof(services));
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
@@ -74,7 +75,7 @@ namespace Botler
                 throw new InvalidOperationException($"The bot configuration does not contain a service type of `QnA` with the name `{QnAPublicKey}`.");
             }
 
-            TurnController = new TurnController(_accessors, _services);
+            TurnController = new TurnController(_accessors, _services, mongoDbService);
         }
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace Botler
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-             await TurnController.TurnHandlerAsync(turnContext, cancellationToken);
+            await TurnController.TurnHandlerAsync(turnContext, cancellationToken);
         }
     }
 }

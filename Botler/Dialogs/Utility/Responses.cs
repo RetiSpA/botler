@@ -50,7 +50,7 @@ namespace Botler.Dialogs.Utility
              ResourceSet _resourseSet = new ResourceManager(ResourceFileSelected, Assembly.GetExecutingAssembly())
                                         .GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
-            string regexPattern = @name+"_\\d*";
+            string regexPattern = @name + "_\\d*";
             Regex regex = new Regex(regexPattern);
 
             foreach (DictionaryEntry entry in _resourseSet)

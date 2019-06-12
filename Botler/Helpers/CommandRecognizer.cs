@@ -3,23 +3,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Botler.Model;
+using Botler.Models;
 using Botler.Controller;
 using Microsoft.Bot.Builder;
 using Newtonsoft.Json.Linq;
-using Botler.Helper.Commands;
-using Botler.Services;
+using Botler.Commands;
+using Botler.Middleware.Services;
+using System.Text.RegularExpressions;
 
 namespace Botler.Controller
 {
-    public class CommandRecognizer
+    public static class CommandRecognizer
     {
-        public static async Task<bool>  ExecutedCommandFromLuisResultAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
+        public static async Task<bool> ExecutedCommandFromLuisResultAsync(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
           var entities = luisServiceResult.LuisResult.Entities;
-
+          var listent = luisServiceResult.LuisResult.Entities;
           IList<ICommand> listCommands = new List<ICommand>();
           ICommand command = null;
+          string commandExecuted = string.Empty;
 
           foreach(var ent in entities)
           {
@@ -38,6 +40,7 @@ namespace Botler.Controller
           else
           {
               await listCommands[0].ExecuteCommandAsync();
+
               return true; // Command found and executed
           }
         }

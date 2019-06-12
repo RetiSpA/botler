@@ -1,0 +1,109 @@
+Hosting environment: Development
+Content root path: C:\Users\moscagi1\Documents\GitHub\botler\Botler
+Now listening on: http://127.0.0.1:24746
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 DEBUG http://localhost:3978/  0
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 250.9924ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://127.0.0.1:24746/  
+fail: Microsoft.AspNetCore.Server.IISIntegration.IISMiddleware[0]
+      'MS-ASPNETCORE-TOKEN' does not match the expected pairing token 'ccb21b8c-b441-40f7-b052-aaf870b9e7aa', request rejected.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 17.3698ms 400 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

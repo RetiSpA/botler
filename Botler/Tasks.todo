@@ -1,0 +1,19 @@
+Projects:
+
+
+Tasks:
+    ☐ Aggiustare riconoscimento entità @critical 
+    ☐ Aggiustare l'autenticazione @high
+    ☐ Migliorare il riconoscimento delle date con RegEx @low
+    
+
+New Task:
+   
+
+More Actions:
+    * Complete a task by pressing Alt+d @done
+    * Re-open a completed task by pressing Alt+d
+    * Cancel a task by pressing Alt+c @cancelled
+    * Complete a cancelled task by pressing Alt+d
+    * You can also use the Command pallette to complete or cancel a task by typing 
+      To Do:Complete Task or To Do:Cancel Task 

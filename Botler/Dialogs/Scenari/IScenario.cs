@@ -9,16 +9,22 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
 using Botler.Controller;
 using System.Threading.Tasks;
-using Botler.Services;
+using Botler.Middleware.Services;
+using Botler.Models;
+using Microsoft.Bot.Builder;
 
 namespace Botler.Dialogs.Scenari
 {
     public interface IScenario
     {
-        Task<DialogContext> GetDialogContextAsync();
+        Intent ScenarioIntent{ get; set; }
 
-        Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult);
+        bool NeedAuthentication { get; set; }
 
-        bool NeedAuthentication();
+        string ScenarioID { get; set; }
+
+        string AssociatedScenario { get; set; }
+
+        Task HandleScenarioStateAsync(ITurnContext turn, BotlerAccessors accessors, LuisServiceResult luisServiceResult);
     }
 }

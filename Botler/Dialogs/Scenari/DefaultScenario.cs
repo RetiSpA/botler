@@ -11,11 +11,17 @@ using Botler.Dialogs.Utility;
 using Microsoft.Extensions.Logging;
 using Microsoft.Bot.Schema;
 using Botler.Controller;
+using Botler.Middleware.Services;
+using Botler.Controllers;
+using Botler.Models;
+using Botler.Builders;
+
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
-using Botler.Services;
+using static Botler.Dialogs.Utility.Scenari;
+
 
 namespace Botler.Dialogs.Scenari
 {
@@ -26,6 +32,12 @@ namespace Botler.Dialogs.Scenari
         private readonly ITurnContext _turn;
 
         private readonly DialogSet _scenarioDialogs;
+
+        public string ScenarioID { get; set; } = Default;
+
+        public Intent ScenarioIntent { get; set; }
+
+        public string AssociatedScenario { get; set; } = "Default";
 
         public DefaultScenario(BotlerAccessors accessors, ITurnContext turn)
         {
@@ -41,30 +53,23 @@ namespace Botler.Dialogs.Scenari
         }
 
 
-
-        public async Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult)
+        // ! Voglio che questo sia un punto in cui finiscono tutti i messaggi non propriamente riconosciuti ! //
+        public async Task CreateResponseAsync(LuisServiceResult luisServiceResult)
         {
-            // None intent handler
-            var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent
-            var score = luisServiceResult.TopScoringIntent.Item2; // score
-
-            if(topIntent.Equals(NoneIntent) || score < 0.75)
-            {
-                await _turn.SendActivityAsync(RandomResponses(NoneResponse)).ConfigureAwait(true);
-                await _turn.SendActivityAsync(RandomResponses(PossibilitaResponse));
-            }
-            return await _scenarioDialogs.CreateContextAsync(_turn).Result.EndDialogAsync();
+           await  _turn.SendActivityAsync(RandomResponses(NoneResponse));
         }
 
-        public bool NeedAuthentication()
-        {
-            return false;
-        }
+        public bool NeedAuthentication { get; set; } = false;
 
         public async  Task<DialogContext> GetDialogContextAsync()
         {
            var dialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
            return dialogContext;
+        }
+        // TODO: Pericolo loop infinito, correggere
+        public async Task HandleScenarioStateAsync(ITurnContext turn, BotlerAccessors accessors, LuisServiceResult luisServiceResult)
+        {
+            await CreateResponseAsync(luisServiceResult);
         }
     }
 }

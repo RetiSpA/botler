@@ -16,11 +16,13 @@ using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
-using Botler.Services;
+using Botler.Middleware.Services;
+using Botler.Models;
+using Botler.Controllers;
 
 namespace Botler.Dialogs.Scenari
 {
-    public class ParkingScenario : IScenario
+    public class ParkingScenario : ExecutionScenario
     {
         private readonly BotlerAccessors _accessors;
 
@@ -28,13 +30,20 @@ namespace Botler.Dialogs.Scenari
 
         private readonly DialogSet _scenarioDialogs;
 
+        public override string ScenarioID { get; set; } = Parking;
+
+        public override Intent ScenarioIntent { get; set; }
+
+        public override bool NeedAuthentication { get; set; } = true;
+
+        public override string AssociatedScenario { get; set; } = Parking;
+
         public ParkingScenario(BotlerAccessors accessors, ITurnContext turn)
         {
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             _turn = turn ?? throw new ArgumentNullException(nameof(turn));
-
             ILoggerFactory loggerFactory = new LoggerFactory();
-            _scenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
+            _scenarioDialogs = new DialogSet(_accessors.DialogStateAccessor);
 
             _scenarioDialogs.Add(new Prenotazione(_accessors, loggerFactory));
             _scenarioDialogs.Add(new CancellaPrenotazione(_accessors.CancellaPrenotazioneStateAccessor, loggerFactory));
@@ -42,7 +51,7 @@ namespace Botler.Dialogs.Scenari
             _scenarioDialogs.Add(new VisualizzaPrenotazione(_accessors.VisualizzaPrenotazioneStateAccessor, loggerFactory));
         }
 
-        public async Task<DialogTurnResult> HandleDialogResultStatusAsync(LuisServiceResult luisServiceResult)
+        public override async Task CreateResponseAsync(LuisServiceResult luisServiceResult)
         {
             DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
             var dialogResult = await currentDialogContext.ContinueDialogAsync();
@@ -52,7 +61,8 @@ namespace Botler.Dialogs.Scenari
                     case DialogTurnStatus.Empty:
                     {
                         await _accessors.SetCurrentScenarioAsync(_turn, Parking);
-                        return await StartDialog(luisServiceResult);
+                        await StartDialog(luisServiceResult);
+                        break;
                     }
 
                     case DialogTurnStatus.Waiting:
@@ -62,21 +72,17 @@ namespace Botler.Dialogs.Scenari
                     case DialogTurnStatus.Complete:
                     {
                         await _accessors.SetCurrentScenarioAsync(_turn, Default);
-                        return await currentDialogContext.EndDialogAsync();
+                        await currentDialogContext.EndDialogAsync();
+                        break;
                     }
 
                     default:
                     {
                         await _accessors.SetCurrentScenarioAsync(_turn, Default);
-                        return await currentDialogContext.CancelAllDialogsAsync();
+                        await currentDialogContext.CancelAllDialogsAsync();
+                        break;
                     }
                 }
-            return null;
-        }
-
-        public bool NeedAuthentication()
-        {
-            return true;
         }
 
         public async  Task<DialogContext> GetDialogContextAsync()
@@ -93,42 +99,34 @@ namespace Botler.Dialogs.Scenari
 
             DialogTurnResult dialogResult = null;
 
-            if(topIntent.Equals(PrenotazioneIntent) && score >= 0.75)
+            if(topIntent.Equals(PrenotazioneParcheggioIntent) && score >= 0.75)
             {
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(Prenotazione));
-
                 return dialogResult;
-
             }
 
-            if(topIntent.Equals(TempoRimanentePrenotazioneIntent) && score >= 0.75)
+            if(topIntent.Equals(TempoRimanentePrenotazioneParcheggioIntent) && score >= 0.75)
             {
 
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaTempo));
-
                 return dialogResult;
             }
 
-            if(topIntent.Equals(CancellaPrenotazioneIntent) && score >= 0.75)
+            if(topIntent.Equals(CancellaPrenotazioneParcheggioIntent) && score >= 0.75)
             {
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(CancellaPrenotazione));
-
-                 return dialogResult;
-
+                return dialogResult;
             }
 
-            if(topIntent.Equals(VerificaPrenotazioneIntent) && score >= 0.75)
+            if(topIntent.Equals(VerificaPrenotazioneParcheggioIntent) && score >= 0.75)
             {
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(VisualizzaPrenotazione));
-
                 return dialogResult;
             }
 
-            else
-            {
-                await _turn.SendActivityAsync(RandomResponses(NoneResponse));
-                return dialogResult;
-            }
+            await _turn.SendActivityAsync(RandomResponses(NoneResponse));
+            return dialogResult;
+
         }
     }
 }

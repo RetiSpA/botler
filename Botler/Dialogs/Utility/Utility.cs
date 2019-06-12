@@ -75,13 +75,15 @@ namespace Botler.Dialogs.Utility
 
                 else
                 {
+                    
                     return null;
                 }
 
             }
 
-            catch
+            catch(Exception e)
             {
+                
                 return null;
             }
 

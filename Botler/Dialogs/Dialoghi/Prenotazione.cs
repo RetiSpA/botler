@@ -122,7 +122,7 @@ namespace Botler.Dialogs.Dialoghi
                             }
                         }
                     }
-
+                    await context.SendActivityAsync(RandomResponses(PrenotazioneSessioneScadutaResponse));
                     return await stepContext.EndDialogAsync();
                 }
                 catch

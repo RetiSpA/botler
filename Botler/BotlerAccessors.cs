@@ -22,9 +22,14 @@ using Botler;
 using Botler.Dialogs.Scenari;
 using static Botler.Dialogs.Utility.Scenari;
 using Botler.Controller;
+using Botler.Models;
+using MongoDB.Bson;
+using Botler.Middleware.Services;
+using Botler.Builders;
 
 namespace Botler
 {
+    // TODO: Inserire ultimo BotStateContext utile per accedervi facilmente.
     public class BotlerAccessors
     {
         public BotlerAccessors(UserState userState, ConversationState conversationState)
@@ -38,16 +43,21 @@ namespace Botler
             CancellaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             VisualizzaTempoStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
             VisualizzaPrenotazioneStateAccessor = UserState.CreateProperty<PrenotazioneModel>(nameof(PrenotazioneModel));
-            AutenticazioneDipedenteAccessors = UserState.CreateProperty<Dictionary<string,bool>>("AutenticazioneDipedente");
+            AutenticazioneDipedenteAccessors = UserState.CreateProperty<Dictionary<string, TokenResponse>>("AutenticazioneDipedente");
             QnaActiveAccessors  = UserState.CreateProperty<string>("QnAActive");
             UserModelAccessors = UserState.CreateProperty<List<UserModel>>(nameof(UserModel));
-
+            LastBotStateContextConversation = ConversationState.CreateProperty<Dictionary<string, BotStateContext>>(nameof(BotStateContext));
+            TurnCounterConversationAccessors = ConversationState.CreateProperty<Dictionary<string, int>>("TurnCounter");
+            LastUserScenarioAccessors = conversationState.CreateProperty<Dictionary<string, IScenario>> ("LastUserScenario");
+            MongoDB = new MongoDBService();
         }
 
         public UserState UserState { get; set; }
 
-        public ConversationState ConversationState { get; set; }
+        public MongoDBService MongoDB { get; set; }
 
+        public ConversationState ConversationState { get; set; }
+        // TODO: MODIFIARE
         public IScenario ActiveScenario { get; set; }
 
         public IStatePropertyAccessor<PrenotazioneModel> PrenotazioneStateAccessor { get; set; }
@@ -57,20 +67,23 @@ namespace Botler
         public IStatePropertyAccessor<PrenotazioneModel> VisualizzaTempoStateAccessor { get; set; }
 
         public IStatePropertyAccessor<PrenotazioneModel> VisualizzaPrenotazioneStateAccessor { get; set; }
-
+        // TODO: MODIFIARE ??
         public IStatePropertyAccessor<DialogState> DialogStateAccessor { get; set; }
-
+        // TODO: MODIFIARE
         public IStatePropertyAccessor<string> ScenarioStateAccessors { get; set; }
-
-        public IStatePropertyAccessor<Dictionary<string,bool>> AutenticazioneDipedenteAccessors { get; set; }
+        public IStatePropertyAccessor<Dictionary<string, TokenResponse>> AutenticazioneDipedenteAccessors { get; set; }
 
         public IStatePropertyAccessor<List<UserModel>> UserModelAccessors { get; set; }
-
-        public IStatePropertyAccessor<string> AuthTimeAccessors { get; set; }
-
+        // TODO: MODIFIARE
         public IStatePropertyAccessor<string> QnaActiveAccessors { get; set; }
 
-        public IStatePropertyAccessor<string> ResourceFileSelectedAccessors { get; set; }
+        public IStatePropertyAccessor<Dictionary<string,BotStateContext>> LastBotStateContextConversation { get; set; }
+
+        public IStatePropertyAccessor<Dictionary<string, IScenario>> LastUserScenarioAccessors { get; set; }
+
+        public IStatePropertyAccessor<Dictionary<string,int>> TurnCounterConversationAccessors { get; set; }
+
+        public IStatePropertyAccessor<IList<BsonDocument>> LastBotStateAccessors { get; set; }
 
         public async Task AddUserToAccessorsListAync(UserModel user, ITurnContext turn)
         {
@@ -81,8 +94,9 @@ namespace Botler
 
         public async Task<UserModel> GetAuthenticatedMemberAsync(ITurnContext turn)
         {
-            List<UserModel> list = await UserModelAccessors.GetAsync(turn, () => new List<UserModel>());
+            IList<UserModel> list = await UserModelAccessors.GetAsync(turn, () => new List<UserModel>());
             string memberID = turn.Activity.From.Id;
+
             foreach(UserModel user in list)
             {
                 if(user.Id_Utente.Equals(memberID))
@@ -93,10 +107,18 @@ namespace Botler
             return null;
         }
 
+        public async Task<int> GetCurretTurnCounterAsync(ITurnContext turn)
+        {
+           var map = await TurnCounterConversationAccessors.GetAsync(turn, () => new Dictionary<string, int>());
+           int countTurn;
+           map.TryGetValue(turn.Activity.From.Id, out countTurn);
+           return countTurn;
+        }
+
         public async Task SetCurrentScenarioAsync(ITurnContext turn, string scenario)
         {
             await ScenarioStateAccessors.SetAsync(turn, scenario);
-            ActiveScenario = ScenarioFactory.FactoryMethod(this, turn, scenario);
+            var scenarioActive = ScenarioFactory.FactoryMethod(this, turn, scenario, null);
         }
 
         public async Task TurnOffQnAAsync(ITurnContext turn)
@@ -110,15 +132,15 @@ namespace Botler
             await ScenarioStateAccessors.SetAsync(turn, Default);
         }
 
-        public async Task SaveStateAsync(ITurnContext currentTurn)
+        public async Task SaveStateAsync(ITurnContext turn)
         {
-            await SaveConvStateAsync(currentTurn);
-            await SaveUserStateAsyn(currentTurn);
+            await SaveConvStateAsync(turn);
+            await SaveUserStateAsyn(turn);
         }
 
         public async Task SaveConvStateAsync(ITurnContext turnContext)
         {
-               await ConversationState.SaveChangesAsync(turnContext);
+            await ConversationState.SaveChangesAsync(turnContext);
         }
 
         public async Task SaveUserStateAsyn(ITurnContext turnContext)
@@ -126,5 +148,90 @@ namespace Botler
             await UserState.SaveChangesAsync(turnContext);
         }
 
+        public async Task SaveLastBotStateContext(ITurnContext turn, BotStateContext state)
+        {
+            var map = await LastBotStateContextConversation.GetAsync(turn, () => new Dictionary<string, BotStateContext>());
+            var convID = turn.Activity.From.Id;
+
+            if(map.TryGetValue(convID, out state))
+            {
+                map.Remove(convID);
+            }
+            map.Add(convID, state);
+
+            await LastBotStateContextConversation.SetAsync(turn, map);
+            await SaveStateAsync(turn);
+
+        }
+
+        public async Task UpdateTurnCounterAsync(ITurnContext turn)
+        {
+            var convID = turn.Activity.From.Id;
+            var map = await TurnCounterConversationAccessors.GetAsync(turn, () => new Dictionary<string,int>());
+            var turnValue = 0;
+
+            if(map.TryGetValue(convID, out turnValue))
+            {
+                map.Remove(convID);
+            }
+
+            map.Add(convID, ++turnValue);
+
+            await TurnCounterConversationAccessors.SetAsync(turn, map);
+            await SaveStateAsync(turn);
+        }
+
+        public async Task AddAuthUserAsync(ITurnContext turn, TokenResponse token)
+        {
+            var dic = await AutenticazioneDipedenteAccessors.GetAsync(turn, () => new Dictionary<string, TokenResponse>());
+            dic.Add(turn.Activity.From.Id, token);
+            await AutenticazioneDipedenteAccessors.SetAsync(turn, dic);
+            await SaveStateAsync(turn);
+        }
+
+        public async Task<TokenResponse> GetUserToken(ITurnContext turn)
+        {
+            var dic = await AutenticazioneDipedenteAccessors.GetAsync(turn, () => new Dictionary<string, TokenResponse>());
+            TokenResponse token;
+            var convID = turn.Activity.From.Id;
+            dic.TryGetValue(convID, out token);
+            await SaveStateAsync(turn);
+            return token;
+        }
+
+        public async Task<BotStateContext> GetLastBotStateContextCByConvIDAsync(ITurnContext turn)
+        {
+            var convID = turn.Activity.From.Id;
+            IList<BotStateContext> list = await MongoDB.GetAllBotStateByConvIDAsync(convID);
+
+            if(list.Count > 0)
+            {
+                return list[list.Count - 1];
+            }
+            else
+            {
+                return new BotStateContext();
+            }
+
+        }
+
+        public async Task SaveLastUserScenarioAsync(ITurnContext turn, IScenario scenario)
+        {
+            var dic = await LastUserScenarioAccessors.GetAsync(turn, () => new Dictionary<string, IScenario>());
+            var convID = turn.Activity.From.Id;
+            dic.Add(convID, scenario);
+            await LastUserScenarioAccessors.SetAsync(turn, dic);
+            await SaveStateAsync(turn);
+        }
+
+        public async Task<IScenario> GetLastUserScenarioAsync(ITurnContext turn)
+        {
+            var dic = await LastUserScenarioAccessors.GetAsync(turn, () => new Dictionary<string, IScenario>());
+            var convID = turn.Activity.From.Id;
+            IScenario scenario;
+            dic.TryGetValue(convID, out scenario);
+            await SaveStateAsync(turn);
+            return scenario;
+        }
     }
 }

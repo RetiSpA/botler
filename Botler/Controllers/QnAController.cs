@@ -2,8 +2,8 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
-using Botler.Helper.Commands;
-using Botler.Model;
+using Botler.Commands;
+using Botler.Models;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
@@ -28,7 +28,7 @@ namespace Botler.Controller
 
         public static async Task<bool> AnsweredTurnUserQuestionAsync(ITurnContext turn, BotlerAccessors accessors, BotServices services)
         {
-            string qnaKey = await Autenticatore.GetQnAKeyFromAuthUser(turn, accessors);
+            string qnaKey = await AuthenticationHelper.GetQnAKeyFromAuthUser(turn, accessors);
             QueryResult[] qnaResult = await GetQnAResult(turn, services, qnaKey);
             string yesOrNo = turn.Activity.Text;
 
@@ -39,12 +39,13 @@ namespace Botler.Controller
 
             if(qnaResult.Length > 0)
             {
-                if(qnaResult[0].Score > 0.90)
+                if(qnaResult[0].Score > 0.80)
                 {
-                await ShowQnAMessageAsync(qnaKey, turn, accessors);
-                await SendQnAAnswerAsync(qnaResult, turn);
-                await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
-                return true;
+                    await ShowQnAMessageAsync(qnaKey, turn, accessors);
+                    await SendQnAAnswerAsync(qnaResult, turn);
+                    await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
+
+                    return true;
                 }
             }
             return false;
@@ -68,13 +69,9 @@ namespace Botler.Controller
         private static async Task SendQnAAnswerAsync(QueryResult[] qnaResult, ITurnContext turn)
         {
             foreach(QueryResult result in qnaResult)
-             {
-                 // High Confidence Score
-                if(result.Score >= 0.90)
-                {
+            {
                 var answer = result.Answer;
                 await turn.SendActivityAsync(answer);
-                }
             }
         }
 

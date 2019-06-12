@@ -3,11 +3,11 @@ using Microsoft.Bot.Builder;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
-using Botler.Services;
+using Botler.Middleware.Services;
 
 namespace Botler.Controller
 {
-    public class InterruptionRecognizer
+    public static class InterruptionRecognizer
     {
         public async static Task<bool> InterruptionHandledAsync(LuisServiceResult luisServiceResult, ITurnContext turn)
         {
@@ -17,63 +17,63 @@ namespace Botler.Controller
 
             if (topIntent.Equals(PresentazioneIntent) && (score >= 0.75))
             {
-                 response = RandomResponses(PresentazioneResponse);
+                response = RandomResponses(PresentazioneResponse);
 
-                         // Handled the interrupt.
+                        // Handled the interrupt.
             }
 
             if (topIntent.Equals(GoodbyeIntent) && (score >= 0.75))
             {
-                 response= RandomResponses(SalutoResponse);
+                response= RandomResponses(SalutoResponse);
 
-                         // Handled the interrupt.
+                        // Handled the interrupt.
             }
 
             if (topIntent.Equals(InformazioniIntent) && (score >= 0.75))
             {
-                 response = RandomResponses(InformazioneResponse);
+                response = RandomResponses(InformazioneResponse);
 
-                         // Handled the interrupt.
+                        // Handled the interrupt.
             }
 
             if (topIntent.Equals(RingraziamentiIntent) && (score >= 0.75))
             {
-                 response = RandomResponses(RingraziamentoResponse);
+                response = RandomResponses(RingraziamentoResponse);
 
-                         // Handled the interrupt.
+                 // Handled the interrupt.
             }
 
             if (topIntent.Equals(SalutePositivoIntent) && (score >= 0.75))
             {
-                 response = RandomResponses(SalutoPositivoResponse);
+                response = RandomResponses(SalutoPositivoResponse);
 
-                         // Handled the interrupt.
+                // Handled the interrupt.
             }
 
             if (topIntent.Equals(SaluteNegativoIntent) && (score >= 0.75))
             {
-                 response = RandomResponses(SalutoNegativoResponse);
+                response = RandomResponses(SalutoNegativoResponse);
 
-                         // Handled the interrupt.
+                        // Handled the interrupt.
             }
 
             if (topIntent.Equals(AnomaliaIntent) && (score >= 0.75))
             {
-                 response = RandomResponses(AnomaliaResponse);
+                response = RandomResponses(AnomaliaResponse);
 
-                         // Handled the interrupt.
+                // Handled the interrupt.
             }
 
             if (topIntent.Equals(PossibilitàIntent) && (score >= 0.75))
             {
-                 response = RandomResponses(PossibilitaResponse);
+                response = RandomResponses(PossibilitaResponse);
 
-                         // Handled the interrupt.
+                // Handled the interrupt.
             }
 
             if(topIntent.Equals(RisataIntent) && (score >= 0.75))
             {
-                    response = RandomResponses(RisataResponse);
+                response = RandomResponses(RisataResponse);
             }
 
             if(response == string.Empty) return false;   // Did not handle

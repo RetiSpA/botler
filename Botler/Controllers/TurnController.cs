@@ -22,14 +22,18 @@ using Newtonsoft.Json;
 using Botler.Dialogs.Utility;
 using Botler;
 using Botler.Dialogs.Scenari;
-using Botler.Helper.Commands;
+using Botler.Commands;
+using Botler.Models;
+using Botler.Middleware.Services;
+using System.Text;
+using Botler.Controllers;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.Commands;
-using Botler.Model;
-using Botler.Services;
+using Botler.Builders;
+
 
 /// <summary>
 /// This class takes the responsability
@@ -51,11 +55,19 @@ namespace Botler.Controller
 
         private ITurnContext currentTurn;
 
-        public TurnController(BotlerAccessors accessors, BotServices services)
+        private BotStateContext currentBotState;
+
+        private MongoDBService mongoDB;
+
+        public TurnController(BotlerAccessors accessors, BotServices services, MongoDBService mongoDBService)
         {
             ILoggerFactory loggerFactory = new LoggerFactory();
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             _services = services ?? throw new ArgumentNullException(nameof(services));
+
+            currentBotState = new BotStateContext();
+
+            mongoDB = mongoDBService;
         }
 
         /// <summary>
@@ -90,7 +102,11 @@ namespace Botler.Controller
         /// <returns></returns>
         private async Task StartEventActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            throw new NotImplementedException(nameof(StartEventActivityAsync));
+            // LuisServiceResult luisServiceResult = await CreateLuisServiceResult(cancellationToken);
+            // currentBotState = await _accessors.GetLastBotStateContextCByConvIDAsync(currentTurn);
+            // IScenario scenarioAuth = ScenarioFactory.FactoryMethod(_accessors, currentTurn, currentBotState.scenarioID, null);
+            // await scenarioAuth.HandleScenarioStateAsync(currentTurn, _accessors, luisServiceResult);
+            await AuthenticationHelper.SecondPhaseAuthAsync(currentTurn, _accessors);
         }
 
         /// <summary>
@@ -107,6 +123,11 @@ namespace Botler.Controller
                     {
                         if (member.Id != currentActivity.Recipient.Id)
                         {
+                            // Create the first BostStateContext inhert to the first turn (i = 0)
+                            currentBotState = await BotStateBuilder.BuildFirstTurnBotStateContext(_accessors, currentTurn);
+                            // And then insert the JSON Document into the Azure MongoDB
+                            await mongoDB.InsertJSONContextDocAsync(currentBotState);
+
                             ICommand welcomeCommand = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandWelcome);
                             await welcomeCommand.ExecuteCommandAsync();
                         }
@@ -117,71 +138,69 @@ namespace Botler.Controller
 
         /// <summary>
         /// Manages the message coming from the channel
-        /// 1) Get the result from bot's service
-        /// 2) Handle a conversation flow interruption
-        /// 3) Recognize and execute a command
-        /// 4) If any QnA is active get the answer from QnAMaker service
-        /// 5) Continue o start a dialog
+        /// * 1) Get the result from bot's service
+        /// * 2) Handle a conversation flow interruption
+        /// * 3) Recognize and execute a command
+        /// * 4) If any QnA is active get the answer from QnAMaker service
+        /// * 5) Continue o start a dialog
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
+        /// ? Quando scrivere nel mongoDB con lo stato del bot ?
+        /// ! > Quando si passano i primi 3 controlli { Interruzioni, Comandi, QnA } && Esiste almeno un Entità < !
         private async Task StartMessageActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // We want to get always a LUIS result first.
-            LuisServiceResult luisServiceResult = await CreateLuisServiceResult(cancellationToken);
+            LuisServiceResult luisServiceResult = await LuisServiceResultBuilder.CreateLuisServiceResult(currentTurn, _services, cancellationToken);
+            // Update the turnCouter of this conversation
+            await _accessors.UpdateTurnCounterAsync(currentTurn);
 
-            var interruptionHandled = await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn);
-            if(interruptionHandled)
+            // Analyze LuisServiceResult to create a BotStateContext if needed, based on intents(and top intent)
+
+            if (await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn))
+            {
+                await _accessors.SaveStateAsync(currentTurn);
+                // ? Reply with a response based on past states/context ?
+                return;
+            }
+
+            if (await CommandRecognizer.ExecutedCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn))
             {
                 await _accessors.SaveStateAsync(currentTurn);
                 return;
             }
 
-            var commandExecuted = await CommandRecognizer.ExecutedCommandFromLuisResultAsync(luisServiceResult, _accessors, currentTurn);
-            if(commandExecuted)
+            if (await QnAController.AnsweredTurnUserQuestionAsync(currentTurn, _accessors, _services))
             {
                 await _accessors.SaveStateAsync(currentTurn);
                 return;
             }
 
-            // var qnaActive = await QnAController.CheckQnAIsActive(_accessors, currentTurn);
-            // if(qnaActive)
-            // {
-            // If the user asks a question, if is in our QnA, we send the answer
-            if(await QnAController.AnsweredTurnUserQuestionAsync(currentTurn, _accessors, _services))
-            {
-                await _accessors.SaveStateAsync(currentTurn);
-                return;
-            }
-            //     return;
-            // }
-
-            await StartScenarioDialogAsync(luisServiceResult);
+             // Continue or start a new dialog of a scenario or a context based dialog
+            await CreateScenarioResponseWithLuisAsync(luisServiceResult); // * Leggerà l'ultima instanza di BotStateContext dagli Accessors * //
         }
 
         /// <summary>
-        /// Create a Data structure that contains the luis result from the turn
+        /// Create a response for the current turn  checking the LuisResult
+        /// and bot context
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns>LuisServiceResult-> [ReccognizeResult->intent,scoring; TopScoringIntent]</returns>
-        private async Task<LuisServiceResult> CreateLuisServiceResult(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            LuisServiceResult luisServiceResult = new LuisServiceResult();
-
-            luisServiceResult.LuisResult = await _services.LuisServices[LuisConfiguration].RecognizeAsync(currentTurn, cancellationToken).ConfigureAwait(false);
-
-            luisServiceResult.TopScoringIntent = luisServiceResult.LuisResult?.GetTopScoringIntent().ToTuple<string,double>();
-
-            return luisServiceResult;
-        }
-
-        private async Task StartScenarioDialogAsync(LuisServiceResult luisServiceResult)
+        /// <param name="luisServiceResult"> LuisResult and all the entities in</param>
+        /// <returns></returns>
+        private async Task CreateScenarioResponseWithLuisAsync(LuisServiceResult luisServiceResult)
         {
             IScenario currentScenario = await ScenarioRecognizer.ExtractCurrentScenarioAsync(luisServiceResult, _accessors, currentTurn);
 
-            await currentScenario.HandleDialogResultStatusAsync(luisServiceResult);
+            // ? (currentScenario.ScenarioID + " type of scenario => " + currentScenario.GetType()); ? //
+            // * Gestisce lo scenario in base al suo contesto  * //
 
+            await currentScenario.HandleScenarioStateAsync(currentTurn, _accessors, luisServiceResult);
+
+            // * Salva lo stato di questo turno nel cosmbosDB * //
+            await BotStateBuilder.BuildAndSaveBotStateContextContext(currentTurn, _accessors, luisServiceResult, currentScenario.ScenarioID, currentScenario.ScenarioIntent);
+
+            // * Salva lo stato del MemoryStorage * //
             await _accessors.SaveStateAsync(currentTurn);
         }
+
     }
 }
