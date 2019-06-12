@@ -19,7 +19,7 @@ namespace Botler.Controllers
     // * 1) Nessun contesto precedente diverso dallo scenario default trovato o associabile a questo -> primo scenario utile per iniziare un contesto
     // * 2) Trovato uno scenario esecutivo => Lo scenario ha abbastanza informazioni per eseguire le azioni,ma  ha chiesto delle ulteriori informazioni all'utente
     // * 3) Trovato uno scenario descrittivo => Forse l'utente vuole inserire nuove informazioni (entità) per compiere l'azione.
-    // * 4) Può arrivare uno scenario default con delle entità -> va controllato lo scenario esecutivo precedente  e ritornare lo scenario descrittivo associato
+  
     //  ! Uno scenario descrittivo non arriverà mai da luis, ma andrà creato in base ad uno scenario default o esecutivo
     // ! Di qui passerà sempre e solo uno scenario di tipo DEFAULT, perchè gli altri verranno riconosciuto prima. Ma si possono avere intent con basso score.
 
