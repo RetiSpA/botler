@@ -99,7 +99,7 @@ namespace Botler.Dialogs.Scenari
 
             DialogTurnResult dialogResult = null;
 
-            if(topIntent.Equals(PrenotazioneParcheggioIntent) && score >= 0.75)
+            if (topIntent.Equals(PrenotazioneParcheggioIntent) && score >= 0.75)
             {
                 dialogResult = await currentDialogContext.BeginDialogAsync(nameof(Prenotazione));
                 return dialogResult;
@@ -124,7 +124,7 @@ namespace Botler.Dialogs.Scenari
                 return dialogResult;
             }
 
-            await _turn.SendActivityAsync(RandomResponses(NoneResponse));
+            await _turn.SendActivityAsync(RandomResponses(NoneResponse) + "\n" + RandomResponses(PossibilitaResponse));
             return dialogResult;
 
         }

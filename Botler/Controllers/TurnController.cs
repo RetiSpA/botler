@@ -1,38 +1,18 @@
 ﻿using System;
-using System.Collections;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Resources;
-using System.Globalization;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Net.Http;
-using Microsoft.Bot.Builder.AI.QnA;
 using System.Threading.Tasks;
-using Botler.Dialogs.Dialoghi;
-using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Botler.Dialogs.Utility;
-using Botler;
 using Botler.Dialogs.Scenari;
 using Botler.Commands;
 using Botler.Models;
-using Botler.Middleware.Services;
-using System.Text;
-using Botler.Controllers;
-using static Botler.Dialogs.Utility.BotConst;
-using static Botler.Dialogs.Utility.ListsResponsesIT;
-using static Botler.Dialogs.Utility.Scenari;
-using static Botler.Dialogs.Utility.Responses;
-using static Botler.Dialogs.Utility.Commands;
 using Botler.Builders;
+using Botler.Helpers;
+using Botler.Middleware.Services;
+using static Botler.Dialogs.Utility.Commands;
+
 
 
 /// <summary>
@@ -184,7 +164,7 @@ namespace Botler.Controller
         /// Create a response for the current turn  checking the LuisResult
         /// and bot context
         /// </summary>
-        /// <param name="luisServiceResult"> LuisResult and all the entities in</param>
+        /// <param name="luisServiceResult"> LuisResult and all the entities found</param>
         /// <returns></returns>
         private async Task CreateScenarioResponseWithLuisAsync(LuisServiceResult luisServiceResult)
         {
@@ -196,7 +176,7 @@ namespace Botler.Controller
             await currentScenario.HandleScenarioStateAsync(currentTurn, _accessors, luisServiceResult);
 
             // * Salva lo stato di questo turno nel cosmbosDB * //
-            await BotStateBuilder.BuildAndSaveBotStateContextContext(currentTurn, _accessors, luisServiceResult, currentScenario.ScenarioID, currentScenario.ScenarioIntent);
+            await BotStateBuilder.BuildAndSaveBotStateContextContext(currentTurn, _accessors, luisServiceResult, currentScenario);
 
             // * Salva lo stato del MemoryStorage * //
             await _accessors.SaveStateAsync(currentTurn);

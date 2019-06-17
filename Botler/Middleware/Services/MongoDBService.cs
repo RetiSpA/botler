@@ -5,16 +5,9 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using MongoDB.Driver.GridFS;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Azure;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Botler.Dialogs.Utility.Commands;
-using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.BotConst;
-using System.Configuration;
 
 namespace Botler.Middleware.Services
 {

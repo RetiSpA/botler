@@ -22,7 +22,7 @@ namespace Botler.Models
 
             Entity ent = (Entity)obj;
 
-            if(ent.Type.Equals(Type))
+            if(ent.Type.Equals(Type) && ent.Text.Equals(Text))
             {
                 return true;
             }
@@ -38,9 +38,10 @@ namespace Botler.Models
             return Type.GetHashCode() ^ Text.GetHashCode();
         }
 
+
         public override string ToString()
         {
-            return "Type: " + Type + " Text " + Text + " StartIndext " + StartIndex + " EndIndex " + EndIndex; 
+            return "Type: " + Type + " Text " + Text + " StartIndext " + StartIndex + " EndIndex " + EndIndex;
         }
 
     }

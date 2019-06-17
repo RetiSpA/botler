@@ -3,7 +3,8 @@ using Botler.Middleware.Services;
 using Botler.Helpers;
 using Botler.Dialogs.Dialoghi;
 using static Botler.Dialogs.Utility.IntentNeedsEntityPhrases;
-namespace Botler.Builders
+
+namespace Botler.Builders.IntentBuilders
 {
     public class RichiestaSupportoIntentBuilder : IIntentBuilder
     {
@@ -18,8 +19,6 @@ namespace Botler.Builders
             intent.EntityNeedResponse = SupportoEntityNeedsToCollect;
 
             return intent;
-
-
         }
     }
 }

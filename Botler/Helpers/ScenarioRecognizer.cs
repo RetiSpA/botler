@@ -5,16 +5,12 @@ using Botler.Models;
 using Botler.Controllers;
 using Botler.Builders;
 using Microsoft.Bot.Builder;
-using System;
 using System.Threading.Tasks;
-using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.LuisIntent;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.IntentsSets;
-using static Botler.Dialogs.Utility.Commands;
-
 using Botler.Commands;
 using Botler.Helpers;
 
@@ -46,7 +42,7 @@ namespace Botler.Controller
             {
                 var alreadyAuth = await AuthenticationHelper.UserAlreadyAuthAsync(turn, accessors);
 
-                if (!alreadyAuth)
+                if (alreadyAuth)
                 {
                     return topIntentScenario;
                 }
@@ -109,7 +105,7 @@ namespace Botler.Controller
 
             return (ParkingIntents.Contains(topIntent) && (score >= 0.75));
         }
-
+    
         private static bool isAOutlookIntent(LuisServiceResult luisServiceResult)
         {
             var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent

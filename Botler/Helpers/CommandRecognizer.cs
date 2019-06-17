@@ -1,15 +1,9 @@
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Botler.Models;
-using Botler.Controller;
 using Microsoft.Bot.Builder;
-using Newtonsoft.Json.Linq;
 using Botler.Commands;
 using Botler.Middleware.Services;
-using System.Text.RegularExpressions;
 
 namespace Botler.Controller
 {

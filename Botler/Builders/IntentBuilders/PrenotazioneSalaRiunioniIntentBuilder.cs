@@ -2,7 +2,7 @@ using Botler.Models;
 using Botler.Middleware.Services;
 using Botler.Dialogs.Dialoghi;
 using static Botler.Dialogs.Utility.IntentNeedsEntityPhrases;
-namespace Botler.Builders
+namespace Botler.Builders.IntentBuilders
 {
     public class PrenotazioneSalaRiunioniIntentBuilder : IIntentBuilder
     {

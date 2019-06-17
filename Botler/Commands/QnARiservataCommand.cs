@@ -5,8 +5,7 @@ using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.BotConst;
-using static Botler.Dialogs.Utility.Commands;
-using Botler.Models;
+
 
 namespace Botler.Commands
 {

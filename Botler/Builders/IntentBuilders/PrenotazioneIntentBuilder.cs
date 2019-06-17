@@ -1,7 +1,7 @@
 using Botler.Models;
 using Botler.Middleware.Services;
 
-namespace Botler.Builders
+namespace Botler.Builders.IntentBuilders
 {
     public class PrenotazioneIntentBuilder : IIntentBuilder
     {

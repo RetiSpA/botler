@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.QnA;
 using Botler.Commands;
-using Botler.Models;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Commands;
-
+using Botler.Helpers;
 
 namespace Botler.Controller
 {

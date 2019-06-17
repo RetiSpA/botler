@@ -4,7 +4,7 @@ using Botler.Helpers;
 using Botler.Dialogs.Dialoghi;
 using static Botler.Dialogs.Utility.IntentNeedsEntityPhrases;
 
-namespace Botler.Builders
+namespace Botler.Builders.IntentBuilders
 {
     public class LeggiMailIntentBuilder : IIntentBuilder
     {

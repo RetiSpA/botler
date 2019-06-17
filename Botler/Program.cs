@@ -29,8 +29,9 @@ namespace Botler
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-            
+            //CreateWebHostBuilder(args).Build().Run();
+            Console.WriteLine(TicketSupportHelper.GetTipoTicket(PC));
+
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

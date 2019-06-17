@@ -2,8 +2,11 @@ using Botler.Models;
 using Botler.Middleware.Services;
 using static Botler.Dialogs.Utility.LuisIntent;
 
-namespace Botler.Builders
+namespace Botler.Builders.IntentBuilders
 {
+    /// <summary>
+    /// return an Intent instance based on TopIntent from LUIS
+    /// </summary>
     public static class IntentFactory
     {
         public static Intent FactoryMethod(LuisServiceResult luisServiceResult)
@@ -26,15 +29,22 @@ namespace Botler.Builders
                 return new PrenotazioneSalaRiunioniIntentBuilder().BuildIntent(luisServiceResult);
             }
 
-            if (intent.Equals(VisualizzaEventiCalendarioIntent))
+            if (intent.Equals(VisualizzaAppuntamentiCalendarIntent))
             {
-                return new VisualizzaEventiCalendarioIntentBuilder().BuildIntent(luisServiceResult);
+                return new   VisualizzaAppuntamentiCalendar().BuildIntent(luisServiceResult);
             }
 
             if (intent.Equals(RichiestaSupportoIntent))
             {
                 return new RichiestaSupportoIntentBuilder().BuildIntent(luisServiceResult);
             }
+
+            if (intent.Equals(CreaAppuntamentoCalendarIntent))
+            {
+                return new CreaAppuntamentoCalendarIntentBuilder().BuildIntent(luisServiceResult);
+            }
+
+
 
             return new GenericIntentBuilder().BuildIntent(luisServiceResult);
         }

@@ -7,7 +7,10 @@ namespace Botler.Models
 {
     public class Intent : IComparable
     {
-        public Intent(){}
+        public Intent()
+        {
+            EntitiesCollected = new HashSet<Entity>();
+        }
 
         public string Name { get; set; }
 
@@ -20,8 +23,9 @@ namespace Botler.Models
         public int EntityLowerBound { get; set; }
 
         public string DialogID { get; set; }
-
-        public IList<Entity> EntitiesCollected { get; set; }
+        // ! cambiare in HashSet, ma se lo avessi dichiarato come ICollection<Entity>
+        // ! non avremo avuto problem.
+        public ICollection<Entity> EntitiesCollected { get; set; }
 
         public string EntityNeedResponse { get; set; }
 

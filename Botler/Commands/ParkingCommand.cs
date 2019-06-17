@@ -5,6 +5,7 @@ using Botler.Models;
 using Botler.Controller;
 using Botler.Helper.Attachment;
 using Botler.Commands;
+using Botler.Helpers;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Responses;

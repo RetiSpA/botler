@@ -4,6 +4,7 @@ using Botler.Builders;
 using Botler.Controllers;
 using Botler.Models;
 using Botler.Middleware.Services;
+using Botler.Builders.IntentBuilders;
 using Microsoft.Bot.Builder;
 
 namespace Botler.Dialogs.Scenari
@@ -24,12 +25,12 @@ namespace Botler.Dialogs.Scenari
                 ScenarioIntent = luisServiceResult.TopIntent;
             }
             // Entities number is in range [lowerBound, uppderBound]
-            return (ScenarioIntent.EntitiesCollected.Count >= ScenarioIntent.EntityLowerBound && ScenarioIntent.EntitiesCollected.Count <= ScenarioIntent.EntityLimit);
+            return (ScenarioIntent.EntitiesCollected.Count >= ScenarioIntent.EntityLowerBound);
         }
 
         public bool EntityLowerBoundReach()
         {
-            return (ScenarioIntent.EntitiesCollected.Count >= ScenarioIntent.EntityLowerBound && ScenarioIntent.EntitiesCollected.Count <= ScenarioIntent.EntityLimit);
+            return (ScenarioIntent.EntitiesCollected.Count >= ScenarioIntent.EntityLowerBound);
         }
 
         public async Task HandleScenarioStateAsync(ITurnContext turn, BotlerAccessors accessors, LuisServiceResult luisServiceResult)
@@ -40,7 +41,7 @@ namespace Botler.Dialogs.Scenari
             }
             // TODO: Questo controllo devee essere fatto dal botstate context
 
-            if (EntityLowerBoundReach(luisServiceResult))   
+            if (EntityLowerBoundReach(luisServiceResult))
             {
                 // * Chiedo al botstatecontroller di cambiare il mio stato, ed eseguire quindi l'azione associata * //
                 // await turn.SendActivityAsync("Changing state");

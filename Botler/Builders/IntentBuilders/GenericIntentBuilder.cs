@@ -2,7 +2,7 @@ using Botler.Models;
 using Botler.Helpers;
 using Botler.Middleware.Services;
 
-namespace Botler.Builders
+namespace Botler.Builders.IntentBuilders
 {
     public class GenericIntentBuilder : IIntentBuilder
     {
@@ -12,7 +12,6 @@ namespace Botler.Builders
             intent.Name = luisServiceResult.TopScoringIntent.Item1; // Intent
             intent.Score = luisServiceResult.TopScoringIntent.Item2; // Score
             intent.EntitiesCollected = luisServiceResult.AllEntitiesFromLuis;
-            intent.EntityNeedResponse = "MOCK entity need response";
 
             return intent;
 

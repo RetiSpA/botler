@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Botler.Builders;
+using Botler.Builders.IntentBuilders;
 using Botler.Helpers;
 using Botler.Models;
 using Microsoft.Bot.Builder;
@@ -14,11 +12,16 @@ namespace Botler.Middleware.Services
     {
 
 
+        public LuisServiceResult()
+        {
+            AllEntitiesFromLuis = new List<Entity>();
+        }
+
         public RecognizerResult LuisResult { get; set; }
 
         public Tuple<string,double> TopScoringIntent { get; set; }
 
-        public IList<Entity> AllEntitiesFromLuis { get; set; } = new List<Entity> ();
+        public ICollection<Entity> AllEntitiesFromLuis { get; set; }
 
         public Intent TopIntent { get; set; }
 

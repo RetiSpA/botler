@@ -33,8 +33,10 @@ namespace Botler.Dialogs.Utility
         public const string RisataIntent = "Risata";
         public const string LeggiMailIntent = "LeggiMail";
         public const string AutenticazioneIntent = "Autenticazione";
-        public const string VisualizzaEventiCalendarioIntent = "VisualizzaEventiCalendario";
+        public const string VisualizzaAppuntamentiCalendarIntent = "VisualizzaAppuntamentiCalendar";
+        public const string CreaAppuntamentoCalendarIntent = "CreaAppuntamentoCalendar";
         public const string RichiestaSupportoIntent = "RichiestaSupporto";
+
     }
     [Serializable]
     public static class LuisEntity
@@ -46,16 +48,40 @@ namespace Botler.Dialogs.Utility
         public const string DatetimeBuiltin = "builtin.datetime.date";
         public const string DatetimeRegexFormat = "datatime_regex_format";
         public const string Auto = "auto";
+        public const string Time = "builtin.datetime.time";
+        public const string TimeRegex = "time_regex";
+        public const string Email = "builtin.email";
         public const string Mese = "mese";
         public const string MailUnread = "mail_unread";
         public const string Date = "date";
         public const string SalaRiunioni = "sala_riunioni";
+        public const string SaleRiunioni = "sale_riunioni";
         public const string Appuntamento = "appuntamento";
         public const string ListaAssistenza = "lista_entita_assistenza";
         public const string PC = "pc";
         public const string Computer = "computer";
         public const string Badge = "badge";
         public const string Tesserino = "tesserino";
+        public const string Multifunzionale = "multifunzionale";
+        public const string R101 = "r101";
+        public const string R102 = "r102";
+        public const string Utenza = "utenza";
+        public const string  PostaElettronica = "posta elettronica";
+        public const string AbilitaUtente = "abilita utente";
+        public const string DisabilitaUtente = "disabilita utente";
+        public const string Dispositivo = "dispositivo";
+        public const string Server = "server";
+        public const string Rete = "rete";
+        public const string Connessione = "connessione";
+        public const string Wifi = "wifi";
+        public const string LAN = "lan";
+        public const string Wi_Fi = "wi-fi";
+        public const string Progetto = "progetto";
+        public const string NuovoProgetto = "nuovo progetto";
+        public const string Infrastruttura = "infrastruttura";
+
+
+
 
     }
 
@@ -72,6 +98,7 @@ namespace Botler.Dialogs.Utility
         public const string InsertUtenteURI = "http://ticketsupportapi.azurewebsites.net/api/Utente";
         public const string MongoDBCollection = "botler-states";
         public const string MongoDatabase = "botler-data-context";
+
 
     }
 
@@ -120,12 +147,9 @@ namespace Botler.Dialogs.Utility
     public static class IntentsSets
     {
         public static HashSet<string> ExecutionIntents = new HashSet<string>() {  PrenotazioneIntent };
-
         public static HashSet<string> ParkingIntents = new HashSet<string>() { VerificaPrenotazioneParcheggioIntent, PrenotazioneParcheggioIntent,
             CancellaPrenotazioneParcheggioIntent, TempoRimanentePrenotazioneParcheggioIntent };
-
-        public static HashSet<string> OutlookIntents = new HashSet<string> () { LeggiMailIntent, PrenotazioneSalaRiunioniIntent };
-
+        public static HashSet<string> OutlookIntents = new HashSet<string> () { LeggiMailIntent, PrenotazioneSalaRiunioniIntent, VisualizzaAppuntamentiCalendarIntent, CreaAppuntamentoCalendarIntent};
         public static HashSet<string> SupportIntents = new HashSet<string> () { RichiestaSupportoIntent };
 
     }
@@ -133,11 +157,35 @@ namespace Botler.Dialogs.Utility
     [Serializable]
     public static class EntitySets
     {
-        public static HashSet<string> OutlookEntities = new HashSet<string>() { Datetime, MailUnread, DatetimeRegex, DatetimeBuiltin, SalaRiunioni, Appuntamento };
+        public static HashSet<string> OutlookEntities = new HashSet<string>() { Datetime, MailUnread, DatetimeRegex, DatetimeBuiltin, SalaRiunioni, Appuntamento, SaleRiunioni, Time, TimeRegex, Email };
         public static HashSet<string> ParkingEntities = new HashSet<string>() { Auto };
-        public static HashSet<string> SupportEntities = new HashSet<string>() { PC, Computer, Badge, Tesserino, ListaAssistenza };
+        public static HashSet<string> SupportEntities = new HashSet<string>() { PC, Computer, Badge, Tesserino, ListaAssistenza};
 
-        public static Dictionary<string, int> MonthEntities = new Dictionary<string, int>() { ["gennario"] = 01, ["febbraio"] = 02,["marzo"] = 03, ["aprile"] = 04, ["maggio"] = 05,
+        public static HashSet<string> UtenzeSupportEntities = new HashSet<string>() { Utenza, PostaElettronica , AbilitaUtente, DisabilitaUtente };
+
+        public static HashSet<string> DispositiviSupportEntities = new HashSet<string>() { PC, Computer, Dispositivo};
+
+        public static HashSet<string> NetworkSupportEntities = new HashSet<string>() { Rete, Connessione, Wifi, Wi_Fi, LAN};
+
+        public static HashSet<string> InfrastructureSupportEntities = new HashSet<string> () { Server, Infrastruttura};
+
+        public static HashSet<string> ProjectSupportEntities = new HashSet<string> () { Progetto, NuovoProgetto };
+
+        public static HashSet<string> BadgeAccessiEntities= new HashSet<string>() { Badge, "accessi" };
+
+        public static HashSet<string> DomoticaEntities = new HashSet<string> () { "domotica", "luci" };
+
+        public static HashSet<string> SiWebEntities = new HashSet<string>() { "siweb", "gestionale reti", "gestionale" };
+
+        public static HashSet<string> RegiEntities = new HashSet<string>() { "regia" };
+
+        public static Dictionary<HashSet<string>, int> SupportMapTipoTicketID = new Dictionary<HashSet<string>, int>() { [UtenzeSupportEntities] = 0, [DispositiviSupportEntities] = 1,
+        [NetworkSupportEntities] = 2,  [InfrastructureSupportEntities] = 3, [ProjectSupportEntities] = 4 , [BadgeAccessiEntities] = 7, [DomoticaEntities] = 9 , [SiWebEntities] = 11, [RegiEntities] = 13};
+
+        public static HashSet<string> SaleRiunioniSet = new HashSet<string>() { Multifunzionale, R101, R102 };
+
+        public static HashSet<string> DatesEntitiesSet = new HashSet<string>() { Datetime, DatetimeBuiltin, DatetimeRegex, DatetimeRegexFormat, DatetimeTextual };
+        public static Dictionary<string, int> MonthEntities = new Dictionary<string, int>() { ["gennaio"] = 01, ["febbraio"] = 02,["marzo"] = 03, ["aprile"] = 04, ["maggio"] = 05,
              ["giugno"] = 06, ["luglio"] = 07, ["agosto"] = 08, ["settembre"] = 09, ["ottobre"] = 10, ["novembre"] = 11,["dicembre"] = 12 };
     }
 
@@ -214,18 +262,21 @@ namespace Botler.Dialogs.Utility
 
         public const string RegexDeserilizeEntityValue =
         "(\\[\\s*)(\\{\\s*.*\\s*.*\\s*.*\\s*.*\\s*})";
-        // (\[\s*)(\{\s*.*\s*.*\s*.*\s*.*\s*})
         public const string RegexDeserilizeComplexEntityValue =
          "(\\[\\s*)(\\{\\s*.*\\s.*\\s*.*\\s*.*\\s*.*\\s*},\\s*\\{\\s*.*\\s.*\\s*.*\\s*.*\\s*.*\\s*})";
         public const string RegexFindDateTimeFromText =
-        "(\\s*|.*\\s*)(^0?[1-9]|1[012]|2[0-9]|3[0-9])(\\s*)(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)(\\s*\\d{4}\\s*|\\s*.*|.*\n|.*\\s*)";
+        "(.*\\s*|.*)(0[1-9]|1[0-9]|2[0-9]|3[0-9])(\\s*)(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)(\\s*\\d{4}\\s*|\\s*.*|.*\n|.*\\s*)(\\s*.*)+";
+        public const string RegexTimeFound_1 = "(dalle|dalle ore) ((0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]) (alle|alle ore) ((0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9])"; // [2] AND [5]
+
+        public const string RegexTimeFound_2 = "((0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9]) (\\s*|-\\s*) ((0[0-9]|1[0-9]|2[0-3]|[0-9]):[0-5][0-9])";
     }
 
     [Serializable]
     public static class IntentNeedsEntityPhrases
     {
         public const string PrenotaSalaEntityToCollect = "Vedo che vuoi prenotare una sala riunioni, le informazioni utili che puoi darmi sono: \n Data, Ora e nome Meeting Rooms(opzionale) :)";
-        public const string LeggiMailEntityNeedsToCollect = "Va bene, ti leggo le mail, ma prima puoi darmi più info? \n Una Data sarebbe utile, o anche dirmi  mail 'non lette' può essere d'aiuto :)";
-        public const string SupportoEntityNeedsToCollect = "Per aprire un ticket correttamente mi serve sapere almeno su cosa hai bisogno di assistenza.\n - PC, Badge, Accessi, Domotica...\n Insieme ad una descrizione (opzionale) :)";
+        public const string LeggiMailEntityNeedsToCollect = "Vuoi inserire una data o vuoi leggere le ultime mail ?";
+        public const string SupportoEntityNeedsToCollect = "Per aprire un ticket correttamente mi serve sapere almeno su cosa hai bisogno di assistenza.\n - PC, Badge, Accessi, Domotica...\n Insieme ad una descrizione, priorità (opzionali) :)";
+        public const string CreaAppuntamentoEntityNeedsToCollect = "Per creare un appuntamento, inserisci: \nUna Location, una Data, orario di inizo e fine, e dei partecipanti (email partecipanti)";
     }
 }

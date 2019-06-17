@@ -48,26 +48,16 @@ namespace Botler.Dialogs.Scenari
         {
             DialogContext currentDialogContext = await GetDialogContextAsync();
 
-            _scenarioDialogs.Add(new LetturaMailOutlook(ScenarioIntent));
+            _scenarioDialogs.Add(new LetturaMailOutlook(_accessors, ScenarioIntent));
             _scenarioDialogs.Add(new PrenotaSalaRiunioni(ScenarioIntent));
-
+            _scenarioDialogs.Add(new CreaAppuntamentoCalendar(ScenarioIntent, _accessors));
+            _scenarioDialogs.Add(new VisualizzaAppuntamentiCalendar(_accessors, ScenarioIntent));
 
             if (OutlookIntents.Contains(ScenarioIntent.Name))
             {
-                if (ScenarioIntent.EntitiesCollected.Count == 0)
-                {
-                    // * Legge i JSON dal CosmoDB per trovare entità utili per questo ScenarioIntent * //
-                    // * Se non ne trova, manda messaggio all'utente di inserirle * //
-                    await _turn.SendActivityAsync("Start dialog == 0 entities");
-
-                }
-                if (ScenarioIntent.EntitiesCollected.Count > 0)
-                {
-                    // var currentBotState = await BotStateBuilder.BuildAndSaveBotStateContextContext(_turn, _accessors, luisServiceResult, ScenarioID, ScenarioIntent);
-                    // await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);
-                    await _turn.SendActivityAsync("Starting dialog " + ScenarioIntent.DialogID);
-                }
+                await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);
             }
         }
+
     }
 }

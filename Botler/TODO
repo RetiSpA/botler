@@ -11,7 +11,7 @@ Todo:
     ✔ Entra in loop con chiamate infinite @high @critical  -> Se vengono lette delle entità senza un precedente contesto di uno scenario Descrittivo o Esecutivo entra in loop. <- @done(19-06-10 14:13)
     ✘ Inserire in ogni Scenario di descrizione un messaggio con le entità utili @low @cancelled(19-06-12 17:38)
     ✔ @high @today @critical Cercare sempre l'ultimo state non DEFAULT!!! @done(19-06-10 09:13)
-    ✘ @low Implementare PipeLine con Regex -> { date, MagicCode, si e no, ok, { :), :(, ;), :D } } @cancelled(19-06-12 17:38)
+    ✘ @low Implementare PipeLine con Regex -> { date, MagicCode, si e no, ok }@cancelled(19-06-12 17:38)
     ☐ @low Sistemare la gestione della memoria ( memory storage )
     ✔ @low @today  -> Filtrare le entitià di un intent in base alle caratteristiche interne dell'intent. @done(19-06-10 14:13)
     ✔ @low Implementare Formater di Entità per ogni Intent @done(19-06-10 15:35)
@@ -24,12 +24,18 @@ Todo:
     ✘ @low risolvere problema latenza -> é dovuto probabilmente all'EntityFormatHelper -> deserializzazione JSON to Entity object @cancelled(19-06-12 11:33)
     ✔ @high Per ogni intent creare una frase di risposta con le entità necessarie. @done(19-06-12 17:37)
 
-    ☐ 
-    ☐
-    ☐
-    ☐
-    ☐
-    ☐
-    ☐
-    ☐
-    ☐     
+    ✔ @today Implementare i dialogi Outlook @high @done(19-06-13 15:16) 
+    ✔ @Today Aggiungere intent visualizza appuntamenti @high @done(19-06-13 11:32)
+    ☐ @Today Ripulire il codice. @low
+    ☐ @high Commentare il codice.
+    ✔ @high Gestire meglio i file JSON @done(19-06-14 09:56)
+    ✘ @low Decidere se lasciare PrenotaSalaRiunioni e/o CreaAppuntamento => Per prenotare una sala bisogna creare un appuntamento su Outlook ( QnA Aswer ) @cancelled(19-06-15 12:13)
+    ✘ @low Aggiungere DateTime format in più -> dd/mm/yyyy, mm/dd/yyyy, ma come riconoscerle ? @cancelled(19-06-15 12:13)
+    ✔ @low Se è presente un entità di tipo number or mese usiamo le regex per estrarre le eventuali date @done(19-06-15 12:13)
+    ☐ @High Implementare TUTTO SCENARIO SUPPORTO!!!!
+    ✔ @low implementare i partecipanti come email @done(19-06-14 13:26)
+    crea appuntamento 01 luglio 2019 r101
+    ✔ @ low implementare entità ora @done(19-06-14 14:14)
+    ☐ @low Implementare Template Method per il Parser delle entit
+    ☐ @low Sistematare menu e messaggi/risposta del bot.
+    

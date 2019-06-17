@@ -4,6 +4,12 @@ namespace Botler.Models
 
     public partial class Ticket
     {
+        public Ticket()
+        {
+            Priorita = 0;
+            Oggetto = "Richiesta Supporto";
+            Chiuso = false;
+        }
         public short ID { get; set; }
 
         public short Priorita { get; set; }

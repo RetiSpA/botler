@@ -1,41 +1,20 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Resources;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Threading;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Microsoft.Bot.Builder.AI.QnA;
 using System.Threading.Tasks;
-using Botler.Dialogs.Dialoghi;
 using Botler.Dialogs.RisorseApi;
 using Microsoft.Bot.Builder;
-using Microsoft.Bot.Connector;
-using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Botler.Dialogs.Utility;
-using Botler;
 using Newtonsoft.Json.Linq;
-using Botler.Controller;
-using Microsoft.Graph;
 using static Botler.Dialogs.Utility.BotConst;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Commands;
 using Botler.Commands;
-using Botler.Models;
 
-namespace Botler.Controller
+namespace Botler.Helpers
 {
-
     public static class AuthenticationHelper
     {
 
@@ -63,6 +42,7 @@ namespace Botler.Controller
                     },
                 },
             });
+
             return response;
         }
 

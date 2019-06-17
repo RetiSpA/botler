@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
-using Botler.Models;
 using Botler.Controller;
+using Botler.Helpers;
 using Botler.Helper.Attachment;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.ListsResponsesIT;

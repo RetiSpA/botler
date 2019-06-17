@@ -4,9 +4,10 @@ using Microsoft.Bot.Builder;
 
 using static Botler.Dialogs.Utility.Scenari;
 namespace Botler.Builders
-
-
 {
+    /// <summary>
+    /// Return a Scenario instance 
+    /// </summary>
     public class ScenarioFactory
     {
         public static IScenario FactoryMethod(BotlerAccessors accessors, ITurnContext turn, string scenario, Intent intent)

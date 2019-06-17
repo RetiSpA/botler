@@ -8,11 +8,12 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
 using Botler.Dialogs.Utility;
 using Microsoft.Extensions.Logging;
-using static Botler.Dialogs.Utility.Responses;
-using static Botler.Dialogs.Utility.ListsResponsesIT;
 using Botler.Helpers;
 using Botler.Models;
 using System.Text.RegularExpressions;
+using static Botler.Dialogs.Utility.Responses;
+using static Botler.Dialogs.Utility.ListsResponsesIT;
+using static Botler.Dialogs.Utility.LuisEntity;
 
 namespace Botler.Dialogs.Dialoghi
 {
@@ -23,11 +24,13 @@ namespace Botler.Dialogs.Dialoghi
 
         private Intent _intent;
 
-        public LetturaMailOutlook(Intent intent) : base(nameof(LetturaMailOutlook))
-        {
-            _intent = intent ?? throw new ArgumentNullException(nameof(intent));
-            _intent.EntitiesCollected = EntityFormatHelper.FiltrEntityByIntent(_intent.Name, _intent.EntitiesCollected);
+        private readonly BotlerAccessors _accessors;
 
+        public LetturaMailOutlook(BotlerAccessors accessors, Intent intent) : base(nameof(LetturaMailOutlook))
+        {
+            _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
+            _intent = intent ?? throw new ArgumentNullException(nameof(intent));
+            _intent.EntitiesCollected = EntityFormatHelper.EntityFilterByIntent(_intent.Name, _intent.EntitiesCollected);
             var waterfallSteps = new WaterfallStep[]
             {
                 ReadMailAsync,
@@ -38,32 +41,41 @@ namespace Botler.Dialogs.Dialoghi
 
         public DateTime Date { get; set; }
 
-        public int numbersMail { get; set; } = 10;
-
-        public bool MailUnread { get; set; } = false;
+        public bool Unread { get; set; } = false;
 
         public string DialogID { get; private set; } = nameof(LetturaMailDialog);
 
         private async Task<DialogTurnResult> ReadMailAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            // ("lettura mail ");
-            // // * LOGICA: in base alle entità che ho chiamo una funzione dalle GraphAPIHelper * //
-            // // TODO: Ultima verifca alle entità e creare entità nel formato necessario
-            // var token = await _accessors.GetUserToken(stepContext.Context);
-            // await GraphAPIHelper.GetMailsFromInboxAsync(stepContext.Context, _accessors, token.Token, dateTime, numbersMail, mailUnread);
-            var provaEntità = string.Empty;
+            ParseEntity();
 
-      // ** Lettura entità ** //
-            foreach(var e in _intent.EntitiesCollected)
+            var token = await _accessors.GetUserToken(stepContext.Context);
+            await GraphAPIHelper.SendMailsFromInboxAsync(stepContext.Context,  token.Token, Date, Unread);
+            // await stepContext.Context.SendActivityAsync("Leggo mail del " + Date.ToShortDateString());
+            return await stepContext.EndDialogAsync();
+        }
+
+        private void ParseEntity()
+        {
+              // ** Lettura entità ** //
+            foreach (var e in _intent.EntitiesCollected)
             {
-                if(!e.Type.Equals("$instance"))
+                if (e.Type.Equals(Datetime))
                 {
-                    provaEntità = e.Text;
-                    await stepContext.Context.SendActivityAsync("Lettura mail del giorno " + provaEntità).ConfigureAwait(true);
+                    Console.WriteLine(e.Text);
+                    Date = DateTime.Parse(e.Text);
+
+                    if (Date.CompareTo(DateTime.Today.AddDays(1)) >= 0)
+                    {
+                        Date = DateTime.Now;
+                    }
+                }
+
+                if (e.Type.Equals(MailUnread))
+                {
+                    Unread = true;
                 }
             }
-
-            return await stepContext.EndDialogAsync();
         }
 
     }
