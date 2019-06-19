@@ -36,12 +36,14 @@ namespace Botler.Dialogs.Utility
         public const string VisualizzaAppuntamentiCalendarIntent = "VisualizzaAppuntamentiCalendar";
         public const string CreaAppuntamentoCalendarIntent = "CreaAppuntamentoCalendar";
         public const string RichiestaSupportoIntent = "RichiestaSupporto";
+        public const string ConfermaAzioneIntent = "ConfermaAzione";
 
     }
     [Serializable]
     public static class LuisEntity
     {
         public const string Number = "number";
+        public const string Descrizione = "descrizione";
         public const string Datetime = "datetime";
         public const string DatetimeTextual = "datetime_textual";
         public const string DatetimeRegex = "datetime_regex";
@@ -79,10 +81,7 @@ namespace Botler.Dialogs.Utility
         public const string Progetto = "progetto";
         public const string NuovoProgetto = "nuovo progetto";
         public const string Infrastruttura = "infrastruttura";
-
-
-
-
+        public const string Priorita = "priorita";
     }
 
     [Serializable]
@@ -159,31 +158,19 @@ namespace Botler.Dialogs.Utility
     {
         public static HashSet<string> OutlookEntities = new HashSet<string>() { Datetime, MailUnread, DatetimeRegex, DatetimeBuiltin, SalaRiunioni, Appuntamento, SaleRiunioni, Time, TimeRegex, Email };
         public static HashSet<string> ParkingEntities = new HashSet<string>() { Auto };
-        public static HashSet<string> SupportEntities = new HashSet<string>() { PC, Computer, Badge, Tesserino, ListaAssistenza};
-
+        public static HashSet<string> SupportEntities = new HashSet<string>() { PC, Computer, Badge, Tesserino, ListaAssistenza, Descrizione, Priorita };
         public static HashSet<string> UtenzeSupportEntities = new HashSet<string>() { Utenza, PostaElettronica , AbilitaUtente, DisabilitaUtente };
-
         public static HashSet<string> DispositiviSupportEntities = new HashSet<string>() { PC, Computer, Dispositivo};
-
         public static HashSet<string> NetworkSupportEntities = new HashSet<string>() { Rete, Connessione, Wifi, Wi_Fi, LAN};
-
         public static HashSet<string> InfrastructureSupportEntities = new HashSet<string> () { Server, Infrastruttura};
-
         public static HashSet<string> ProjectSupportEntities = new HashSet<string> () { Progetto, NuovoProgetto };
-
         public static HashSet<string> BadgeAccessiEntities= new HashSet<string>() { Badge, "accessi" };
-
         public static HashSet<string> DomoticaEntities = new HashSet<string> () { "domotica", "luci" };
-
         public static HashSet<string> SiWebEntities = new HashSet<string>() { "siweb", "gestionale reti", "gestionale" };
-
         public static HashSet<string> RegiEntities = new HashSet<string>() { "regia" };
-
         public static Dictionary<HashSet<string>, int> SupportMapTipoTicketID = new Dictionary<HashSet<string>, int>() { [UtenzeSupportEntities] = 0, [DispositiviSupportEntities] = 1,
         [NetworkSupportEntities] = 2,  [InfrastructureSupportEntities] = 3, [ProjectSupportEntities] = 4 , [BadgeAccessiEntities] = 7, [DomoticaEntities] = 9 , [SiWebEntities] = 11, [RegiEntities] = 13};
-
         public static HashSet<string> SaleRiunioniSet = new HashSet<string>() { Multifunzionale, R101, R102 };
-
         public static HashSet<string> DatesEntitiesSet = new HashSet<string>() { Datetime, DatetimeBuiltin, DatetimeRegex, DatetimeRegexFormat, DatetimeTextual };
         public static Dictionary<string, int> MonthEntities = new Dictionary<string, int>() { ["gennaio"] = 01, ["febbraio"] = 02,["marzo"] = 03, ["aprile"] = 04, ["maggio"] = 05,
              ["giugno"] = 06, ["luglio"] = 07, ["agosto"] = 08, ["settembre"] = 09, ["ottobre"] = 10, ["novembre"] = 11,["dicembre"] = 12 };
@@ -218,7 +205,7 @@ namespace Botler.Dialogs.Utility
 
         public const string SupportoDescription = "SupportoDescription";
 
-        public static HashSet<string> ExecutionScenarios = new HashSet<string>() { Parking, Autenticazione, Outlook };
+        public static HashSet<string> ExecutionScenarios = new HashSet<string>() { Parking, Autenticazione, Outlook, Supporto };
 
         public static HashSet<string> DescriptionScenarios = new HashSet<string>() { OutlookDescription };
     }

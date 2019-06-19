@@ -23,8 +23,8 @@ namespace Botler.Dialogs.Scenari
 
         public async Task HandleScenarioStateAsync(ITurnContext turn, BotlerAccessors accessors, LuisServiceResult luisServiceResult)
         {
-            //await BotStateBuilder.BuildAndSaveBotStateContextContext(turn, accessors, luisServiceResult, ScenarioID, ScenarioIntent);
             await CreateResponseAsync(luisServiceResult);
         }
     }
+
 }

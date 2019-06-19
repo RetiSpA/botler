@@ -55,8 +55,6 @@ namespace Botler.Dialogs.Dialoghi
 
             await GraphAPIHelper.GetAppointmentOnCalendarAsync(stepContext.Context, _accessors, tokenResponse.Token, Date);
 
-            // await stepContext.Context.SendActivityAsync("Hai questi appuntamenti il giorno " + Date);
-
             return await stepContext.EndDialogAsync();
         }
 

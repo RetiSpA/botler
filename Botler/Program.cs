@@ -22,15 +22,15 @@ using Microsoft.Bot.Builder;
 using Botler.Middleware.Services;
 using Botler.Helpers;
 using Botler.Builders;
-
+using static Botler.Dialogs.Utility.LuisEntity;
 namespace Botler
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            //CreateWebHostBuilder(args).Build().Run();
-            Console.WriteLine(TicketSupportHelper.GetTipoTicket(PC));
+            CreateWebHostBuilder(args).Build().Run();
+            
 
         }
 

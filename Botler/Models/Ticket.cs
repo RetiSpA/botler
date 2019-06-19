@@ -2,14 +2,17 @@ namespace Botler.Models
 {
     using System;
 
-    public partial class Ticket
+    public class Ticket
     {
         public Ticket()
         {
             Priorita = 0;
             Oggetto = "Richiesta Supporto";
             Chiuso = false;
+            ID = 0;
+            Descrizione = string.Empty;
         }
+
         public short ID { get; set; }
 
         public short Priorita { get; set; }
@@ -24,6 +27,26 @@ namespace Botler.Models
 
         public bool Chiuso { get; set; }
 
-        public DateTime DataApertura { get; set; }
+        public override string ToString()
+        {
+            string prioritàString = string.Empty;
+
+            if (Priorita == 0)
+            {
+                prioritàString = "normale";
+            }
+            
+            if (Priorita == 1)
+            {
+                prioritàString = "alta";
+            }
+
+            if (Priorita == 2)
+            {
+                prioritàString = "urgente";
+            }
+            return "\nCreato Ticekt: " + "\n Priorità: " + prioritàString + "\n Descrizione : " + Descrizione + " Utente " + Email_Utente;
+        }
+
     }
 }

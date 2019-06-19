@@ -1,0 +1,107 @@
+Hosting environment: Development
+Content root path: C:\Users\moscagi1\Documents\GitHub\botler\Botler
+Now listening on: http://127.0.0.1:37977
+Application started. Press Ctrl+C to shut down.
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 DEBUG http://localhost:3978/  0
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 465
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 168.161ms 200 
+info: Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware[2]
+      Sending file. Request path: '/index.html'. Physical path: 'C:\Users\moscagi1\Documents\GitHub\botler\Botler\wwwroot\index.html'
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/WorldBackground.png  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/Innovazione.png  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 264.0113ms 200 text/html
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/bb8RetiResize.png  
+info: Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware[2]
+      Sending file. Request path: '/Innovazione.png'. Physical path: 'C:\Users\moscagi1\Documents\GitHub\botler\Botler\wwwroot\Innovazione.png'
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 90.9929ms 200 image/png
+info: Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware[2]
+      Sending file. Request path: '/bb8RetiResize.png'. Physical path: 'C:\Users\moscagi1\Documents\GitHub\botler\Botler\wwwroot\bb8RetiResize.png'
+info: Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware[2]
+      Sending file. Request path: '/WorldBackground.png'. Physical path: 'C:\Users\moscagi1\Documents\GitHub\botler\Botler\wwwroot\WorldBackground.png'
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 151.6328ms 200 image/png
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 139.5821ms 200 image/png
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 2a832460-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 600.7542ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 501
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 3528d1d1-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 GET http://localhost:3978/favicon.ico  
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 2.095ms 404 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 465
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 389a78f1-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 6.1458ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 501
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 389c74c0-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 465
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 3f3b8e10-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 4.8101ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 501
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 3f3d3bc0-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 465
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 3f600601-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 5.4131ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 501
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 3f618ca0-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Sending activity.  ReplyToId: 3f618ca0-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Sending activity.  ReplyToId: 3528d1d1-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Sending activity.  ReplyToId: 389c74c0-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Sending activity.  ReplyToId: 3f3d3bc0-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 28026.3528ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 22285.9478ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 10936.0928ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 11287.4136ms 200 
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[1]
+      Request starting HTTP/1.1 POST http://localhost:3978/api/messages application/json 669
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Received an incoming activity.  ActivityId: 4fd12910-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Sending activity.  ReplyToId: 4fd12910-91b0-11e9-b77b-b37b2b42ee18
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Sending activity.  ReplyToId: 4fd12910-91b0-11e9-b77b-b37b2b42ee18
+Eccomi supporto scenario
+Forbidden
+info: Microsoft.Bot.Builder.Integration.IAdapterIntegration[0]
+      Sending activity.  ReplyToId: 4fd12910-91b0-11e9-b77b-b37b2b42ee18
+WRITE STATE -> {"scenarioID":"Supporto","TopIntent":{"Name":"RichiestaSupporto","Score":0.879542947,"NeedEntities":true,"EntityLimit":6,"EntityLowerBound":1,"DialogID":"CreaTicket","EntitiesCollected":[{"Type":"lista_entita_assistenza","Text":"pc","StartIndex":7,"EndIndex":9}],"EntityNeedResponse":"Per aprire un ticket correttamente mi serve sapere almeno su cosa hai bisogno di assistenza.\n - PC, Badge, Accessi, Domotica...\n Insieme ad una descrizione, priorit? (opzionali) :)"},"Conversation_ID":"b7584ad0-95d6-4b8e-9257-3c44bc07fbb4","Turn":1,"UserQuery":"ho il  pc rotto richiesta assistenza","User":null}
+info: Microsoft.AspNetCore.Hosting.Internal.WebHost[2]
+      Request finished in 3260.1407ms 200 

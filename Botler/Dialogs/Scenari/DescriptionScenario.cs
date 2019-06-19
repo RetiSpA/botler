@@ -18,8 +18,6 @@ namespace Botler.Dialogs.Scenari
 
         public bool EntityLowerBoundReach(LuisServiceResult luisServiceResult)
         {
-            // ! Possibile errore di logica
-            // TODO: Sistemare logica
             if(ScenarioIntent is null)
             {
                 ScenarioIntent = luisServiceResult.TopIntent;
@@ -39,7 +37,6 @@ namespace Botler.Dialogs.Scenari
             {
                 SaveEntities(luisServiceResult);
             }
-            // TODO: Questo controllo devee essere fatto dal botstate context
 
             if (EntityLowerBoundReach(luisServiceResult))
             {

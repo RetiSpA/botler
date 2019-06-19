@@ -48,8 +48,7 @@ namespace Botler.Controller
                 }
                 else
                 {
-                    // TODO: Questi li deve fare qualche altro (oggetto)
-                    await turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
+                    // await turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
                     topIntentScenario = ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
                 }
 
@@ -105,7 +104,7 @@ namespace Botler.Controller
 
             return (ParkingIntents.Contains(topIntent) && (score >= 0.75));
         }
-    
+
         private static bool isAOutlookIntent(LuisServiceResult luisServiceResult)
         {
             var topIntent = luisServiceResult.TopScoringIntent.Item1; // intent

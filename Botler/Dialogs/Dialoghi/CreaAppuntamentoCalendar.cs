@@ -46,6 +46,7 @@ namespace Botler.Dialogs.Dialoghi
         }
 
         public AppuntamentoCalendar Appuntamento { get; set; }
+
         /// <summary>
         /// Check if all entity for create an appointment have been collected
         /// If all have been collected -> create a response and create an Outlook appoinment
@@ -59,6 +60,7 @@ namespace Botler.Dialogs.Dialoghi
             EntityParse();
             var context = stepContext.Context;
             var token = await _accessors.GetUserToken(context);
+
             if (Appuntamento.Date == DateTime.MinValue)
             {
                 await context.SendActivityAsync("Manca una data, inserisci una data valida per creare un appuntamento");
@@ -78,14 +80,19 @@ namespace Botler.Dialogs.Dialoghi
             return await stepContext.EndDialogAsync();
         }
 
-        // TODO:
+        
         private void EntityParse()
         {
             foreach (var e in _intent.EntitiesCollected)
             {
                 if (e.Type.Equals(Datetime))
                 {
-                    Appuntamento.Date = DateTime.Parse(e.Text);
+                    var date  = DateTime.Parse(e.Text);
+
+                    if (Appuntamento.Date.Date >= DateTime.Now.Date)
+                    {
+                         Appuntamento.Date = date;
+                    }
                 }
 
                 if (SaleRiunioniSet.Contains(e.Text))
@@ -100,26 +107,41 @@ namespace Botler.Dialogs.Dialoghi
 
                 if (e.Type.Equals(Time))
                 {
+                    var inizio = TimeSpan.MinValue;
+                    var fine = TimeSpan.MinValue;
                     if (Appuntamento.Inizio == TimeSpan.MinValue)
                     {
-                        Appuntamento.Inizio = TimeSpan.Parse(e.Text);
+                        inizio = TimeSpan.Parse(e.Text);
                     }
                     else if (Appuntamento.Fine == TimeSpan.MinValue)
                     {
-                        Appuntamento.Fine = TimeSpan.Parse(e.Text);
+                        fine  = TimeSpan.Parse(e.Text);
+
+                        if (Appuntamento.Inizio < Appuntamento.Fine)
+                        {
+                            Appuntamento.Inizio = inizio;
+                            Appuntamento.Fine = fine;
+                        }
                     }
+
                 }
 
                 if (e.Type.Equals(TimeRegex))
                 {
                     Regex regex = new Regex(RegexTimeFound_1);
-                    var inizio = regex.Split(e.Text)[2];
-                    var fine = regex.Split(e.Text)[5];
+                    var inizioRegex = regex.Split(e.Text)[2];
+                    var fineRegex = regex.Split(e.Text)[5];
 
-                    Appuntamento.Inizio = TimeSpan.Parse(inizio);
-                    Appuntamento.Fine = TimeSpan.Parse(fine);
+                    var inizio = TimeSpan.Parse(inizioRegex);
+                    var fine = TimeSpan.Parse(fineRegex);
+
+                    if (Appuntamento.Inizio < Appuntamento.Fine)
+                    {
+                        Appuntamento.Inizio = inizio;
+                        Appuntamento.Fine = fine;
+                    }
                 }
-  
+
             }
         }
 

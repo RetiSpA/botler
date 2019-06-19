@@ -1,9 +1,15 @@
 using static Botler.Dialogs.Utility.EntitySets;
+
 namespace Botler.Helpers
 {
-    public class TicketSupportHelper
+    public static class TicketSupportHelper
     {
-        public static int  GetTipoTicket(string entityText)
+        /// <summary>
+        /// Find the TipoTicket_ID in the Dictionary<HashSet<string>, int> SupportMapTipoTicketID.
+        /// </summary>
+        /// <param name="entityText"> Entity text coming from LUIS</param>
+        /// <returns> TipoTicket_ID mapped to the entity</returns>
+        public static int GetTipoTicket(string entityText)
         {
             var ID = -1;
 

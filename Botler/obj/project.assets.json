@@ -16688,11 +16688,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\moscagi1\\Documents\\GitHub\\botler\\Botler\\Botler.csproj",
+      "projectUniqueName": "C:\\Users\\moscagi1\\Documents\\GitHub\\botler\\Botler\\Botler.csproj",
       "projectName": "Botler",
-      "projectPath": "c:\\Users\\moscagi1\\Documents\\GitHub\\botler\\Botler\\Botler.csproj",
+      "projectPath": "C:\\Users\\moscagi1\\Documents\\GitHub\\botler\\Botler\\Botler.csproj",
       "packagesPath": "C:\\Users\\moscagi1\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\moscagi1\\Documents\\GitHub\\botler\\Botler\\obj\\",
+      "outputPath": "C:\\Users\\moscagi1\\Documents\\GitHub\\botler\\Botler\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

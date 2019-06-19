@@ -66,7 +66,7 @@ namespace Botler.Dialogs.Scenari
            var dialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
            return dialogContext;
         }
-        // TODO: Pericolo loop infinito, correggere
+
         public async Task HandleScenarioStateAsync(ITurnContext turn, BotlerAccessors accessors, LuisServiceResult luisServiceResult)
         {
             await CreateResponseAsync(luisServiceResult);

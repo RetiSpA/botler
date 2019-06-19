@@ -27,18 +27,46 @@ namespace Botler.Dialogs.Scenari
 
             _scenarioDialogs = new DialogSet(accessors.DialogStateAccessor);
         }
+
         public override Intent ScenarioIntent { get; set; }
 
         public override bool NeedAuthentication { get; set; } = true;
 
-        public override string ScenarioID { get; set; }
+        public override string ScenarioID { get; set; } = Supporto;
 
-        public override string AssociatedScenario { get; set; }
+        public override string AssociatedScenario { get; set; } = SupportoDescription;
 
-
-        public override Task CreateResponseAsync(LuisServiceResult luisServiceResult)
+        public override async Task CreateResponseAsync(LuisServiceResult luisServiceResult)
         {
-            throw new System.NotImplementedException();
+             _scenarioDialogs.Add(new CreaTicket(ScenarioIntent, _accessors));
+            DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
+            var dialogResult = await currentDialogContext.ContinueDialogAsync();
+
+            switch (dialogResult.Status)
+                {
+                    case DialogTurnStatus.Empty:
+                    {
+                        await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);
+                        break;
+                    }
+
+                    case DialogTurnStatus.Waiting:
+                        break;
+
+                    case DialogTurnStatus.Complete:
+                    {
+                        await currentDialogContext.EndDialogAsync();
+                        break;
+                    }
+
+                    default:
+                    {
+                        await currentDialogContext.CancelAllDialogsAsync();
+                        break;
+                    }
+                }
+            // await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);
+
         }
     }
 }

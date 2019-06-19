@@ -15,7 +15,7 @@ namespace Botler.Builders.IntentBuilders
             intent.NeedEntities = true;
             intent.EntityLimit = 6;
             intent.EntityLowerBound = 1;
-            intent.DialogID = "CreaTicket";
+            intent.DialogID = nameof(CreaTicket);
             intent.EntityNeedResponse = SupportoEntityNeedsToCollect;
 
             return intent;

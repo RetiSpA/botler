@@ -249,7 +249,7 @@ namespace Botler.Helpers
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private static GraphServiceClient GetGraphClient(string token)
+        public static GraphServiceClient GetGraphClient(string token)
         {
             return new GraphServiceClient(
                 new DelegateAuthenticationProvider(

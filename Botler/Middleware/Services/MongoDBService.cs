@@ -8,6 +8,7 @@ using MongoDB.Driver.Linq;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using static Botler.Dialogs.Utility.BotConst;
+using System.Configuration;
 
 namespace Botler.Middleware.Services
 {
@@ -19,7 +20,7 @@ namespace Botler.Middleware.Services
 
         public MongoDBService()
         {
-            // string connectionString = ConfigurationManager.ConnectionStrings["MongoDBConnection"].ConnectionString;
+            // string connectionString = ConfigurationManager.ConnectionStrings["MongoDB"].ConnectionString;
             string connectionString
              = "mongodb://context-botler-db:m5cSuH779tHFemm1ylCdFrBU5Zp2EVxMp7KUXFlR8sjuIQTTmRo4JV47opACvbcsNK2goWzRkpz8HfIjMLCJQw==@context-botler-db.documents.azure.com:10255/?ssl=true&replicaSet=globaldb";
             MongoClientSettings settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));

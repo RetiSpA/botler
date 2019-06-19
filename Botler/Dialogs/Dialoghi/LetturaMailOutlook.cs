@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Botler.Dialogs.RisorseApi;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Builder.Dialogs.Choices;
-using Botler.Dialogs.Utility;
-using Microsoft.Extensions.Logging;
 using Botler.Helpers;
 using Botler.Models;
 using System.Text.RegularExpressions;
@@ -22,7 +16,7 @@ namespace Botler.Dialogs.Dialoghi
         // Dialogs IDs
         private const string LetturaMailDialog = "letturaMailDialog";
 
-        private Intent _intent;
+        private readonly Intent _intent;
 
         private readonly BotlerAccessors _accessors;
 

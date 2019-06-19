@@ -6,7 +6,9 @@ using Botler.Dialogs.Scenari;
 using Botler.Models;
 using Botler.Middleware.Services;
 using Microsoft.Bot.Builder;
+using static Botler.Dialogs.Utility.LuisEntity;
 using static Botler.Dialogs.Utility.Scenari;
+using static Botler.Dialogs.Utility.LuisIntent;
 using Botler.Helpers;
 using Newtonsoft.Json;
 
@@ -21,8 +23,6 @@ namespace Botler.Controllers
     // 4) Nessun contesto trovato, ritorna lo scenario passato dal chiamante.
     /// </summary>
 
-    // ! Di qui passerà sempre e solo uno scenario di tipo DEFAULT, perchè gli altri verranno riconosciuto prima. Ma si possono avere intent con basso score.
-
     public static class BotStateContextController
     {
 
@@ -36,7 +36,15 @@ namespace Botler.Controllers
         /// <returns>A context-based scenario</returns>
         public async static Task<IScenario> CheckBotState(IScenario scenario, BotlerAccessors accessors, ITurnContext turn, LuisServiceResult luisServiceResult)
         {
-            var lastUsefulScenario = await FindLastUsefulContextAsync(accessors, turn, scenario);
+            var lastBotContext = await FindLastUsefulContextAsync(accessors, turn, scenario);
+            IScenario lastUsefulScenario = null;
+
+            if (lastBotContext != null)
+            {
+                lastUsefulScenario = ScenarioFactory.FactoryMethod(accessors, turn, lastBotContext.scenarioID, lastBotContext.TopIntent);
+            }
+
+            var userQuery = turn.Activity.Text;
 
             // * (4) * // No context found
             if (lastUsefulScenario is null)
@@ -53,7 +61,7 @@ namespace Botler.Controllers
             // * (2) * // Asking the user for more info.
             if (ExecutionScenarios.Contains(lastUsefulScenario.ScenarioID))
             {
-                scenario = CheckLastExecutionScenario(scenario, (ExecutionScenario) lastUsefulScenario, accessors, turn,
+                scenario = CheckLastExecutionScenario(scenario, (ExecutionScenario) lastUsefulScenario, userQuery, lastBotContext.UserQuery,
                     luisServiceResult);
             }
 
@@ -65,6 +73,7 @@ namespace Botler.Controllers
 
             return scenario;
         }
+
         /// <summary>
         /// Check the last execution scenario found
         /// </summary>
@@ -74,14 +83,32 @@ namespace Botler.Controllers
         /// <param name="turn"></param>
         /// <param name="luisServiceResult"></param>
         /// <returns></returns>
-        public static IScenario CheckLastExecutionScenario(IScenario scenario, ExecutionScenario lastExecutionScenario, BotlerAccessors accessors, ITurnContext turn, LuisServiceResult luisServiceResult)
+        public static IScenario CheckLastExecutionScenario(IScenario scenario, ExecutionScenario lastExecutionScenario, string userQuery, string lastUserQuery, LuisServiceResult luisServiceResult)
         {
+            // L'utente ha aggiunto una descrizione per il ticket
+            if (lastExecutionScenario.ScenarioID.Equals(Supporto))
+            {
+                Entity entity = new Entity();
+                entity.Type = Descrizione;
+
+                if (luisServiceResult.TopIntent.Name != ConfermaAzioneIntent)
+                {
+                    entity.Text = userQuery;
+                }
+                else if (luisServiceResult.TopIntent.Name.Equals(ConfermaAzioneIntent))
+                {
+                    entity.Text = lastUserQuery;
+                }
+                scenario.ScenarioIntent.EntitiesCollected.Add(entity);
+            }
+
             if (scenario.ScenarioIntent.EntitiesCollected.Count == 0)
             {
                 return scenario;
             }
+
             // Entità raccolte nell'attuale turno
-            foreach(var ent in scenario.ScenarioIntent.EntitiesCollected)
+            foreach (var ent in scenario.ScenarioIntent.EntitiesCollected)
             {
                 lastExecutionScenario.ScenarioIntent.EntitiesCollected.Add(ent);
             }
@@ -114,6 +141,7 @@ namespace Botler.Controllers
 
                 return lastDescriptionScenario;
             }
+
             return scenario;
         }
 
@@ -141,7 +169,7 @@ namespace Botler.Controllers
         /// <param name="scenario"></param>
         /// <returns></returns>
         // TODO: Pensare anche di trovare scenari inerenti con il corrente intento.
-        public static async Task<IScenario> FindLastUsefulContextAsync(BotlerAccessors accessors, ITurnContext turn, IScenario scenario)
+        public static async Task<BotStateContext> FindLastUsefulContextAsync(BotlerAccessors accessors, ITurnContext turn, IScenario scenario)
         {
             string scenarioID = scenario.ScenarioID;
             string convID = turn.Activity.From.Id;
@@ -154,8 +182,7 @@ namespace Botler.Controllers
                 {
                     var json = (JsonConvert.SerializeObject(bs));
                     Console.WriteLine("READ STATE -> " + json);
-
-                    return ScenarioFactory.FactoryMethod(accessors, turn, bs.scenarioID, bs.TopIntent);
+                    return bs;
                 }
             }
 

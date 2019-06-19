@@ -117,7 +117,7 @@ namespace Botler.Helpers
                     set.Add(ent);
                 }
 
-                if (SupportIntents.Contains(intentName) && SupportEntities.Contains(ent.Text) && SupportEntities.Contains(ent.Type))
+                if (SupportIntents.Contains(intentName) && (SupportEntities.Contains(ent.Text) || SupportEntities.Contains(ent.Type)))
                 {
                     set.Add(ent);
                 }

@@ -12,8 +12,7 @@ using Botler.Builders;
 using Botler.Helpers;
 using Botler.Middleware.Services;
 using static Botler.Dialogs.Utility.Commands;
-
-
+using Botler.Controllers;
 
 /// <summary>
 /// This class takes the responsability
@@ -98,21 +97,19 @@ namespace Botler.Controller
         {
             if (currentActivity.MembersAdded.Any())
             {
+                foreach (var member in currentActivity.MembersAdded)
                 {
-                    foreach (var member in currentActivity.MembersAdded)
+                    if (member.Id != currentActivity.Recipient.Id)
                     {
-                        if (member.Id != currentActivity.Recipient.Id)
-                        {
-                            // Create the first BostStateContext inhert to the first turn (i = 0)
-                            currentBotState = await BotStateBuilder.BuildFirstTurnBotStateContext(_accessors, currentTurn);
-                            // And then insert the JSON Document into the Azure MongoDB
-                            await mongoDB.InsertJSONContextDocAsync(currentBotState);
+                        // Create the first BostStateContext inhert to the first turn (i = 0)
+                        currentBotState = await BotStateBuilder.BuildFirstTurnBotStateContext(_accessors, currentTurn);
+                        // And then insert the JSON Document into the Azure MongoDB
+                        await mongoDB.InsertJSONContextDocAsync(currentBotState);
 
-                            ICommand welcomeCommand = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandWelcome);
-                            await welcomeCommand.ExecuteCommandAsync();
-                        }
+                        ICommand welcomeCommand = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandWelcome);
+                        await welcomeCommand.ExecuteCommandAsync();
                     }
-                }
+                    }
             }
         }
 
@@ -126,8 +123,6 @@ namespace Botler.Controller
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        /// ? Quando scrivere nel mongoDB con lo stato del bot ?
-        /// ! > Quando si passano i primi 3 controlli { Interruzioni, Comandi, QnA } && Esiste almeno un Entità < !
         private async Task StartMessageActivityAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             // We want to get always a LUIS result first.
@@ -157,22 +152,20 @@ namespace Botler.Controller
             }
 
              // Continue or start a new dialog of a scenario or a context based dialog
-            await CreateScenarioResponseWithLuisAsync(luisServiceResult); // * Leggerà l'ultima instanza di BotStateContext dagli Accessors * //
+            await CreateScenarioResponseWithLuisAsync(luisServiceResult);
         }
 
         /// <summary>
         /// Create a response for the current turn  checking the LuisResult
         /// and bot context
         /// </summary>
-        /// <param name="luisServiceResult"> LuisResult and all the entities found</param>
+        /// <param name="luisServiceResult"> LuisResult and all the entities found </param>
         /// <returns></returns>
         private async Task CreateScenarioResponseWithLuisAsync(LuisServiceResult luisServiceResult)
         {
             IScenario currentScenario = await ScenarioRecognizer.ExtractCurrentScenarioAsync(luisServiceResult, _accessors, currentTurn);
 
-            // ? (currentScenario.ScenarioID + " type of scenario => " + currentScenario.GetType()); ? //
             // * Gestisce lo scenario in base al suo contesto  * //
-
             await currentScenario.HandleScenarioStateAsync(currentTurn, _accessors, luisServiceResult);
 
             // * Salva lo stato di questo turno nel cosmbosDB * //

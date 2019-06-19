@@ -29,7 +29,6 @@ using Botler.Builders;
 
 namespace Botler
 {
-    // TODO: Inserire ultimo BotStateContext utile per accedervi facilmente.
     public class BotlerAccessors
     {
         public BotlerAccessors(UserState userState, ConversationState conversationState)
@@ -49,6 +48,7 @@ namespace Botler
             LastBotStateContextConversation = ConversationState.CreateProperty<Dictionary<string, BotStateContext>>(nameof(BotStateContext));
             TurnCounterConversationAccessors = ConversationState.CreateProperty<Dictionary<string, int>>("TurnCounter");
             LastUserScenarioAccessors = conversationState.CreateProperty<Dictionary<string, IScenario>> ("LastUserScenario");
+            TicketAccessors = conversationState.CreateProperty<Ticket>(nameof(Ticket));
             MongoDB = new MongoDBService();
         }
 
@@ -57,8 +57,9 @@ namespace Botler
         public MongoDBService MongoDB { get; set; }
 
         public ConversationState ConversationState { get; set; }
-        // TODO: MODIFIARE
         public IScenario ActiveScenario { get; set; }
+
+        public IStatePropertyAccessor<Ticket> TicketAccessors { get; set; }
 
         public IStatePropertyAccessor<PrenotazioneModel> PrenotazioneStateAccessor { get; set; }
 
@@ -67,14 +68,14 @@ namespace Botler
         public IStatePropertyAccessor<PrenotazioneModel> VisualizzaTempoStateAccessor { get; set; }
 
         public IStatePropertyAccessor<PrenotazioneModel> VisualizzaPrenotazioneStateAccessor { get; set; }
-        // TODO: MODIFIARE ??
+  
         public IStatePropertyAccessor<DialogState> DialogStateAccessor { get; set; }
-        // TODO: MODIFIARE
+
         public IStatePropertyAccessor<string> ScenarioStateAccessors { get; set; }
         public IStatePropertyAccessor<Dictionary<string, TokenResponse>> AutenticazioneDipedenteAccessors { get; set; }
 
         public IStatePropertyAccessor<List<UserModel>> UserModelAccessors { get; set; }
-        // TODO: MODIFIARE
+
         public IStatePropertyAccessor<string> QnaActiveAccessors { get; set; }
 
         public IStatePropertyAccessor<Dictionary<string,BotStateContext>> LastBotStateContextConversation { get; set; }

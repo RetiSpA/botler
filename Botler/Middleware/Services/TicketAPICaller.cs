@@ -14,47 +14,6 @@ namespace Botler.Controllers
 {
     public class TicketAPICaller
     {
-        public static async Task<Utente> UtenteGetAPIAsync(Utente utente)
-        {
-            HttpClient clientUtente = new HttpClient();
-
-            var contentUtente = new StringContent(JsonConvert.SerializeObject(utente), Encoding.UTF8, "application/json");
-            var uriPutUtente = new Uri(InsertUtenteURI+utente.Email);
-
-            var responseGetUtente = await clientUtente.GetAsync(uriPutUtente);
-
-            if (responseGetUtente.IsSuccessStatusCode) // Se esiste l'utente con questa mail lo restituisce
-            {
-                return utente;
-            }
-
-            else // Lo crea prima e ritorna 'utente'
-            {
-               return  await UtentePostAPIAsync(utente);
-            }
-
-        }
-
-        private static async Task<Utente> UtentePostAPIAsync(Utente utente)
-        {
-            HttpClient clientUtente = new HttpClient();
-
-            var uriPostUtente = new Uri(InsertUtenteURI);
-            var contentUtente= new StringContent(JsonConvert.SerializeObject(utente), Encoding.UTF8, "application/json");
-
-            var responsePostTicket = await clientUtente.PostAsync(uriPostUtente, contentUtente);
-
-            if (responsePostTicket.IsSuccessStatusCode)
-            {
-                return utente;
-            }
-
-            else
-            {
-                return null;
-            }
-
-        }
 
         public static async Task<bool> TicketPostAPIAsync(Ticket ticket)
         {
@@ -62,6 +21,8 @@ namespace Botler.Controllers
 
             var uriPostTicket = new Uri(InsertTicketURI);
             var contentTicket = new StringContent(JsonConvert.SerializeObject(ticket), Encoding.UTF8, "application/json");
+            var ticketC = await contentTicket.ReadAsStringAsync();
+            Console.WriteLine(ticketC);
 
             var responsePostTicket = await clientTicket.PostAsync(uriPostTicket, contentTicket);
 
@@ -72,6 +33,7 @@ namespace Botler.Controllers
 
             else
             {
+                Console.WriteLine(responsePostTicket.StatusCode + " " + responsePostTicket.ReasonPhrase + " " + responsePostTicket.Content.Headers);
                 return false;
             }
         }
