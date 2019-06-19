@@ -165,7 +165,7 @@ namespace Botler.Controllers
         /// Search for past scenario in this conversation
         /// </summary>
         /// <param name="accessors"></param>
-        /// <param name="turn"></param>
+        /// /// <param name="turn"></param>
         /// <param name="scenario"></param>
         /// <returns></returns>
         // TODO: Pensare anche di trovare scenari inerenti con il corrente intento.
