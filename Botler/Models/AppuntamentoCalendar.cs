@@ -15,6 +15,8 @@ namespace Botler.Models
 
         }
 
+        public bool IsAllDay { get; set; }
+
         public DateTime Date { get; set; }
 
         public TimeSpan Inizio { get; set; }

@@ -79,7 +79,9 @@ namespace Botler.Dialogs.Dialoghi
         {
             ticket = await _accessors.TicketAccessors.GetAsync(stepContext.Context, () => new Ticket());
             ticket.Descrizione = stepContext.Context.Activity.Text;
+
             await _accessors.TicketAccessors.SetAsync(stepContext.Context, ticket);
+            await _accessors.SaveStateAsync(stepContext.Context);
 
             var result = await TicketAPICaller.TicketPostAPIAsync(ticket);
             if (result)
@@ -148,6 +150,7 @@ namespace Botler.Dialogs.Dialoghi
             ticket.Email_Utente = me.Mail;
 
             await _accessors.TicketAccessors.SetAsync(stepContext.Context, ticket);
+            await _accessors.SaveStateAsync(stepContext.Context);
 
             if ( _intent.EntitiesCollected.Count < 2)
             {

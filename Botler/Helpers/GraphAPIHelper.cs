@@ -144,6 +144,7 @@ namespace Botler.Helpers
             e.End = end;
             e.Organizer = organizer;
             e.BodyPreview = appuntamento.Descrizione;
+            e.IsAllDay = appuntamento.IsAllDay;
 
             await client.Me.Events
                     .Request()

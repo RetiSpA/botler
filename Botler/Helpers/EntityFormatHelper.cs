@@ -57,7 +57,6 @@ namespace Botler.Helpers
             Regex simpleEntity = new Regex(RegexDeserilizeEntityValue);
             // Valide entity found
             if (simpleEntity.Split(entityValue).Length > 1)
-
             {
                 Entity entity = EntityBuilder.BuildEntityFromLUISResult(entityValue);
 

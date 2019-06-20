@@ -63,8 +63,7 @@ namespace Botler.Dialogs.Dialoghi
 
             if (Appuntamento.Date == DateTime.MinValue)
             {
-                await context.SendActivityAsync("Manca una data, inserisci una data valida per creare un appuntamento");
-                return await stepContext.EndDialogAsync();
+                Appuntamento.IsAllDay = true;
             }
 
             if (Appuntamento.Location == string.Empty)
@@ -74,13 +73,12 @@ namespace Botler.Dialogs.Dialoghi
             }
 
             await context.SendActivityAsync("Creato appuntamento: " + "\n Il giorno " + Appuntamento.Date.ToShortDateString() + " Orario : "
-             + Appuntamento.Inizio.ToString() + " - " + Appuntamento.Fine.ToString() + " \nLocation: " + Appuntamento.Location);
+             + Appuntamento.Inizio.ToString() + " - " + Appuntamento.Fine.ToString() + " \nLocation: " + Appuntamento.Location + "Tutto il giorno " + Appuntamento.IsAllDay);
 
             await GraphAPIHelper.CreateAppointmentAsync(context, token.Token, Appuntamento);
             return await stepContext.EndDialogAsync();
         }
 
-        
         private void EntityParse()
         {
             foreach (var e in _intent.EntitiesCollected)

@@ -68,8 +68,7 @@ namespace Botler.Builders
             }
 
             await accessors.MongoDB.InsertJSONContextDocAsync(state);
-            var json = JsonConvert.SerializeObject(state);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-            Console.WriteLine("WRITE STATE -> " + json);
+            var json = JsonConvert.SerializeObject(state); 
             return state;
         }
     }

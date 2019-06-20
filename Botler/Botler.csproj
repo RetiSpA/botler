@@ -6,47 +6,50 @@
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="wwwroot\default.htm"/>
+    <Content Remove="wwwroot\default.htm" />
   </ItemGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4"/>
-    <None Include="wwwroot\index.html"/>
-    <None Include="wwwroot\startPageStyle.css"/>
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.6.1"/>
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7"/>
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.3"/>
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.3"/>
-    <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0"/>
-    <PackageReference Include="Microsoft.Azure.CognitiveServices.Language" Version="1.0.1-preview"/>
-    <PackageReference Include="Microsoft.Bot.Builder" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Builder.AI.QnA" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Builder.Azure" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Connector" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Bot.Schema" Version="4.3.2"/>
-    <PackageReference Include="Microsoft.Graph" Version="1.14.0"/>
-    <PackageReference Include="MongoDB.Driver" Version="2.8.1"/>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+    <None Include="wwwroot\index.html" />
+    <None Include="wwwroot\startPageStyle.css" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.6.1" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.3" />
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.ContentModerator" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Azure.CognitiveServices.Language" Version="1.0.1-preview" />
+    <PackageReference Include="Microsoft.Bot.Builder" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.AI.Luis" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.AI.QnA" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Azure" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Dialogs" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Builder.Integration.AspNet.Core" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Configuration" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Connector" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Bot.Schema" Version="4.3.2" />
+    <PackageReference Include="Microsoft.Graph" Version="1.14.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Net.Http" Version="4.3.4"/>
-    <PackageReference Include="Unitest" Version="0.0.3"/>
-    <PackageReference Include="EntityFramework" Version="6.2.0"/>
-    <PackageReference Include="Vse.Web.Serialization.ControlledSerializationJsonConverter" Version="1.0.4"/>
-    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.8.1"/>
-    <PackageReference Include="Microsoft.SharePoint.Client" Version="14.0.4762.1000"/>
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Unitest" Version="0.0.3" />
+    <PackageReference Include="EntityFramework" Version="6.2.0" />
+    <PackageReference Include="Vse.Web.Serialization.ControlledSerializationJsonConverter" Version="1.0.4" />
+    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.8.1" />
+    <PackageReference Include="Microsoft.SharePoint.Client" Version="14.0.4762.1000" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services"/>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
   <ItemGroup>
     <None Update="BotConfiguration.bot">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="out\" />
   </ItemGroup>
 </Project>

@@ -49,6 +49,7 @@ namespace Botler
             TurnCounterConversationAccessors = ConversationState.CreateProperty<Dictionary<string, int>>("TurnCounter");
             LastUserScenarioAccessors = conversationState.CreateProperty<Dictionary<string, IScenario>> ("LastUserScenario");
             TicketAccessors = conversationState.CreateProperty<Ticket>(nameof(Ticket));
+            AppuntamentoAccessors = conversationState.CreateProperty<AppuntamentoCalendar>(nameof(AppuntamentoCalendar));
             MongoDB = new MongoDBService();
         }
 
@@ -68,10 +69,12 @@ namespace Botler
         public IStatePropertyAccessor<PrenotazioneModel> VisualizzaTempoStateAccessor { get; set; }
 
         public IStatePropertyAccessor<PrenotazioneModel> VisualizzaPrenotazioneStateAccessor { get; set; }
-  
+
         public IStatePropertyAccessor<DialogState> DialogStateAccessor { get; set; }
 
         public IStatePropertyAccessor<string> ScenarioStateAccessors { get; set; }
+
+        public IStatePropertyAccessor<AppuntamentoCalendar> AppuntamentoAccessors { get; set; }
         public IStatePropertyAccessor<Dictionary<string, TokenResponse>> AutenticazioneDipedenteAccessors { get; set; }
 
         public IStatePropertyAccessor<List<UserModel>> UserModelAccessors { get; set; }
@@ -234,5 +237,6 @@ namespace Botler
             await SaveStateAsync(turn);
             return scenario;
         }
+
     }
 }
