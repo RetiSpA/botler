@@ -22,7 +22,7 @@ namespace Botler.Controller
                     new CardAction(ActionTypes.PostBack, "Parcheggio Aziendale", value: Parking),
                     new CardAction(ActionTypes.PostBack, "QnA e F.A.Q Aziendale", value: QnA),
                     new CardAction(ActionTypes.PostBack, "Outlook - Mail e Calendar - ", value: Outlook),
-                    new CardAction(ActionTypes.PostBack, "Ticket Supporto", Supporto),
+                    new CardAction(ActionTypes.PostBack, "Ticket Supporto", value: Supporto),
                    // new CardAction(ActionTypes.PostBack ,"News di Reti S.p.A", value: "News"),
                 },
 

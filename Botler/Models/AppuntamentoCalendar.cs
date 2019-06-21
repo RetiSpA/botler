@@ -9,10 +9,9 @@ namespace Botler.Models
         {
             Location = "Sede di Reti S.p.A ";
             Partecipanti = new List<string>();
-            Inizio = DateTime.Now.TimeOfDay;
-            Fine = DateTime.Now.AddHours(2).TimeOfDay;
             Descrizione = "Appuntamento Calendar";
-
+            Titolo = string.Empty;
+            IsAllDay = true;
         }
 
         public bool IsAllDay { get; set; }

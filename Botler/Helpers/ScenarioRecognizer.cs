@@ -48,7 +48,6 @@ namespace Botler.Controller
                 }
                 else
                 {
-                    // await turn.SendActivityAsync(RandomResponses(AutenticazioneNecessariaResponse));
                     topIntentScenario = ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
                 }
             }

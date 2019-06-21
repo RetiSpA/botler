@@ -13,6 +13,7 @@ namespace Botler.Controller
         {
           var entities = luisServiceResult.LuisResult.Entities;
           var listent = luisServiceResult.LuisResult.Entities;
+
           IList<ICommand> listCommands = new List<ICommand>();
           ICommand command = null;
           string commandExecuted = string.Empty;

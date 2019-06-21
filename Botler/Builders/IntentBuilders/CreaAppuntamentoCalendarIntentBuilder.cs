@@ -11,7 +11,7 @@ namespace Botler.Builders.IntentBuilders
             Intent intent = new GenericIntentBuilder().BuildIntent(luisServiceResult);
 
             intent.NeedEntities = true;
-            intent.EntityLowerBound = 2;
+            intent.EntityLowerBound = 1;
             intent.EntityLimit = int.MaxValue;
             intent.DialogID = nameof(CreaAppuntamentoCalendar);
             intent.EntityNeedResponse = CreaAppuntamentoEntityNeedsToCollect;

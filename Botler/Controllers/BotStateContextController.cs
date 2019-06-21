@@ -83,6 +83,7 @@ namespace Botler.Controllers
         /// <param name="turn"></param>
         /// <param name="luisServiceResult"></param>
         /// <returns></returns>
+        // TODO: Creare uno stanrda per la raccolta di entità nello scenario esecutivo
         public static IScenario CheckLastExecutionScenario(IScenario scenario, ExecutionScenario lastExecutionScenario, string userQuery, string lastUserQuery, LuisServiceResult luisServiceResult)
         {
             // L'utente ha aggiunto una descrizione per il ticket
@@ -102,10 +103,11 @@ namespace Botler.Controllers
                 scenario.ScenarioIntent.EntitiesCollected.Add(entity);
             }
 
-            if (scenario.ScenarioIntent.EntitiesCollected.Count == 0)
+            if (lastExecutionScenario.ScenarioIntent.EntitiesCollected.Count == 0 )
             {
                 return scenario;
             }
+
 
             // Entità raccolte nell'attuale turno
             foreach (var ent in scenario.ScenarioIntent.EntitiesCollected)
@@ -179,6 +181,7 @@ namespace Botler.Controllers
                 if ((ExecutionScenarios.Contains(bs.scenarioID) || (DescriptionScenarios.Contains(bs.scenarioID))) && scenario.ScenarioID.Equals(Default))
                 {
                     var json = (JsonConvert.SerializeObject(bs));
+                    Console.WriteLine("READ " + json);
                     return bs;
                 }
             }

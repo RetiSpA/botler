@@ -87,6 +87,7 @@ namespace Botler.Dialogs.Dialoghi
             if (result)
             {
                 await stepContext.Context.SendActivityAsync("Il ticket è stato creato con successo" + ticket.ToString());
+                _intent.EntitiesCollected.Clear();
             }
             return await stepContext.EndDialogAsync();
         }
@@ -128,6 +129,7 @@ namespace Botler.Dialogs.Dialoghi
                 if (result)
                 {
                     await stepContext.Context.SendActivityAsync("Il ticket è stato creato con successo" + ticket.ToString());
+                    _intent.EntitiesCollected.Clear();
                 }
             }
            else
@@ -154,6 +156,7 @@ namespace Botler.Dialogs.Dialoghi
 
             if ( _intent.EntitiesCollected.Count < 2)
             {
+                ticket.Descrizione = stepContext.Context.Activity.Text;
                 return await stepContext.NextAsync();
             }
             else
@@ -162,6 +165,7 @@ namespace Botler.Dialogs.Dialoghi
                 if (result)
                 {
                     await stepContext.Context.SendActivityAsync("Ho abbastanza informazioni, il ticket è stato creato con successo" + ticket.ToString());
+                    _intent.EntitiesCollected.Clear();
                 }
                return await stepContext.EndDialogAsync();
             }

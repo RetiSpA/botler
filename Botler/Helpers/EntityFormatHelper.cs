@@ -52,7 +52,7 @@ namespace Botler.Helpers
         /// </summary>
         /// <param name="entityValue"></param>
         /// <returns> a new instance of Entity</returns>
-        private static Entity CreateEntityWithLuisJson(string entityValue)
+        public static Entity CreateEntityWithLuisJson(string entityValue)
         {
             Regex simpleEntity = new Regex(RegexDeserilizeEntityValue);
             // Valide entity found

@@ -38,10 +38,11 @@ namespace Botler.Controller
 
             if(qnaResult.Length > 0)
             {
-                if(qnaResult[0].Score > 0.80)
+                if(qnaResult[0].Score > 0.95)
                 {
                     await ShowQnAMessageAsync(qnaKey, turn, accessors);
                     await SendQnAAnswerAsync(qnaResult, turn);
+                    await turn.SendActivityAsync("Score QNA " + qnaResult[0].Score);
                     await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
 
                     return true;

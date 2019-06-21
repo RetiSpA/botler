@@ -505,5 +505,10 @@
 <data name = "GiornoLibero_3" xml:space="preserve">
   <value> Non hai appuntamenti fissati per la giornata </value>
 </data>
-
+<data name = "MailNonTrovata_1" xml:space="preserve">
+  <value> Nessuna mail trovata :( </value>
+</data>
+<data name = "MailNonTrovata_2" xml:space="preserve">
+  <value> Purtroppo non è stata trovata nessuna mail con queste caratteristiche </value>
+</data>
 </root>

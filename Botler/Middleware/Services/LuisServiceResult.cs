@@ -15,6 +15,7 @@ namespace Botler.Middleware.Services
         public LuisServiceResult()
         {
             AllEntitiesFromLuis = new List<Entity>();
+            TopScoringIntent = new Tuple<string, double>(string.Empty, 0.00);
         }
 
         public RecognizerResult LuisResult { get; set; }

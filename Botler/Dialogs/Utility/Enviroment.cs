@@ -141,6 +141,7 @@ namespace Botler.Dialogs.Utility
         public static IList<string> PrimoAppuntamentoResponse { get; } = GenerateResponsesFromName("PrimoAppuntamento");
         public static IList<string> AppuntamentoGenericoResponse { get; } = GenerateResponsesFromName("AppuntamentoGenerico");
         public static IList<string> GiornoLiberoResponse { get; } = GenerateResponsesFromName("GiornoLibero");
+        public static IList<string> MailNonTrovataResponse { get; } = GenerateResponsesFromName("MailNonTrovata");
     }
     [Serializable]
     public static class IntentsSets
@@ -207,7 +208,7 @@ namespace Botler.Dialogs.Utility
 
         public static HashSet<string> ExecutionScenarios = new HashSet<string>() { Parking, Autenticazione, Outlook, Supporto };
 
-        public static HashSet<string> DescriptionScenarios = new HashSet<string>() { OutlookDescription };
+        public static HashSet<string> DescriptionScenarios = new HashSet<string>() { OutlookDescription, SupportoDescription };
     }
 
     [Serializable]

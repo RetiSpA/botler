@@ -46,17 +46,45 @@ namespace Botler.Dialogs.Scenari
 
         public override async Task CreateResponseAsync(LuisServiceResult luisServiceResult)
         {
-            DialogContext currentDialogContext = await GetDialogContextAsync();
-
             _scenarioDialogs.Add(new LetturaMailOutlook(_accessors, ScenarioIntent));
             _scenarioDialogs.Add(new PrenotaSalaRiunioni(ScenarioIntent));
             _scenarioDialogs.Add(new CreaAppuntamentoCalendar(ScenarioIntent, _accessors));
             _scenarioDialogs.Add(new VisualizzaAppuntamentiCalendar(_accessors, ScenarioIntent));
+            DialogContext currentDialogContext = await GetDialogContextAsync();
+            
+            
 
-            if (OutlookIntents.Contains(ScenarioIntent.Name))
-            {
-                await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);
-            }
+            DialogTurnResult dialogResult = null;
+
+            dialogResult = await currentDialogContext.ContinueDialogAsync();
+            
+            switch (dialogResult.Status)
+                {
+                    case DialogTurnStatus.Empty:
+                    {
+                        await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);
+                        break;
+                    }
+
+                    case DialogTurnStatus.Waiting:
+                        break;
+
+                    case DialogTurnStatus.Complete:
+                    {
+                        await currentDialogContext.EndDialogAsync();
+                        break;
+                    }
+
+                    default:
+                    {
+                        await currentDialogContext.CancelAllDialogsAsync();
+                        break;
+                    }
+                }           
+            // if (OutlookIntents.Contains(ScenarioIntent.Name))
+            // {
+            //     await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);
+            // }
         }
 
     }

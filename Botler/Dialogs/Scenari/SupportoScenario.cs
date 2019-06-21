@@ -38,9 +38,19 @@ namespace Botler.Dialogs.Scenari
 
         public override async Task CreateResponseAsync(LuisServiceResult luisServiceResult)
         {
-             _scenarioDialogs.Add(new CreaTicket(ScenarioIntent, _accessors));
+            _scenarioDialogs.Add(new CreaTicket(ScenarioIntent, _accessors));
             DialogContext currentDialogContext = await _scenarioDialogs.CreateContextAsync(_turn);
-            var dialogResult = await currentDialogContext.ContinueDialogAsync();
+            DialogTurnResult dialogResult = null;
+
+            try
+            {
+                dialogResult = await currentDialogContext.ContinueDialogAsync();
+            }
+            catch
+            {
+                dialogResult = await currentDialogContext.CancelAllDialogsAsync();
+                dialogResult = await currentDialogContext.ContinueDialogAsync();
+            }
 
             switch (dialogResult.Status)
                 {

@@ -34,7 +34,8 @@ namespace Botler.Helpers
                 var datetimeMail = mail.ReceivedDateTime.GetValueOrDefault().DateTime;
 
                 var result = DateTimeIsInRange(dateTimeRange, datetimeMail);
-
+                var unreadR = mail.IsRead == !unread;
+                await turn.SendActivityAsync("Result " + result + " unread " + unreadR);
                 if (result && mail.IsRead == !unread)
                 {
                     await SendGenericMailTextAsync(turn, mail);
@@ -44,7 +45,7 @@ namespace Botler.Helpers
 
             if (mailRead == 0)
             {
-                await turn.SendActivityAsync("Nessuna mail trovata per quel giorno");
+                await turn.SendActivityAsync(RandomResponses(MailNonTrovataResponse));
             }
         }
         /// <summary>
@@ -131,9 +132,9 @@ namespace Botler.Helpers
             var start = new DateTimeTimeZone();
             var end = new DateTimeTimeZone();
 
-            start.DateTime = appuntamento.Inizio.ToString();
+            start.DateTime = appuntamento.Date.ToShortDateString() + " " + appuntamento.Inizio;
             start.TimeZone = "Central European Standard Time";
-            end.DateTime = appuntamento.Fine.ToString();
+            end.DateTime = appuntamento.Date.ToShortDateString() + " " + appuntamento.Fine;;
             end.TimeZone = "Central European Standard Time";
             location.DisplayName = appuntamento.Location;
             organizer.EmailAddress = new EmailAddress();
@@ -142,6 +143,8 @@ namespace Botler.Helpers
 
             e.Start = start;
             e.End = end;
+            e.Subject = appuntamento.Titolo;
+            e.BodyPreview =  appuntamento.Descrizione;
             e.Organizer = organizer;
             e.BodyPreview = appuntamento.Descrizione;
             e.IsAllDay = appuntamento.IsAllDay;

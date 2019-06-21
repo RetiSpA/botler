@@ -12,6 +12,8 @@ using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Commands;
 using Botler.Commands;
+using Botler.Builders;
+using Botler.Middleware.Services;
 
 namespace Botler.Helpers
 {
@@ -159,6 +161,8 @@ namespace Botler.Helpers
 
             await accessors.TurnOffQnAAsync(turn);
             await accessors.SetCurrentScenarioAsync(turn, Autenticazione);
+            var scenarioAuth = ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
+            await BotStateBuilder.BuildAndSaveBotStateContextContext(turn, accessors, new LuisServiceResult(), scenarioAuth); 
             Activity card = AuthenticationHelper.CreateOAuthCard(turn);
             await turn.SendActivityAsync(card).ConfigureAwait(false);
         }

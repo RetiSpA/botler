@@ -109,7 +109,7 @@ namespace Botler.Controller
                         ICommand welcomeCommand = CommandFactory.FactoryMethod(currentTurn, _accessors, CommandWelcome);
                         await welcomeCommand.ExecuteCommandAsync();
                     }
-                    }
+                }
             }
         }
 
@@ -156,8 +156,7 @@ namespace Botler.Controller
         }
 
         /// <summary>
-        /// Create a response for the current turn  checking the LuisResult
-        /// and bot context
+        /// Create a response for the current turn  checking the LuisResult and bot context
         /// </summary>
         /// <param name="luisServiceResult"> LuisResult and all the entities found </param>
         /// <returns></returns>
