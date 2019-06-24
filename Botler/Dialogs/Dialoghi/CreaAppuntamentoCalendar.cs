@@ -59,16 +59,14 @@ namespace Botler.Dialogs.Dialoghi
             var userResponse = (stepContext.Result as FoundChoice).Value;
             Appuntamento = await _accessors.AppuntamentoAccessors.GetAsync(stepContext.Context, () => new AppuntamentoCalendar());
 
-            if (userResponse.Equals("Più dettagli"))
+            if (userResponse.Equals("Più dettagli") || userResponse.Equals("più dettaggli"))
             {
                 return await stepContext.NextAsync();
             }
-            if (userResponse.Equals("Crea") || _intent.Name.Equals("ConfermaAzione"))
+            if (userResponse.Equals("Crea") || userResponse.Equals("crea") || _intent.Name.Equals("ConfermaAzione"))
             {
                 var context = stepContext.Context;
                 var token = await _accessors.GetUserToken(context);
-                 await context.SendActivityAsync("Creato appuntamento: " + "\n Il giorno " + Appuntamento.Date.ToShortDateString() + " Orario : "
-                        + Appuntamento.Inizio.ToString() + " - " + Appuntamento.Fine.ToString() + " \nLocation: " + Appuntamento.Location + "Tutto il giorno " + Appuntamento.IsAllDay);
 
                 _intent.EntitiesCollected.Clear();
                 await _accessors.AppuntamentoAccessors.SetAsync(stepContext.Context, Appuntamento);
@@ -92,10 +90,9 @@ namespace Botler.Dialogs.Dialoghi
             {
                 await context.SendActivityAsync(email);
             }
-            await context.SendActivityAsync("Creato appuntamento: " + "\n Il giorno " + Appuntamento.Date.ToShortDateString() + " Orario : "
-             + Appuntamento.Inizio.ToString() + " - " + Appuntamento.Fine.ToString() + " \nLocation: " + Appuntamento.Location + "Tutto il giorno " + Appuntamento.IsAllDay);
 
             _intent.EntitiesCollected.Clear();
+
             await GraphAPIHelper.CreateAppointmentAsync(context, token.Token, Appuntamento);
             return await stepContext.EndDialogAsync();
         }
@@ -241,18 +238,14 @@ namespace Botler.Dialogs.Dialoghi
 
             if (_intent.EntitiesCollected.Count < 4)
             {
-                Console.WriteLine("Crea appuntamento next");
                 return await stepContext.NextAsync();
             }
             else
             {
-                await context.SendActivityAsync("Creato appuntamento: " + "\n Il giorno " + Appuntamento.Date.ToShortDateString() + " Orario : "
-             + Appuntamento.Inizio.ToString() + " - " + Appuntamento.Fine.ToString() + " \nLocation: " + Appuntamento.Location + "Tutto il giorno " + Appuntamento.IsAllDay);
+                _intent.EntitiesCollected.Clear();
 
-             _intent.EntitiesCollected.Clear();
-
-            await GraphAPIHelper.CreateAppointmentAsync(context, token.Token, Appuntamento);
-            return await stepContext.EndDialogAsync();
+                await GraphAPIHelper.CreateAppointmentAsync(context, token.Token, Appuntamento);
+                return await stepContext.EndDialogAsync();
             }
 
         }

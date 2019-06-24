@@ -45,7 +45,7 @@ namespace Botler.Dialogs.Dialoghi
 
             var token = await _accessors.GetUserToken(stepContext.Context);
             await GraphAPIHelper.SendMailsFromInboxAsync(stepContext.Context,  token.Token, Date, Unread);
-            //await stepContext.Context.SendActivityAsync("Leggo mail del " + Date.ToShortDateString());
+            // await stepContext.Context.SendActivityAsync("Leggo mail del " + Date.ToShortDateString());
             return await stepContext.EndDialogAsync();
         }
 
@@ -58,7 +58,7 @@ namespace Botler.Dialogs.Dialoghi
                 {
                     Console.WriteLine(e.Text);
                     Date = DateTime.Parse(e.Text);
-
+                    // Checks if is not a future day
                     if (Date.CompareTo(DateTime.Today.AddDays(1)) >= 0)
                     {
                         Date = DateTime.Now;

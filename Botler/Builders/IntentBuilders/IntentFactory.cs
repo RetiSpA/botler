@@ -5,7 +5,7 @@ using static Botler.Dialogs.Utility.LuisIntent;
 namespace Botler.Builders.IntentBuilders
 {
     /// <summary>
-    /// return an Intent instance based on TopIntent from LUIS
+    /// return an Intent model instance based on TopIntent from LUIS
     /// </summary>
     public static class IntentFactory
     {
@@ -43,8 +43,6 @@ namespace Botler.Builders.IntentBuilders
             {
                 return new CreaAppuntamentoCalendarIntentBuilder().BuildIntent(luisServiceResult);
             }
-
-
 
             return new GenericIntentBuilder().BuildIntent(luisServiceResult);
         }

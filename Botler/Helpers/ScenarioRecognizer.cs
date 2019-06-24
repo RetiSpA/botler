@@ -47,7 +47,7 @@ namespace Botler.Controller
                     return topIntentScenario;
                 }
                 else
-                {
+                {                
                     topIntentScenario = ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
                 }
             }

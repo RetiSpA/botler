@@ -7,9 +7,7 @@ namespace Botler.Models
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Categoria()
-        {
-            
-        }
+        {}
 
         public short ID { get; set; }
         public string Nome_Categoria { get; set; }

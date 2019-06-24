@@ -354,8 +354,12 @@
   - Indirizzarti su Blog, Sito e Contatti di Reti S.p.A.
 
     Se sei un dipedenti Reti:
-  
+
   - Prenotarti un parcheggio.
+  - Aprire un Ticket per il Supporto
+  - Leggere le tue mail su Outlook
+  - Visualizzare appuntamento su Outlook Calendar
+  - Creare eventi su OutlookCalendar
   - Rispondere a domande più specifiche che riguardando gli impiegat
     di Reti S.p.A
     </value>
@@ -368,8 +372,11 @@
   Invece se sei un dipedente posso fare per te le seguenti azioni:
 
   - Rispondere a domande interne a Reti S.p.A.
+  - Aprire un Ticket per il Supporto
+  - Leggere le tue mail su Outlook
+  - Visualizzare appuntamento su Outlook Calendar
+  - Creare eventi su OutlookCalendar
   - Prenotarti un parcheggio nel nostro spazio aziendale.
-  - News interne di Reti (Magazine, News Aziendali, Eventi).
   </value>
 </data>
 <data name="ListaComandi_1" xml:space="preserve">
@@ -494,10 +501,11 @@
   {1}
   Dalle ore {2}  alle ore {3}.
   In {4}
+  Organizzato da {5}
   </value>
 </data>
 <data name = "GiornoLibero_1" xml:space="preserve">
-  <value> Che fortuna oggi hai il giorno libero! </value>
+  <value> Che fortuna hai il giorno libero! </value>
 </data>
 <data name = "GiornoLibero_2" xml:space="preserve">
 <value> Pare che hai la giornata libera :) </value>

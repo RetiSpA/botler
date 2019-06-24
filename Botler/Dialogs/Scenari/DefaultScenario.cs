@@ -52,8 +52,6 @@ namespace Botler.Dialogs.Scenari
             return _scenarioDialogs.Find(nameof(idDialog));
         }
 
-
-        // ! Voglio che questo sia un punto in cui finiscono tutti i messaggi non propriamente riconosciuti ! //
         public async Task CreateResponseAsync(LuisServiceResult luisServiceResult)
         {
            await  _turn.SendActivityAsync(RandomResponses(NoneResponse) + "\n" + RandomResponses(PossibilitaResponse));

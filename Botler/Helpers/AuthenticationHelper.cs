@@ -14,6 +14,7 @@ using static Botler.Dialogs.Utility.Commands;
 using Botler.Commands;
 using Botler.Builders;
 using Botler.Middleware.Services;
+using Botler.Controller;
 
 namespace Botler.Helpers
 {
@@ -22,6 +23,11 @@ namespace Botler.Helpers
 
         private static Regex magicCodeRegex = new Regex("\\d{6}");
 
+        /// <summary>
+        /// Create and send OAuth Card to the user
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <returns></returns>
         public static Activity CreateOAuthCard(ITurnContext turn)
         {
             var response = turn.Activity.CreateReply();
@@ -48,13 +54,23 @@ namespace Botler.Helpers
             return response;
         }
 
+        /// <summary>
+        /// Checks if the user write a MagicCode
+        /// </summary>
+        /// <param name="magicCode"></param>
+        /// <returns></returns>
         public static bool MagicCodeFound(string magicCode)
         {
-            if (magicCode is null) return false;
-            var matched = magicCodeRegex.Match(magicCode);
-            return matched.Success;
+            if (string.IsNullOrEmpty(magicCode)) return false;
+            return magicCodeRegex.Match(magicCode).Success;
         }
 
+        /// <summary>
+        /// Validation user token
+        /// </summary>
+        /// <param name="turnContext"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public static async Task<TokenResponse> RecognizeTokenAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
             var adapter = (BotFrameworkAdapter) turnContext.Adapter;
@@ -92,6 +108,12 @@ namespace Botler.Helpers
             return null;
         }
 
+        /// <summary>
+        /// Check if the user is auth or not and return the right QnA Maker API key
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <param name="accessors"></param>
+        /// <returns></returns>
         public static async Task<string> GetQnAKeyFromAuthUser(ITurnContext turn, BotlerAccessors accessors)
         {
             bool alreadyAuth = await AuthenticationHelper.UserAlreadyAuthAsync(turn, accessors);
@@ -106,6 +128,12 @@ namespace Botler.Helpers
             }
         }
 
+        /// <summary>
+        /// Check if the user is already auth in current conversation
+        /// </summary>
+        /// <param name="turnContext"></param>
+        /// <param name="accessors"></param>
+        /// <returns></returns>
         public async static Task<bool> UserAlreadyAuthAsync(ITurnContext turnContext, BotlerAccessors accessors)
         {
             UserModel userAuthenticated = await accessors.GetAuthenticatedMemberAsync(turnContext);
@@ -133,6 +161,12 @@ namespace Botler.Helpers
 
         }
 
+        /// <summary>
+        /// Logout user
+        /// </summary>
+        /// <param name="turnContext"></param>
+        /// <param name="accessors"></param>
+        /// <returns></returns>
         public async static Task LogOutUserAsync(ITurnContext turnContext, BotlerAccessors accessors)
         {
             var adapter = (BotFrameworkAdapter) turnContext.Adapter;
@@ -155,18 +189,28 @@ namespace Botler.Helpers
             await accessors.SaveStateAsync(turnContext);
         }
 
+        /// <summary>
+        /// Init and Send the OAuth to the user
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <param name="accessors"></param>
+        /// <returns></returns>
         public static async Task FirstPhaseAuthAsync(ITurnContext turn, BotlerAccessors accessors)
         {
             await InitAuthScenarioAsync(turn, accessors);
 
             await accessors.TurnOffQnAAsync(turn);
             await accessors.SetCurrentScenarioAsync(turn, Autenticazione);
-            var scenarioAuth = ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
-            await BotStateBuilder.BuildAndSaveBotStateContextContext(turn, accessors, new LuisServiceResult(), scenarioAuth); 
             Activity card = AuthenticationHelper.CreateOAuthCard(turn);
             await turn.SendActivityAsync(card).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// In this phase we chek the token, if it a valid token,then save the user proprieties
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <param name="accessors"></param>
+        /// <returns></returns>
         public  static async Task SecondPhaseAuthAsync(ITurnContext turn, BotlerAccessors accessors)
         {
             var message = turn.Activity.AsMessageActivity();
@@ -200,15 +244,30 @@ namespace Botler.Helpers
                 else
                 {
                     await turn.SendActivityAsync(RandomResponses(AutenticazioneErroreResponse));
+                    var query = await accessors.GetLastUserQueryBeforeAuth(turn);
+                    await turn.SendActivityAsync(query);
                 }
         }
-
+        
+        /// <summary>
+        /// Show the MenuDipendeti HeroCard
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <param name="accessors"></param>
+        /// <returns></returns>
         private static async Task ShowAreaRiservataAsync(ITurnContext turn, BotlerAccessors accessors)
         {
             // await turn.SendActivityAsync(RandomResponses(AutenticazioneEffettuataResponse));
             ICommand commandAreaRiservata = CommandFactory.FactoryMethod(turn, accessors, CommandAreaRiservata);
             await commandAreaRiservata.ExecuteCommandAsync();
         }
+
+        /// <summary>
+        /// Init the MemoryStorage for the current conversation user
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <param name="accessors"></param>
+        /// <returns></returns>
         private async static Task InitAuthScenarioAsync(ITurnContext turn, BotlerAccessors accessors)
         {
             await accessors.SetCurrentScenarioAsync(turn, Autenticazione);

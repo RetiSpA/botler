@@ -132,10 +132,10 @@ namespace Botler.Controller
 
             // Analyze LuisServiceResult to create a BotStateContext if needed, based on intents(and top intent)
 
+
             if (await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn))
             {
                 await _accessors.SaveStateAsync(currentTurn);
-                // ? Reply with a response based on past states/context ?
                 return;
             }
 
@@ -156,7 +156,7 @@ namespace Botler.Controller
         }
 
         /// <summary>
-        /// Create a response for the current turn  checking the LuisResult and bot context
+        /// Create a response for the current turn  checking the LuisResult and bot state context
         /// </summary>
         /// <param name="luisServiceResult"> LuisResult and all the entities found </param>
         /// <returns></returns>
@@ -170,7 +170,7 @@ namespace Botler.Controller
             // * Salva lo stato di questo turno nel cosmbosDB * //
             await BotStateBuilder.BuildAndSaveBotStateContextContext(currentTurn, _accessors, luisServiceResult, currentScenario);
 
-            // * Salva lo stato del MemoryStorage * //
+            // * Salva lo stato nel MemoryStorage * //
             await _accessors.SaveStateAsync(currentTurn);
         }
 

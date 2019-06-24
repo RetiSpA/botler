@@ -55,6 +55,8 @@ namespace Botler.Dialogs.Dialoghi
 
             await GraphAPIHelper.GetAppointmentOnCalendarAsync(stepContext.Context, _accessors, tokenResponse.Token, Date);
 
+            _intent.EntitiesCollected.Clear();
+
             return await stepContext.EndDialogAsync();
         }
 

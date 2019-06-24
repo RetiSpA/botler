@@ -123,7 +123,7 @@ namespace Botler.Dialogs.Dialoghi
             var userResponse = (stepContext.Result as FoundChoice).Value;
             ticket = await _accessors.TicketAccessors.GetAsync(stepContext.Context, () => new Ticket());
 
-            if (userResponse.Equals("Crea"))
+            if (userResponse.Equals("Crea") || userResponse.Equals("crea") || _intent.Name.Equals("ConfermaAzione"))
             {
                 var result = await TicketAPICaller.TicketPostAPIAsync(ticket);
                 if (result)
@@ -176,6 +176,8 @@ namespace Botler.Dialogs.Dialoghi
             foreach(var e in _intent.EntitiesCollected)
             {
                 var idTipoTicket = TicketSupportHelper.GetTipoTicket(e.Text);
+
+                ticket.Categoria = e.Text;
 
                 if (idTipoTicket > 0)
                 {

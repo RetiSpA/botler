@@ -33,10 +33,9 @@ namespace Botler.Helpers
             {
                 var datetimeMail = mail.ReceivedDateTime.GetValueOrDefault().DateTime;
 
-                var result = DateTimeIsInRange(dateTimeRange, datetimeMail);
-                var unreadR = mail.IsRead == !unread;
-                await turn.SendActivityAsync("Result " + result + " unread " + unreadR);
-                if (result && mail.IsRead == !unread)
+                var resultDateInRange = DateTimeIsInRange(dateTimeRange, datetimeMail);
+
+                if (resultDateInRange)
                 {
                     await SendGenericMailTextAsync(turn, mail);
                     ++mailRead;
@@ -62,27 +61,26 @@ namespace Botler.Helpers
 
             DateTime today = DateTime.Today;
 
+            int countEvent = 0 ;
+
             if (dateTimeRange == today)
             {
+                ++countEvent;
                 await GetFirstAppointmentOfDayAsync(turn, accessors, token);
+            }
 
-                foreach (var e in listEvent)
+            foreach (var e in listEvent)
+            {
+                if (DateTimeIsInRange(dateTimeRange, ConvertDateTimeToCentralEurope(e.Start)))
                 {
-                    if (EventIsFuture(e))
-                    {
-                        await SendGenericAppointmentOnCalendar(turn, e);
-                    }
+                    ++countEvent;
+                    await SendGenericAppointmentOnCalendar(turn, e);
                 }
             }
-            else // we have a DateTime to check
+
+            if (countEvent == 0)
             {
-                foreach (var e in listEvent)
-                {
-                    if (DateTimeIsInRange(dateTimeRange, ConvertDateTimeToCentralEurope(e.Start)))
-                    {
-                        await SendGenericAppointmentOnCalendar(turn, e);
-                    }
-                }
+                await turn.SendActivityAsync(RandomResponses(GiornoLiberoResponse));
             }
 
         }
@@ -120,6 +118,13 @@ namespace Botler.Helpers
             }
         }
 
+        /// <summary>
+        /// Create an Outlook Event with the AppuntamentCalendar Model
+        /// </summary>
+        /// <param name="turn"></param>
+        /// <param name="token"></param>
+        /// <param name="appuntamento"></param>
+        /// <returns></returns>
         public static async Task CreateAppointmentAsync(ITurnContext turn, string token, AppuntamentoCalendar appuntamento)
         {
             var client = GetGraphClient(token);
@@ -147,7 +152,7 @@ namespace Botler.Helpers
             e.BodyPreview =  appuntamento.Descrizione;
             e.Organizer = organizer;
             e.BodyPreview = appuntamento.Descrizione;
-            e.IsAllDay = appuntamento.IsAllDay;
+            // e.IsAllDay = appuntamento.IsAllDay;
 
             await client.Me.Events
                     .Request()
@@ -155,20 +160,20 @@ namespace Botler.Helpers
                     .AddAsync(e);
 
 
-
-            await turn.SendActivityAsync("Evento Creato ");
+            await turn.SendActivityAsync("Creato appuntamento: " + "\n Il giorno " + appuntamento.Date.ToShortDateString() + " Orario : "
+                 + appuntamento.Inizio.ToString() + " - " + appuntamento.Fine.ToString() + " \nLocation: " + appuntamento.Location + "Tutto il giorno " + appuntamento.IsAllDay);
         }
 
         /// <summary>
         /// Create a response with the mail body and subject
         /// </summary>
-        /// <param name="turn"> current bot turn</param>
-        /// <param name="mail"> mail to read</param>
+        /// <param name="turn"> current bot turn </param>
+        /// <param name="mail"> mail to read </param>
         /// <returns> void </returns>
         private static async Task SendGenericMailTextAsync(ITurnContext turn, Message mail)
         {
             string mailResponse = RandomResponses(MailGenericaRicevutaResponse);
-            mailResponse = " leggendo mail " + mailResponse;
+            mailResponse = " - " + mailResponse;
             await turn.SendActivityAsync(string.Format(@mailResponse, mail.Subject, mail.BodyPreview));
         }
 
@@ -189,7 +194,7 @@ namespace Botler.Helpers
             string endTime = dateTimeEventEnd.ToShortTimeString();
             string appointment = RandomResponses(AppuntamentoGenericoResponse);
 
-            await turn.SendActivityAsync(string.Format(@appointment, e.Subject, startDate, startTime, endTime, e.Location.DisplayName));
+            await turn.SendActivityAsync(string.Format(@appointment, e.Subject, startDate, startTime, endTime, e.Location.DisplayName, e.Organizer.EmailAddress.Name));
 
         }
 

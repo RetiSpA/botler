@@ -82,6 +82,13 @@ namespace Botler.Dialogs.Utility
         public const string NuovoProgetto = "nuovo progetto";
         public const string Infrastruttura = "infrastruttura";
         public const string Priorita = "priorita";
+        public const string Accessi = "accessi";
+        public const string Domotica = "domotica";
+        public const string SiWeb = "siweb";
+        public const string GestionaleReti = "gestionale reti";
+        public const string Gestionale = "gestionale";
+        public const string Regia = "regia";
+        public const string Luci = "luci";
     }
 
     [Serializable]
@@ -165,10 +172,10 @@ namespace Botler.Dialogs.Utility
         public static HashSet<string> NetworkSupportEntities = new HashSet<string>() { Rete, Connessione, Wifi, Wi_Fi, LAN};
         public static HashSet<string> InfrastructureSupportEntities = new HashSet<string> () { Server, Infrastruttura};
         public static HashSet<string> ProjectSupportEntities = new HashSet<string> () { Progetto, NuovoProgetto };
-        public static HashSet<string> BadgeAccessiEntities= new HashSet<string>() { Badge, "accessi" };
-        public static HashSet<string> DomoticaEntities = new HashSet<string> () { "domotica", "luci" };
-        public static HashSet<string> SiWebEntities = new HashSet<string>() { "siweb", "gestionale reti", "gestionale" };
-        public static HashSet<string> RegiEntities = new HashSet<string>() { "regia" };
+        public static HashSet<string> BadgeAccessiEntities= new HashSet<string>() { Badge, Accessi};
+        public static HashSet<string> DomoticaEntities = new HashSet<string> () { Domotica, Luci};
+        public static HashSet<string> SiWebEntities = new HashSet<string>() { SiWeb, GestionaleReti, Gestionale};
+        public static HashSet<string> RegiEntities = new HashSet<string>() { Regia };
         public static Dictionary<HashSet<string>, int> SupportMapTipoTicketID = new Dictionary<HashSet<string>, int>() { [UtenzeSupportEntities] = 0, [DispositiviSupportEntities] = 1,
         [NetworkSupportEntities] = 2,  [InfrastructureSupportEntities] = 3, [ProjectSupportEntities] = 4 , [BadgeAccessiEntities] = 7, [DomoticaEntities] = 9 , [SiWebEntities] = 11, [RegiEntities] = 13};
         public static HashSet<string> SaleRiunioniSet = new HashSet<string>() { Multifunzionale, R101, R102 };

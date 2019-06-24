@@ -50,6 +50,7 @@ namespace Botler
             LastUserScenarioAccessors = conversationState.CreateProperty<Dictionary<string, IScenario>> ("LastUserScenario");
             TicketAccessors = conversationState.CreateProperty<Ticket>(nameof(Ticket));
             AppuntamentoAccessors = conversationState.CreateProperty<AppuntamentoCalendar>(nameof(AppuntamentoCalendar));
+            UserQueryBeforeAuth = conversationState.CreateProperty<string>("UserQueryBeforeAuth");
             MongoDB = new MongoDBService();
         }
 
@@ -80,6 +81,8 @@ namespace Botler
         public IStatePropertyAccessor<List<UserModel>> UserModelAccessors { get; set; }
 
         public IStatePropertyAccessor<string> QnaActiveAccessors { get; set; }
+
+        public IStatePropertyAccessor<string> UserQueryBeforeAuth { get; set; }
 
         public IStatePropertyAccessor<Dictionary<string,BotStateContext>> LastBotStateContextConversation { get; set; }
 
@@ -236,6 +239,19 @@ namespace Botler
             dic.TryGetValue(convID, out scenario);
             await SaveStateAsync(turn);
             return scenario;
+        }
+
+        public async Task SaveLastUserQueryBeforeAuth(ITurnContext turn)
+        {
+            var query = turn.Activity.Text;
+            await UserQueryBeforeAuth.SetAsync(turn, query);
+            await SaveStateAsync(turn);
+        }
+
+        public async Task<string> GetLastUserQueryBeforeAuth(ITurnContext turn)
+        {
+            var userQuery = await UserQueryBeforeAuth.GetAsync(turn, () => new String(string.Empty));
+            return userQuery;
         }
 
     }

@@ -61,7 +61,7 @@ namespace Botler.Controllers
             // * (2) * // Asking the user for more info.
             if (ExecutionScenarios.Contains(lastUsefulScenario.ScenarioID))
             {
-                scenario = CheckLastExecutionScenario(scenario, (ExecutionScenario) lastUsefulScenario, userQuery, lastBotContext.UserQuery,
+                scenario = await CheckLastExecutionScenario(scenario, (ExecutionScenario) lastUsefulScenario, userQuery,  lastBotContext.UserQuery, accessors, turn,
                     luisServiceResult);
             }
 
@@ -83,8 +83,7 @@ namespace Botler.Controllers
         /// <param name="turn"></param>
         /// <param name="luisServiceResult"></param>
         /// <returns></returns>
-        // TODO: Creare uno stanrda per la raccolta di entità nello scenario esecutivo
-        public static IScenario CheckLastExecutionScenario(IScenario scenario, ExecutionScenario lastExecutionScenario, string userQuery, string lastUserQuery, LuisServiceResult luisServiceResult)
+        public static async Task<IScenario> CheckLastExecutionScenario(IScenario scenario, ExecutionScenario lastExecutionScenario, string userQuery, string lastUserQuery, BotlerAccessors accessors, ITurnContext turn, LuisServiceResult luisServiceResult)
         {
             // L'utente ha aggiunto una descrizione per il ticket
             if (lastExecutionScenario.ScenarioID.Equals(Supporto))
@@ -103,7 +102,20 @@ namespace Botler.Controllers
                 scenario.ScenarioIntent.EntitiesCollected.Add(entity);
             }
 
-            if (lastExecutionScenario.ScenarioIntent.EntitiesCollected.Count == 0 )
+            var alreadyAuth = await AuthenticationHelper.UserAlreadyAuthAsync(turn, accessors);
+
+            if (lastExecutionScenario.ScenarioID.Equals(Autenticazione) && alreadyAuth)
+            {
+                return scenario;
+            }
+
+            if ((lastExecutionScenario.ScenarioIntent.Name.Equals(LeggiMailIntent) || lastExecutionScenario.ScenarioIntent.Name.Equals(VisualizzaAppuntamentiCalendarIntent)) && scenario.ScenarioIntent.EntitiesCollected.Count == 0)
+            {
+                return scenario; // Default -> NoneIntent Handle
+            }
+
+            // We are in a CreaAppuntamento or CreaTicket dialog
+            if ((lastExecutionScenario.ScenarioIntent.Name.Equals(CreaAppuntamentoCalendarIntent) || lastExecutionScenario.ScenarioIntent.Name.Equals(RichiestaSupportoIntent)) && lastExecutionScenario.ScenarioIntent.EntitiesCollected.Count == 0)
             {
                 return scenario;
             }
@@ -114,6 +126,7 @@ namespace Botler.Controllers
             {
                 lastExecutionScenario.ScenarioIntent.EntitiesCollected.Add(ent);
             }
+
             return lastExecutionScenario;
         }
 
@@ -181,7 +194,6 @@ namespace Botler.Controllers
                 if ((ExecutionScenarios.Contains(bs.scenarioID) || (DescriptionScenarios.Contains(bs.scenarioID))) && scenario.ScenarioID.Equals(Default))
                 {
                     var json = (JsonConvert.SerializeObject(bs));
-                    Console.WriteLine("READ " + json);
                     return bs;
                 }
             }

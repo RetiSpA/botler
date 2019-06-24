@@ -25,6 +25,13 @@ namespace Botler.Controller
             return false;
         }
 
+        /// <summary>
+        /// Check the current turn message, and if there is an high score QnA, give the user an anwser
+        /// </summary>
+        /// <param name="turn"> Current Bot turn</param>
+        /// <param name="accessors"> Memory Storage </param>
+        /// <param name="services"> Reference to QnA Maker </param>
+        /// <returns> true if give an answer to the user, otherwise return false </returns>
         public static async Task<bool> AnsweredTurnUserQuestionAsync(ITurnContext turn, BotlerAccessors accessors, BotServices services)
         {
             string qnaKey = await AuthenticationHelper.GetQnAKeyFromAuthUser(turn, accessors);
@@ -42,7 +49,6 @@ namespace Botler.Controller
                 {
                     await ShowQnAMessageAsync(qnaKey, turn, accessors);
                     await SendQnAAnswerAsync(qnaResult, turn);
-                    await turn.SendActivityAsync("Score QNA " + qnaResult[0].Score);
                     await turn.SendActivityAsync(RandomResponses(ContinuaQnAResponse)).ConfigureAwait(false);
 
                     return true;
@@ -51,6 +57,13 @@ namespace Botler.Controller
             return false;
         }
 
+        /// <summary>
+        ///  Show the relative QnA Menu, based on the user authentications
+        /// </summary>
+        /// <param name="qnaKey"> QnA App Key</param>
+        /// <param name="turn"> Current Bot turn</param>
+        /// <param name="accessors"> Memory Storage </param>
+        /// <returns></returns>
         private async static Task ShowQnAMessageAsync(string qnaKey, ITurnContext turn, BotlerAccessors accessors)
         {
             if(qnaKey.Equals(QnAKey))
@@ -66,6 +79,12 @@ namespace Botler.Controller
             }
         }
 
+        /// <summary>
+        /// Send the user a answer
+        /// </summary>
+        /// <param name="qnaResult"> QnA Maker API calle result</param>
+        /// <param name="turn"></param>
+        /// <returns></returns>
         private static async Task SendQnAAnswerAsync(QueryResult[] qnaResult, ITurnContext turn)
         {
             foreach(QueryResult result in qnaResult)
@@ -75,6 +94,15 @@ namespace Botler.Controller
             }
         }
 
+        /// <summary>
+        /// Call the relative QnA Maker Service (Private or Public)
+        /// Private -> The user is authenticated
+        /// Public -> otherwise
+        /// </summary>
+        /// <param name="turn"> Current bot turn </param>
+        /// <param name="services"> Class with all Bot services (REST API) </param>
+        /// <param name="qnaKey"></param>
+        /// <returns></returns>
         private static async Task<QueryResult[]> GetQnAResult(ITurnContext turn, BotServices services, string qnaKey)
         {
             return await services.QnAServices[qnaKey].GetAnswersAsync(turn).ConfigureAwait(false);

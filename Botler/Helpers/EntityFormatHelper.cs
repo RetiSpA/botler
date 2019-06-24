@@ -29,7 +29,8 @@ namespace Botler.Helpers
             JObject entitiesFromLuis = luisResult.Entities;
 
             foreach (var ent in entitiesFromLuis)
-            {  // Then we want to take only the "key":"value" useful to the Entity model.
+            {
+                 // Then we want to take only the "key":"value" useful to the Entity model.
                 foreach (var v in ent.Value)
                 {
                     var entityValue = v.ToString();

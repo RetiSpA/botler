@@ -1,3 +1,5 @@
+using static Botler.Dialogs.Utility.LuisEntity;
+using static Botler.Dialogs.Utility.EntitySets;
 namespace Botler.Models
 {
     using System;
@@ -25,6 +27,8 @@ namespace Botler.Models
 
         public string Email_Utente { get; set; }
 
+        public string Categoria { get; set; }
+
         public bool Chiuso { get; set; }
 
         public override string ToString()
@@ -35,7 +39,7 @@ namespace Botler.Models
             {
                 prioritàString = "normale";
             }
-            
+
             if (Priorita == 1)
             {
                 prioritàString = "alta";
@@ -45,7 +49,8 @@ namespace Botler.Models
             {
                 prioritàString = "urgente";
             }
-            return "\nCreato Ticekt: " + "\n Priorità: " + prioritàString + "\n Descrizione : " + Descrizione + " Utente " + Email_Utente;
+
+            return "\nCreato Ticekt: " + "\n Priorità: " + prioritàString + "\n Descrizione : " + Descrizione + " \nUtente " + Email_Utente + " \n Categoria: " + Categoria;
         }
 
     }

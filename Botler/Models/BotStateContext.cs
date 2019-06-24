@@ -11,8 +11,12 @@ namespace Botler.Models
     [BsonIgnoreExtraElements]
     public class BotStateContext : IComparable
     {
-        public BotStateContext () {}
+        public BotStateContext ()
+        {
+            insertDate = DateTime.Now;
+        }
 
+        public DateTime insertDate { get; private set; }
         public string scenarioID { get; set; }
 
         public Intent TopIntent { get; set; }
@@ -31,7 +35,7 @@ namespace Botler.Models
 
             BotStateContext botState = (BotStateContext) obj;
 
-            return Turn.CompareTo(botState.Turn);
+            return insertDate.CompareTo(botState.insertDate);
         }
 
         public override string ToString()
