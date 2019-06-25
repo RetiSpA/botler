@@ -2,10 +2,10 @@
 Un Agente di Conversazione con contest di Reti S.p.A
 Botler si pone l'obiettivo di aiutarti con i piccoli task giornalieri, tutto in un unica chat.
 
-* [Cosa fa](#Cosa-può-fare-per-Botler)
+* [Cosa fa](#Cosa-può-fare-Botler)
 * [Dove trovarlo](#Dove-puoi-trovarlo)
 
-## Cosa può fare per Botler
+## Cosa può fare Botler
 Botler ti da una mano, ecco in cosa.
 
 * Legge per te le tue Mail su Outlook
