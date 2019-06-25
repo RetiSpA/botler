@@ -7,14 +7,13 @@ Botler si pone l'obiettivo di aiutarti con i piccoli task giornalieri, tutto in 
 
 ## Cosa può fare per Botler
 Botler ti da una mano, ecco in cosa.
-```
+
 * Legge per te le tue Mail su Outlook
 * Visualizza eventi sul tuo Outlook Calendar
 * Crea eventi sul tuo Outlook Calendar
 * Apre ticket per il supporto interno di Reti S.p.A
 * Rispondere a domande di carattere generale su Reti S.p.A
 * Risponde anche a domande più specifiche di Reti S.p.A  (Per i suoi dipedenti)
-```
 
 Tutto questo in un unico simpaticissimo ChatBot.
 
