@@ -2,7 +2,7 @@
 Questo bot è stato creato usando:
 - [Microsoft Bot Framework](https://dev.botframework.com)
 - Usa [LUIS](https://luis.ai) il quale implementa la parte di AI.
-- [QnA Maker](https://www.qnamaker.ai/) per la Knowledge base, utile a rispondere all
+- [QnA Maker](https://www.qnamaker.ai/) per la Knowledge base, utile a rispondere alle domande
 - [Graph API](https://developer.microsoft.com/en-us/graph/) Per conettere il tuo profilo Microsoft al Bot, ed utilizzare tutte le sue funzionalità
 - [CosmoDB API per MongoDB](https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-introduction) Usato per salvare dei file JSON che rappresentano lo stato del bot in un determinato turno di conversazine, usato per risalire al contesto della conversazione.
 
