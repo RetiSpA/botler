@@ -240,6 +240,7 @@ namespace Botler.Dialogs.Utility
         public const string CommandExit = "commandExit";
 
         public const string CommandHelp = "commandHelp";
+        public const string CommandOutlook = "commandOutlook";
     }
 
     [Serializable]
@@ -272,6 +273,6 @@ namespace Botler.Dialogs.Utility
         public const string PrenotaSalaEntityToCollect = "Vedo che vuoi prenotare una sala riunioni, le informazioni utili che puoi darmi sono: \n Data, Ora e nome Meeting Rooms(opzionale) :)";
         public const string LeggiMailEntityNeedsToCollect = "Vuoi inserire una data o vuoi leggere le ultime mail ?";
         public const string SupportoEntityNeedsToCollect = "Per aprire un ticket correttamente mi serve sapere almeno su cosa hai bisogno di assistenza.\n - PC, Badge, Accessi, Domotica...\n Insieme ad una descrizione, priorità (opzionali) :)";
-        public const string CreaAppuntamentoEntityNeedsToCollect = "Per creare un appuntamento, inserisci: \nUna Location, una Data, orario di inizo e fine, e dei partecipanti (email partecipanti)";
+        public const string CreaAppuntamentoEntityNeedsToCollect = "Per creare un appuntamento, inserisci: \nUna Location, una Data, orario di inizo e fine";
     }
 }

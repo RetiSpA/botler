@@ -33,7 +33,6 @@ namespace Botler.Controllers
 
             else
             {
-                Console.WriteLine(responsePostTicket.StatusCode + " " + responsePostTicket.ReasonPhrase + " " + responsePostTicket.Content.Headers);
                 return false;
             }
         }

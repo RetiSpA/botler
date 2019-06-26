@@ -80,7 +80,7 @@ namespace Botler.Dialogs.Scenari
                         await currentDialogContext.CancelAllDialogsAsync();
                         break;
                     }
-                }           
+                }
             // if (OutlookIntents.Contains(ScenarioIntent.Name))
             // {
             //     await currentDialogContext.BeginDialogAsync(ScenarioIntent.DialogID);

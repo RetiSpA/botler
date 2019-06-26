@@ -7,12 +7,12 @@ using Botler.Builders;
 using Microsoft.Bot.Builder;
 using System.Threading.Tasks;
 using static Botler.Dialogs.Utility.LuisIntent;
-using static Botler.Dialogs.Utility.ListsResponsesIT;
-using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.Scenari;
 using static Botler.Dialogs.Utility.IntentsSets;
 using Botler.Commands;
 using Botler.Helpers;
+using Microsoft.Bot.Connector;
+using System;
 
 namespace Botler.Controller
 {
@@ -47,7 +47,7 @@ namespace Botler.Controller
                     return topIntentScenario;
                 }
                 else
-                {                
+                {
                     topIntentScenario = ScenarioFactory.FactoryMethod(accessors, turn, Autenticazione, null);
                 }
             }
@@ -55,6 +55,14 @@ namespace Botler.Controller
             return topIntentScenario;
         }
 
+        /// <summary>
+        /// Take the  RecognizeResult TopIntent from LUIS, and return an instance of IScenario based
+        /// on it.
+        /// </summary>
+        /// <param name="luisServiceResult"></param>
+        /// <param name="accessors"></param>
+        /// <param name="turn"></param>
+        /// <returns></returns>
         private static IScenario GetScenarioFromLuis(LuisServiceResult luisServiceResult, BotlerAccessors accessors, ITurnContext turn)
         {
             Intent intent = luisServiceResult.TopIntent;

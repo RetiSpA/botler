@@ -12,9 +12,6 @@ using static Botler.Dialogs.Utility.Responses;
 using static Botler.Dialogs.Utility.ListsResponsesIT;
 using static Botler.Dialogs.Utility.Commands;
 using Botler.Commands;
-using Botler.Builders;
-using Botler.Middleware.Services;
-using Botler.Controller;
 
 namespace Botler.Helpers
 {
@@ -224,7 +221,7 @@ namespace Botler.Helpers
                    // await accessors.AddAuthenticatedUserAsync(turn);
                    // Create a user with MicrosoftGraphClient information
                     UserModel user = new UserModel(tokenResponse);
-                   await user.SaveUserDataAsync( accessors, turn, true);
+                    await user.SaveUserDataAsync( accessors, turn, true);
 
                     // Saves user in the Storage
                     await accessors.AddUserToAccessorsListAync(user, turn);
@@ -244,11 +241,9 @@ namespace Botler.Helpers
                 else
                 {
                     await turn.SendActivityAsync(RandomResponses(AutenticazioneErroreResponse));
-                    var query = await accessors.GetLastUserQueryBeforeAuth(turn);
-                    await turn.SendActivityAsync(query);
                 }
         }
-        
+
         /// <summary>
         /// Show the MenuDipendeti HeroCard
         /// </summary>

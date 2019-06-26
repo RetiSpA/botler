@@ -37,10 +37,9 @@ namespace Botler.Commands
 
         private async Task SendRandomQnAAsync()
         {
-            for (int i = 0; i < 2; i++)
-            {
-                await _turn.SendActivityAsync(RandomResponses(DomandaResponse)).ConfigureAwait(true);
-            }
+
+            await _turn.SendActivityAsync(RandomResponses(DomandaResponse)).ConfigureAwait(true);
+
         }
     }
 }

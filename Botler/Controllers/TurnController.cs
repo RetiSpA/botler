@@ -12,7 +12,6 @@ using Botler.Builders;
 using Botler.Helpers;
 using Botler.Middleware.Services;
 using static Botler.Dialogs.Utility.Commands;
-using Botler.Controllers;
 
 /// <summary>
 /// This class takes the responsability
@@ -129,9 +128,6 @@ namespace Botler.Controller
             LuisServiceResult luisServiceResult = await LuisServiceResultBuilder.CreateLuisServiceResult(currentTurn, _services, cancellationToken);
             // Update the turnCouter of this conversation
             await _accessors.UpdateTurnCounterAsync(currentTurn);
-
-            // Analyze LuisServiceResult to create a BotStateContext if needed, based on intents(and top intent)
-
 
             if (await InterruptionRecognizer.InterruptionHandledAsync(luisServiceResult, currentTurn))
             {

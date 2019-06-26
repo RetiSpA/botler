@@ -62,6 +62,11 @@ namespace Botler.Commands
                 return new HelpCommand(turn);
             }
 
+            if (OutlookCommandFound(entity))
+            {
+                return new OutlookCommand(turn);
+            }
+
             return null;
         }
 
@@ -113,6 +118,11 @@ namespace Botler.Commands
         private static bool LogoutCommandFound(string ent)
         {
             return ent.Equals(CommandLogout);
+        }
+
+        private static bool OutlookCommandFound(string ent)
+        {
+            return ent.Equals(CommandOutlook);
         }
     }
 }

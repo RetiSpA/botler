@@ -40,8 +40,6 @@ namespace Botler.Models
 
         public override string ToString()
         {
-        //      foreach(var en in TopIntent.EntitiesCollected)
-        //     ("Bot Entity" + en.ToString());
             return scenarioID + " " + " " + Turn  + " " + UserQuery;
         }
     }

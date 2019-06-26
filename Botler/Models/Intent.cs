@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Botler.Helpers;
-using Microsoft.Bot.Builder.Dialogs;
 
 namespace Botler.Models
 {
@@ -23,8 +21,7 @@ namespace Botler.Models
         public int EntityLowerBound { get; set; }
 
         public string DialogID { get; set; }
-        // ! cambiare in HashSet, ma se lo avessi dichiarato come ICollection<Entity>
-        // ! non avremo avuto problem.
+
         public ICollection<Entity> EntitiesCollected { get; set; }
 
         public string EntityNeedResponse { get; set; }
@@ -43,8 +40,6 @@ namespace Botler.Models
 
             return this.Score.CompareTo(otherIntent.Score);
         }
-
-
 
     }
 }

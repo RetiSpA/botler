@@ -30,6 +30,7 @@ namespace Botler.Dialogs.Dialoghi
         {
             _accessors = accessors ?? throw new ArgumentNullException(nameof(accessors));
             _intent = intent ?? throw new ArgumentNullException(nameof(intent));
+
             _intent.EntitiesCollected = EntityFormatHelper.EntityFilterByIntent(_intent.Name, _intent.EntitiesCollected);
 
             var waterfallSteps = new WaterfallStep[]

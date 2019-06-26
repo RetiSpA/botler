@@ -478,8 +478,9 @@
     <value>Mi piace far sorridere :D</value>
   </data>
   <data name = "MailGenericaRicevuta_1" xml:space ="preserve">
-    <value> Soggetto {0}
-    Anteprima {1}
+    <value> Soggetto : {0}
+    Anteprima : {1}
+    Da : {2}
     </value>
   </data>
 <data name = "MailGenericaInviata_1" xml:space = "preserve">

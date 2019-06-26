@@ -103,6 +103,11 @@ namespace Botler.Helpers
 
                 if (eventDateStart.ToShortDateString().Equals(DateTime.Today.ToShortDateString()))
                 {
+                    if (e.Location.DisplayName == string.Empty)
+                    {
+                        e.Location.DisplayName = "Sede Reti S.p.A";
+                    }
+
                     ++appointmentFound;
                     var appointment = RandomResponses(PrimoAppuntamentoResponse);
                     await turn.SendActivityAsync(string.Format(@appointment, e.Subject , e.BodyPreview , eventDateStart.ToShortTimeString(),
@@ -174,7 +179,7 @@ namespace Botler.Helpers
         {
             string mailResponse = RandomResponses(MailGenericaRicevutaResponse);
             mailResponse = " - " + mailResponse;
-            await turn.SendActivityAsync(string.Format(@mailResponse, mail.Subject, mail.BodyPreview));
+            await turn.SendActivityAsync(string.Format(@mailResponse, mail.Subject, mail.BodyPreview, mail.From.EmailAddress.Name));
         }
 
         /// <summary>
@@ -194,6 +199,10 @@ namespace Botler.Helpers
             string endTime = dateTimeEventEnd.ToShortTimeString();
             string appointment = RandomResponses(AppuntamentoGenericoResponse);
 
+            if (e.Location.DisplayName == string.Empty)
+            {
+                e.Location.DisplayName = "Sede Reti S.p.A";
+            }
             await turn.SendActivityAsync(string.Format(@appointment, e.Subject, startDate, startTime, endTime, e.Location.DisplayName, e.Organizer.EmailAddress.Name));
 
         }

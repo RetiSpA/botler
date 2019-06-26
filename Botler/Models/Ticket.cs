@@ -50,7 +50,7 @@ namespace Botler.Models
                 prioritàString = "urgente";
             }
 
-            return "\nCreato Ticekt: " + "\n Priorità: " + prioritàString + "\n Descrizione : " + Descrizione + " \nUtente " + Email_Utente + " \n Categoria: " + Categoria;
+            return "\nCreato Ticket: " + "\n Priorità: " + prioritàString + "\n Descrizione : " + Descrizione + " \nUtente " + Email_Utente + " \n Categoria: " + Categoria;
         }
 
     }
